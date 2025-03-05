@@ -1,0 +1,9 @@
+Name: JehadMHamad
+Date: Feb 20, 2025
+assignment number: CS2040 Ass 1
+
+what is the assignment doing:
+building and comparing all the diff sorting algorthims with different sizes and different type of vectors (random, sorted, rev sorted)
+
+how to build your program: 
+            make then make run
