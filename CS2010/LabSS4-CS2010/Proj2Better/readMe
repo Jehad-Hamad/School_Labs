@@ -1,0 +1,19 @@
+Name :
+Jehad M Hamad
+
+Lab number :
+Lab 4 project 2 (gameOfLife)
+
+what its doing :
+Implementing gameOfLife
+
+how to build :
+g++ main.cpp gameOfLife.cpp -o gol -lncurses
+
+how to use :
+you need to first click the screen to start, then just follow the instructions
+
+limitations:
+1) theres no way to leave during generations so once you pick a number you need to go through all of the generations or press stop
+2) you can enter letters for the amount of generations u want it will show the starting generation in return
+3) really hard to place live cells, since the screen is blank so placing what you want might take a bit

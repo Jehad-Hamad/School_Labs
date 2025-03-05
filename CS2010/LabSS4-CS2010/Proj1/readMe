@@ -1,0 +1,19 @@
+
+Name: JehadMHamad
+
+assignment number:Lab 4 project 1 (craps)
+
+what is the assignment doing:                                                                                                             
+This project is implementing one of the most popular games of chance is a dice game known as "craps."
+
+how to build your program: 
+g++ main.cpp -o craps
+
+how to use your program:                                                                                                                  
+Just follow my program instructions.
+
+any limitation, issues:  
+1) even tho i check if you give a char as your wager, 
+giving a string will print the error msg (x) the length of your string so it looks messy
+
+cant find anything else
