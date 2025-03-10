@@ -12,7 +12,7 @@ public class Hello3 {
         int a; // reserve space for integers
         int b;
         int sum, difference, product;
-        System.out.println("This is Hello3");
+        System.out.println("This is Hello");
         // get input data from the user
         System.out.print("Enter a whole number A:  "); // prompt user for an action
         a = input.nextInt(); // read what the user enters
