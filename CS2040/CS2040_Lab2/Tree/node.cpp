@@ -8,26 +8,52 @@ Node::Node(char d)
     right = nullptr;
 }
 
-Node *insertNode(Node *root, char f, string pattern)
+Node *Node::insertNode(Node *root, char d, string pattern)
 {
-    int size = pattern.size();
-    char last;
-    Node *newNode = new Node(f);
-    Node *copy = root;
-    for (int i = 0; i < size; i++){
-        if (pattern[i] == '*'){
-            copy = copy->left;
-            last = '*';
+
+    int n = pattern.size();
+    Node *nNode = new Node(d);
+    Node *curr = root;
+
+    for (int i = 0; i < n; i++)
+    {
+
+        if (pattern[i] == '*')
+        {
+            if (curr->left == nullptr)
+            {
+                curr->left = nNode;
+            }
+            else
+            {
+                curr = curr->left;
+            }
         }
-        else{
-            copy = copy->right;
-            last = '-';
+        else if (pattern[i] == '-')
+        {
+            if (curr->right == nullptr)
+            {
+                curr->right = nNode;
+            }
+            else
+            {
+                curr = curr->right;
+            }
         }
     }
-    if (last = '*'){
-        copy->left = newNode;
+    return root;
+}
+
+void preorder(Node *curr)
+{
+    if (curr == nullptr)
+    {
+        return;
     }
-    else{
-        copy->right = newNode;
+    if (curr->data != ' ')
+    {
+        cout << curr->data << " ";
     }
+    preorder(curr->left);
+    preorder(curr->right);
 }

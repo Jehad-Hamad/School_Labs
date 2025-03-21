@@ -17,6 +17,7 @@ public:
     Node* insertNode(Node* root, char d, string pattern);
 };
 
+void preorder(Node * curr);
 
 
 #endif
