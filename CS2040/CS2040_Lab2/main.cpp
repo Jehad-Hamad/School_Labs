@@ -6,25 +6,15 @@ using namespace std;
 
 int main()
 {
-    Node *root = new Node(' ', ""); // Create a new Node
+    Node *root = new Node(' ', ""); //create root node that has no key and no pattern
     
 
-    ifstream f("file.txt");
-    string s;
-    char d;
-    string pattern;
-    while (getline(f, s))
-    {
-        d = s[0];
-        pattern = s.substr(2);
-        root->insertNode(root, d, pattern);
-
-    }
+   
+    createMorseTree(root, "MorseFile.txt");
     preorder(root);
     cout << endl;
 
 
-    f.close();
 
     return 0;
 }

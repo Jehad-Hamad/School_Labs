@@ -11,25 +11,27 @@ using namespace std;
 // Name: Jehad M Hamad
 // Date: Mar/21/25
 // Desc: Just making a class for my node data type
-class Node
-{
+class Node{
 public:
-    // My nodes will have a data which will be the key
-    // String pattern which is just the morse code pattern
+    // My nodes will have char key which will be the key which is just the letter
+    // String pattern which is just the morse code pattern for that letter
     // Two pointers of type node that will point to the left and right
-    char data;
+    char key;
     string pattern;
     Node *left;
     Node *right;
 
     //Constructor for my node;
-    Node(char d, string pattern);
+    Node(char key, string pattern);
 
     //Method used to insert nodes.
-    Node *insertNode(Node *root, char d, string pattern);
+    Node *insertNode(Node *root, char key, string pattern);
 };
+
 
 //prints my tree using perorder traversal;
 void preorder(Node *curr);
+
+void createMorseTree(Node *root, string fileName);
 
 #endif
