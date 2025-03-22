@@ -6,11 +6,9 @@ using namespace std;
 
 int main()
 {
-    Node *root = new Node(' '); // Create a new Node
+    Node *root = new Node(' ', ""); // Create a new Node
     
 
-
-    
     ifstream f("file.txt");
     string s;
     char d;
@@ -27,6 +25,6 @@ int main()
 
 
     f.close();
-    
+
     return 0;
 }
