@@ -11,7 +11,8 @@ using namespace std;
 // Name: Jehad M Hamad
 // Date: Mar/21/25
 // Desc: Just making a class for my node data type
-class Node{
+class Node
+{
 public:
     // My nodes will have char key which will be the key which is just the letter
     // String pattern which is just the morse code pattern for that letter
@@ -21,17 +22,18 @@ public:
     Node *left;
     Node *right;
 
-    //Constructor for my node;
+    // Constructor for my node;
     Node(char key, string pattern);
 
-    //Method used to insert nodes.
+    // Method used to insert nodes.
     Node *insertNode(Node *root, char key, string pattern);
 };
 
-
-//prints my tree using perorder traversal;
+// prints my tree using perorder traversal;
 void preorder(Node *curr);
 
+// create my morse code tree in teh correct order
 void createMorseTree(Node *root, string fileName);
 
+char findPattern(Node *root, string morseCode);
 #endif

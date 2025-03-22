@@ -81,13 +81,12 @@ void preorder(Node *curr)
 }
 
 // Name: Jehad M Hamad
-// Date: Mar/21/25
+// Date: Mar/22/25
 // Desc: The function to perform the creation of the morse code tree
-// Input: takes the root of your tree and teh name of the file
-// Output: makes the morse code tree with the given file.
-// the MorseFile has all the morse code letters and patterns in order of apperernce already
-// so there wont be an issue making the a node as the node beofre it will always exist.
-
+// Input:Takes the root of your tree and the name of the file
+// Output: Makes the morse code tree with the given file.
+//         the MorseFile has all the morse code letters and patterns in the correct order of apperernce
+//         so there wont be an issue making the a node as the node befor it will always exist.
 void createMorseTree(Node *root, string fileName)
 {
     ifstream file(fileName); // open the morseFile
@@ -101,5 +100,59 @@ void createMorseTree(Node *root, string fileName)
         key = line[0];                        // since its just a letter the key will always be the line at index 0
         pattern = line.substr(2);             // since there is a space between the key and the pattern the pattern will just be from index 2 onwards.
         root->insertNode(root, key, pattern); // call the insertNOde method on our root so we can insert the givent values
+    }
+}
+
+//  string lineToMorse(Node *root, char key)
+// {
+
+//     if (root == nullptr)
+//     {
+//         return;
+//     }
+//     if (root->key = key)
+//     {
+//         return root->pattern;
+//     }
+//     else
+//     {
+//         lineToMorse(root->left, key);
+//         lineToMorse(root->right, key);
+//     }
+//     return "";
+// }
+
+// string morseToline(string morseLine)
+// {
+//     int n = morseLine.size();
+//     string morseCode = "";
+//     for (int i = 0; i < n; i++)
+//     {
+//         if (morseLine[i] != ' ')
+//         {
+//             morseCode += morseLine[i];
+//         }
+//         else
+//         {
+//         }
+//     }
+//     return "";
+// }
+
+char findPattern(Node *root, string morseCode)
+{
+    if (root == nullptr)
+    {
+        return ' ';
+    }
+    
+    if (root->pattern == morseCode)
+    {
+        return root->key;
+    }
+    else
+    {
+        return findPattern(root->left, morseCode);
+       return  findPattern(root->right, morseCode);
     }
 }
