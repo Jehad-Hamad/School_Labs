@@ -13,8 +13,6 @@ int main()
     createMorseTree(root, "MorseFile.txt");
     // preorder(root);
 
-    char morseCode = findPattern(root,"6");
-    cout<< morseCode << endl;
 
     return 0;
 }

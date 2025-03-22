@@ -103,56 +103,7 @@ void createMorseTree(Node *root, string fileName)
     }
 }
 
-//  string lineToMorse(Node *root, char key)
-// {
-
-//     if (root == nullptr)
-//     {
-//         return;
-//     }
-//     if (root->key = key)
-//     {
-//         return root->pattern;
-//     }
-//     else
-//     {
-//         lineToMorse(root->left, key);
-//         lineToMorse(root->right, key);
-//     }
-//     return "";
-// }
-
-// string morseToline(string morseLine)
-// {
-//     int n = morseLine.size();
-//     string morseCode = "";
-//     for (int i = 0; i < n; i++)
-//     {
-//         if (morseLine[i] != ' ')
-//         {
-//             morseCode += morseLine[i];
-//         }
-//         else
-//         {
-//         }
-//     }
-//     return "";
-// }
-
-char findPattern(Node *root, string morseCode)
+char findKey(Node *root, string morseCode)
 {
-    if (root == nullptr)
-    {
-        return ' ';
-    }
     
-    if (root->pattern == morseCode)
-    {
-        return root->key;
-    }
-    else
-    {
-        return findPattern(root->left, morseCode);
-       return  findPattern(root->right, morseCode);
-    }
 }

@@ -35,5 +35,5 @@ void preorder(Node *curr);
 // create my morse code tree in teh correct order
 void createMorseTree(Node *root, string fileName);
 
-char findPattern(Node *root, string morseCode);
+
 #endif
