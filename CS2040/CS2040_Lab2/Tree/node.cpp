@@ -163,7 +163,7 @@ string charToMorse(Node *root, char key)
 // Output: The output string message back for the morseCode line you gave it.
 string morseToMessage(Node *root, string morseCode)
 {
-    int n = morseCode.size();  // Get the length of morseCode line
+    int n = morseCode.size(); // Get the length of morseCode line
     // Make two strings: one for the pattern you want and one for the complete message
     string pattern = "";
     string message = "";
@@ -174,10 +174,10 @@ string morseToMessage(Node *root, string morseCode)
         {
             pattern += morseCode[i];
         }
-        // Else, you know you hit a space or some random char, so you can call your morseToChar method on your pattern
+        // Else, you know you hit a space or some random char, so you can call your morseToChar function on your pattern
         else
         {
-            // Call your morseToChar method on that pattern and append result to message
+            // Call your morseToChar function on that pattern and append result to message
             message += morseToChar(root, pattern);
             // Reset your pattern back to nothing
             pattern = "";
@@ -202,6 +202,11 @@ char morseToChar(Node *root, string pattern)
 
     if (root->pattern == pattern)
     {
+        if (pattern == "")
+        {
+            return ' '; // Check to see if the pattern is the first node. this will happen when you pass it numbers and such.
+                        // since the encoded version will be a empty string which is the first node
+        }
         return root->key; // If the key is equal to the key you give it, return the key
     }
 

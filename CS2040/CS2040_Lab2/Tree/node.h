@@ -35,16 +35,16 @@ void preorder(Node *curr);
 // Create my morse code tree in the correct order
 void createMorseTree(Node *root, string fileName);
 
-// Method that returns string taht is my messgae encoded.
+// function that returns string that is my messgae encoded.
 string messageToMorse(Node *root, string line);
 
-// Method that is used by messageToMorse method to find and return the morse code for that char given
+// function that is used by messageToMorse method to find and return the morse code for that char given
 string charToMorse(Node *root, char key);
 
-// Method that returns a string that is the decoded version of my morse encoded message
+// function that returns a string that is the decoded version of my morse encoded message
 string morseToMessage(Node *root, string morseCode);
 
-// Method that is used by my morseToMessage method to find and return the char for the given morse code 
+// function that is used by my morseToMessage method to find and return the char for the given morse code 
 char morseToChar(Node *root, string pattern);
 
 

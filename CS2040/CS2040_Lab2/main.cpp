@@ -6,9 +6,8 @@ using namespace std;
 
 int main()
 {
-    Node *root = new Node(' ', ""); // Create root node that has no key and no pattern
-
-    createMorseTree(root, "MorseFile.txt");
+    Node *root = new Node('*', ""); // Create root node that has no key * and no pattern ""
+    createMorseTree(root, "MorseFile.txt"); // make the morecode tree by calling the function
     // preorder(root);
 
     string message;             // Message you want to enter

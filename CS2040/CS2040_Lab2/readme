@@ -1,0 +1,12 @@
+Name: JehadMHamad
+Date: Mar 23, 2025
+assignment number: CS2040 Ass 2
+
+what is the assignment doing:
+1)   building a binary tree using the morse code "code"
+2)   given a message give the morse code representation 
+3)   given that same morse code representation give the message representation back
+
+
+how to build your program: 
+            make then make run
