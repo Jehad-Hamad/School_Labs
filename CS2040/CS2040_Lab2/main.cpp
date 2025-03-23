@@ -6,18 +6,23 @@ using namespace std;
 
 int main()
 {
-    Node *root = new Node(' ', ""); // create root node that has no key and no pattern
+    Node *root = new Node(' ', ""); // Create root node that has no key and no pattern
 
     createMorseTree(root, "MorseFile.txt");
     // preorder(root);
 
-    string message;
-
+    string message;             // Message you want to enter
     cout << "What is the message you want to enter? " << endl;
-    cin >> message;
+    getline(cin, message);      // Get that entire line for what you want to have as your message
+
+
     cout << "\nYour encoded message is:" << endl;
-    string MorseCode = messageToMorse(root, message);
-    cout << MorseCode << endl;
+    string MorseCode = messageToMorse(root, message);  //string Morse code is the result of the messageToMorse method
+    cout << MorseCode << endl; // print result
+
+    cout << "\nYour decoded message is:" << endl;
+    string decoded = morseToMessage(root, MorseCode); //string decoded is the result of the morseToMessage method
+    cout << decoded << endl; //print result;
 
     return 0;
 }

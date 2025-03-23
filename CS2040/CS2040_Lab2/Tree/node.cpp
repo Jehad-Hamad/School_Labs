@@ -5,9 +5,9 @@
 // Date: Mar/21/25
 // Desc: The constructor for my node class
 // Input: You need to pass a char which will be your key,
-//        aswell as a string pattern that is the morse code pattern
+//        as well as a string pattern that is the morse code pattern
 // Output: A new node that has the key of the value you passed it as well as the pattern
-//        your left and right will point to null aswell.
+//        your left and right will point to null as well.
 Node::Node(char key, string pattern)
 {
     this->pattern = pattern; // Assign the pattern to the node
@@ -20,8 +20,8 @@ Node::Node(char key, string pattern)
 // Date: Mar/21/25
 // Desc: The method to insert for my node class
 // Input: you need to pass this method your root, char key which will be the key
-//        pattern which is the just the morse code pattern
-// Output: A new node that in the correct positon
+//        pattern which is just the morse code pattern
+// Output: A new node that is in the correct position
 Node *Node::insertNode(Node *root, char key, string pattern)
 {
 
@@ -35,7 +35,7 @@ Node *Node::insertNode(Node *root, char key, string pattern)
 
         if (pattern[i] == '.')
         {
-            // Go to the left if pattern character is '*'
+            // Go to the left if pattern character is '.'
             if (curr->left == nullptr)
             {
                 curr->left = nNode; // Insert node if left is null
@@ -62,7 +62,7 @@ Node *Node::insertNode(Node *root, char key, string pattern)
 }
 
 // Name: Jehad M Hamad
-// Date: Mar/21/25
+// Date: Mar/22/25
 // Desc: The function to perform preorder traversal
 // Input: Takes the current node as input
 // Output: Prints the nodes in preorder format
@@ -83,56 +83,56 @@ void preorder(Node *curr)
 // Name: Jehad M Hamad
 // Date: Mar/22/25
 // Desc: The function to perform the creation of the morse code tree
-// Input:Takes the root of your tree and the name of the file
+// Input: Takes the root of your tree and the name of the file
 // Output: Makes the morse code tree with the given file.
-//         the MorseFile has all the morse code letters and patterns in the correct order of apperernce
-//         so there wont be an issue making the a node as the node befor it will always exist.
+//         The MorseFile has all the morse code letters and patterns in the correct order of appearance
+//         so there won't be an issue making the a node as the node before it will always exist.
 void createMorseTree(Node *root, string fileName)
 {
-    ifstream file(fileName); // open the morseFile
-    string line;             // the string that will have the line
-    char key;                // the key value that will be extracted
-    string pattern;          // the pattern string that will be extracted
+    ifstream file(fileName); // Open the morseFile
+    string line;             // The string that will have the line
+    char key;                // The key value that will be extracted
+    string pattern;          // The pattern string that will be extracted
 
-    // get the line from the file while you still have lines present
+    // Get the line from the file while you still have lines present
     while (getline(file, line))
     {
-        key = line[0];                        // since its just a letter the key will always be the line at index 0
-        pattern = line.substr(2);             // since there is a space between the key and the pattern the pattern will just be from index 2 onwards.
-        root->insertNode(root, key, pattern); // call the insertNOde method on our root so we can insert the givent values
+        key = line[0];                        // Since it's just a letter, the key will always be the line at index 0
+        pattern = line.substr(2);             // Since there is a space between the key and the pattern, the pattern will just be from index 2 onwards.
+        root->insertNode(root, key, pattern); // Call the insertNode method on our root so we can insert the given values
     }
 }
 
 // Name: Jehad M Hamad
 // Date: Mar/22/25
-// Desc: The function to perform the convesion between your line to morseCde
-// Input:Takes the root of your tree and sting line you wint to convert
-// Output: the output is teh string you gave it but in morse code form.
-string messageToMorse(Node *root, string line)
+// Desc: The function to perform the conversion between your line to morseCode
+// Input: Takes the root of your tree and string line you want to convert
+// Output: The output is the string you gave it but in morse code form.
+string messageToMorse(Node *root, string message)
 {
-    // convert every letter in the line you gave it lower case
-    for (auto &i : line)
+    // Convert every letter in the line you gave it to lowercase
+    for (auto &i : message)
     {
         i = tolower(i);
     }
 
-    int n = line.size();   // get the size of you line for the loop
-    string MorseCode = ""; // make a string morse code that will have teh final encoded message.
+    int n = message.size(); // Get the size of your line for the loop
+    string MorseCode = "";  // Make a string morse code that will have the final encoded message
     for (int i = 0; i < n; i++)
     {
-        // char to morse function of every single char in your line and append that result to itself;
-        MorseCode += charToMorse(root, line[i]) + " ";
+        // char to morse function of every single char in your line and append that result to itself
+        MorseCode += charToMorse(root, message[i]) + " ";
     }
-    // return the morsecode string that you encoded
+    // Return the morsecode string that you encoded
     return MorseCode;
 }
 
 // Name: Jehad M Hamad
 // Date: Mar/22/25
-// Desc: The function to perform the convesion between your char to morseCode
-// Input:Takes the root of your tree and char you want to convert
-// Output: the output string morse code for the char you gave it.
-//          if you give it a random char like space or a number will return a empty string as it cnat find that pattern.
+// Desc: The function to perform the conversion between your char to morseCode
+// Input: Takes the root of your tree and char you want to convert
+// Output: The output string morse code for the char you gave it.
+//          If you give it a random char like space or a number, it will return an empty string as it can't find that pattern.
 string charToMorse(Node *root, char key)
 {
     if (root == nullptr)
@@ -142,21 +142,76 @@ string charToMorse(Node *root, char key)
 
     if (root->key == key)
     {
-        return root->pattern; // if the key is equal to the key you give it return the pattern
+        return root->pattern; // If the key is equal to the key you give it, return the pattern
     }
 
-    string leftResult = charToMorse(root->left, key); // call morse on the left side of the tree
+    string leftResult = charToMorse(root->left, key); // Call morse on the left side of the tree
     if (!leftResult.empty())
-    { // if the left result is not empty that means its on the left side
+    { // If the left result is not empty, that means it's on the left side
         return leftResult;
     }
 
-    // else its on the right side so check that and return it
+    // Else, it's on the right side, so check that and return it
     string rightResult = charToMorse(root->right, key);
     return rightResult;
 }
 
-char findKey(Node *root, string morseCode)
+// Name: Jehad M Hamad
+// Date: Mar/22/25
+// Desc: The function to perform the conversion between your morseCode line to message
+// Input: Takes the root of your tree and morseCode line you want to convert
+// Output: The output string message back for the morseCode line you gave it.
+string morseToMessage(Node *root, string morseCode)
 {
-    return ' ';
+    int n = morseCode.size();  // Get the length of morseCode line
+    // Make two strings: one for the pattern you want and one for the complete message
+    string pattern = "";
+    string message = "";
+    for (int i = 0; i < n; i++)
+    {
+        // Check if the char at index i is a '.' or '-', and if so, add it to the pattern
+        if (morseCode[i] == '.' || morseCode[i] == '-')
+        {
+            pattern += morseCode[i];
+        }
+        // Else, you know you hit a space or some random char, so you can call your morseToChar method on your pattern
+        else
+        {
+            // Call your morseToChar method on that pattern and append result to message
+            message += morseToChar(root, pattern);
+            // Reset your pattern back to nothing
+            pattern = "";
+        }
+    }
+    // Return message
+    return message;
+}
+
+// Name: Jehad M Hamad
+// Date: Mar/22/25
+// Desc: The function to perform the conversion between your morseCode to char
+// Input: Takes the root of your tree and morse code you want to convert to char
+// Output: The output is the char for that morse code you gave it
+// Will return ' ' if not found at all, using for spaces and numbers and such.
+char morseToChar(Node *root, string pattern)
+{
+    if (root == nullptr)
+    {
+        return ' '; // Return a ' ' if node is null
+    }
+
+    if (root->pattern == pattern)
+    {
+        return root->key; // If the key is equal to the key you give it, return the key
+    }
+
+    char leftResult = morseToChar(root->left, pattern); // Call morseToChar on the left side of the tree
+    if (leftResult != ' ')
+    { // If the left result is not empty, that means it's on the left side
+        return leftResult;
+    }
+
+    // Else, it's on the right side, so check that and return it
+    char rightResult = morseToChar(root->right, pattern);
+    return rightResult;
 }
