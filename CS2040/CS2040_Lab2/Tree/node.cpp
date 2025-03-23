@@ -33,7 +33,7 @@ Node *Node::insertNode(Node *root, char key, string pattern)
     for (int i = 0; i < n; i++)
     {
 
-        if (pattern[i] == '*')
+        if (pattern[i] == '.')
         {
             // Go to the left if pattern character is '*'
             if (curr->left == nullptr)
@@ -103,7 +103,60 @@ void createMorseTree(Node *root, string fileName)
     }
 }
 
+// Name: Jehad M Hamad
+// Date: Mar/22/25
+// Desc: The function to perform the convesion between your line to morseCde
+// Input:Takes the root of your tree and sting line you wint to convert
+// Output: the output is teh string you gave it but in morse code form.
+string messageToMorse(Node *root, string line)
+{
+    // convert every letter in the line you gave it lower case
+    for (auto &i : line)
+    {
+        i = tolower(i);
+    }
+
+    int n = line.size();   // get the size of you line for the loop
+    string MorseCode = ""; // make a string morse code that will have teh final encoded message.
+    for (int i = 0; i < n; i++)
+    {
+        // char to morse function of every single char in your line and append that result to itself;
+        MorseCode += charToMorse(root, line[i]) + " ";
+    }
+    // return the morsecode string that you encoded
+    return MorseCode;
+}
+
+// Name: Jehad M Hamad
+// Date: Mar/22/25
+// Desc: The function to perform the convesion between your char to morseCode
+// Input:Takes the root of your tree and char you want to convert
+// Output: the output string morse code for the char you gave it.
+//          if you give it a random char like space or a number will return a empty string as it cnat find that pattern.
+string charToMorse(Node *root, char key)
+{
+    if (root == nullptr)
+    {
+        return ""; // Return an empty string if node is null
+    }
+
+    if (root->key == key)
+    {
+        return root->pattern; // if the key is equal to the key you give it return the pattern
+    }
+
+    string leftResult = charToMorse(root->left, key); // call morse on the left side of the tree
+    if (!leftResult.empty())
+    { // if the left result is not empty that means its on the left side
+        return leftResult;
+    }
+
+    // else its on the right side so check that and return it
+    string rightResult = charToMorse(root->right, key);
+    return rightResult;
+}
+
 char findKey(Node *root, string morseCode)
 {
-    
+    return ' ';
 }

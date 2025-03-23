@@ -35,5 +35,6 @@ void preorder(Node *curr);
 // create my morse code tree in teh correct order
 void createMorseTree(Node *root, string fileName);
 
-
+string messageToMorse(Node *root, string line);
+string charToMorse(Node *root, char key);
 #endif
