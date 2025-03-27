@@ -3,7 +3,8 @@ select *
 from borrower as b
 LEFT JOIN book_loans as bl ON bl.card_no = b.card_no;
 
---shows only person that has no books taken out
+--Q1
+--Retrieve the names of borrowers who have no loans
 SELECT *
 FROM borrower b
 WHERE NOT EXISTS (

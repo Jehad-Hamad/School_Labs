@@ -11,7 +11,11 @@ JOIN book AS b ON b.book_id = c.book_id
 WHERE c.branch_id = 1;
 
 --only nested queries
---get the branch id title and # of books where i have more books that the max amount in branch 1
+
+--Q2.1
+-- Return the titles of books from all branches along with the appropriate
+-- N_copies values for which N_copies value greater than max N_copies value for
+-- books from the branch 'branch1'
 SELECT c.branch_id, b.title, c.no_of_copies
 FROM book AS b, book_copies AS c
     WHERE b.book_id = c.book_id AND
@@ -20,8 +24,6 @@ FROM book AS b, book_copies AS c
         FROM book_copies AS c2
         WHERE c2.branch_id = 1
 );
-
-
 
 
 --using joins and nested queries
