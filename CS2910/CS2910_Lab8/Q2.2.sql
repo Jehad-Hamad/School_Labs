@@ -1,8 +1,8 @@
 
 -- Gets all books from card# = 1
-SELECT book_id, card_no
-FROM book_loans
-WHERE card_no = 1;
+SELECT bl.book_id, bl.card_no
+FROM book_loans AS bl
+WHERE bl.card_no = 1;
 
 -- Only nested queries
 -- Q2.2

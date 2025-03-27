@@ -10,7 +10,6 @@ FROM book_copies AS c
 JOIN book AS b ON b.book_id = c.book_id
 WHERE c.branch_id = 1;
 
-
 -- Only nested queries
 -- Q2.1
 -- Return the titles of books from all branches along with the appropriate

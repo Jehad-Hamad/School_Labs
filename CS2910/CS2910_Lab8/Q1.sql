@@ -1,3 +1,4 @@
+
 -- Shows all borrowers and what books they borrowed even if none
 select *
 from borrower AS b
