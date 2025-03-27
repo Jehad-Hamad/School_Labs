@@ -1,14 +1,14 @@
---shows all borrowers and what books they borrowed even if noneS
+-- Shows all borrowers and what books they borrowed even if none
 select *
-from borrower as b
-LEFT JOIN book_loans as bl ON bl.card_no = b.card_no;
+from borrower AS b
+LEFT JOIN book_loans AS bl ON bl.card_no = b.card_no;
 
---Q1
---Retrieve the names of borrowers who have no loans
+-- Q1
+-- Retrieve the names of borrowers who have no loans
 SELECT *
-FROM borrower b
+FROM borrower AS b
 WHERE NOT EXISTS (
     SELECT *
-    FROM book_loans bl
+    FROM book_loans AS bl
     WHERE b.card_no = bl.card_no
 );
