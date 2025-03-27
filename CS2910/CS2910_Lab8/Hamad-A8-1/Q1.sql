@@ -4,6 +4,9 @@ select *
 from borrower AS b
 LEFT JOIN book_loans AS bl ON bl.card_no = b.card_no;
 
+
+select *
+from book_loans;
 -- Q1
 -- Retrieve the names of borrowers who have no loans
 SELECT *

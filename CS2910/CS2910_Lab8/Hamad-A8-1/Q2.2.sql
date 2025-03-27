@@ -8,6 +8,11 @@ WHERE bl.card_no = 1;
 -- Q2.2
 -- Select the names and card numbers of all borrowers who borrow the same book
 -- (books) that borrower whose card number = ‘1’borrows
+
+
+select *
+from book_loans;
+
 SELECT b.name, b.card_no
 FROM borrower AS b, book_loans AS bl1
 WHERE b.card_no = bl1.card_no AND
