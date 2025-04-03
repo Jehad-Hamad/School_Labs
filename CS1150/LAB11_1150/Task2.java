@@ -35,5 +35,6 @@ public class Task2 {
         for (int i = 0; i < values.length; i++) {
             System.out.printf(" %d ", values[i]);
         }
+        System.out.println();
     }
 }
