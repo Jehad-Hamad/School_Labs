@@ -1,3 +1,4 @@
+--Q8.1)
 CREATE TRIGGER capitalize_names_before_insert
 BEFORE INSERT ON EMPLOYEE
 FOR EACH ROW
@@ -11,6 +12,7 @@ VALUES
 ('jehad', 'M', 'hamad', '12332121', '2005-01-06', NULL, 'M', 45000, NULL, 1);
 
 
+--Q8.2)
 DELIMITER //
 CREATE TRIGGER bdate_before_insert
 BEFORE INSERT ON DEPENDENT
@@ -45,12 +47,38 @@ VALUES
 
 
 
-
-
+--Q8.3)
 DELIMITER //
 
 CREATE TRIGGER update_salary_trigger
 AFTER UPDATE ON WORKS_ON
+FOR EACH ROW
+BEGIN
+    -- Declare a local variable
+    SET @total_hours = (
+        SELECT SUM(phours)
+        FROM WORKS_ON
+        WHERE essn = NEW.essn
+    );
+
+    -- If total hours exceed 50, increase the salary
+    IF @total_hours > 50 THEN
+        UPDATE EMPLOYEE
+        SET salary = salary * 1.10  -- Increase salary by 10%
+        WHERE ssn = NEW.essn;
+    END IF;
+END
+
+DELIMITER ;
+
+UPDATE `WORKS_ON`
+SET phours = 30
+WHERE essn = '333445555' AND pno = 20;
+
+
+--Q8.4)
+CREATE TRIGGER insert_salary_trigger
+AFTER INSERT ON WORKS_ON
 FOR EACH ROW
 BEGIN
     -- Declare a local variable
@@ -77,5 +105,3 @@ INSERT INTO WORKS_ON (essn, pno, phours) VALUES
 
 INSERT INTO WORKS_ON (essn, pno, phours) VALUES 
 ('12332121', 3, 18);  -- This one should push total over 50 and trigger the salary update
-
-
