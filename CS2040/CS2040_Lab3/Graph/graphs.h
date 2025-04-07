@@ -16,6 +16,7 @@ class MatrixGraph
 public:
     vector<vector<int>> matrix;
     MatrixGraph(int n) : matrix(n, vector<int>(n, INT_MAX)) {};
+    vector<pair<int, int>> getNeighbors(int source);
     void addEdge(int source, int destination, int weight);
     void printMatrix();
 };

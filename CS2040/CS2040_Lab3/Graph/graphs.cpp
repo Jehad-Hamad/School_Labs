@@ -50,3 +50,18 @@ MatrixGraph createMatrixGraph(string fileName, bool directed)
 
     return matrix;
 }
+
+vector<pair<int, int>> MatrixGraph::getNeighbors(int source)
+{
+    vector<pair<int, int>> neighbors;
+    int n = (int)(matrix[source].size());
+    for (int dest = 0; dest < n; ++dest)
+    {
+        int weight = matrix[source][dest];
+        if (weight != INT_MAX)
+        {
+            neighbors.push_back({dest, weight});
+        }
+    }
+    return neighbors;
+}
