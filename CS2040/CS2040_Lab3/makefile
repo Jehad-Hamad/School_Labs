@@ -1,11 +1,9 @@
-GRAPH_DIR=Graph
-CC=g++
-CC_FLAGS= -std=c++11 -Wall -Wextra -Werror -pedantic
-all: main.cpp $(GRAPH_DIR)/graphs.cpp
-	$(CC) $(CC_FLAGS) $^ -o a.out
+PROG = a.out
 
-run: 
-	./a.out 
+OBJS = Edge.cpp Graph.cpp List_Graph.cpp Matrix_Graph.cpp
 
-check: main.cpp $(GRAPH_DIR)/graphs.cpp
-	cppcheck $^
+all:
+	g++ Dijkstra.cpp $(OBJS) -o $(PROG) -std=c++11
+
+run: all
+	./$(PROG)
