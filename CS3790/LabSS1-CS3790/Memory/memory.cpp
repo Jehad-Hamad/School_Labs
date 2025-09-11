@@ -156,7 +156,6 @@ void Memory::executeInstruction() {
     }
 }
 
-//
 void Memory::READ(int operand) {
     int input;
     cout << " ? ";
@@ -270,7 +269,6 @@ void Memory::HALT(int operand) {
     // Extract start and end page from operand
     int startPage = operand / 100;
     int endPage   = operand % 100;
-    cout << startPage << " " << endPage << endl;
 
     // Validate page range
     if (startPage < 0 || endPage > 99 || startPage > endPage) {
@@ -285,23 +283,43 @@ void Memory::HALT(int operand) {
              << endl;
         cout << "REGISTERS:" << endl
              << endl;
-        cout << "accumulator          " << setfill('0') << setw(6) << accumulator
-             << endl;
+
+        // Print register values with appropriate formatting
+        if (accumulator > 0) {
+            cout << "accumulator         " << "+" << setfill('0') << setw(6)
+                 << accumulator << endl;
+        } else if (accumulator < 0) {
+            cout << "accumulator         " << "-" << setfill('0') << setw(6)
+                 << -accumulator << endl;
+        } else {
+            cout << "accumulator          " << setfill('0') << setw(6) << accumulator
+                 << endl;
+        }
         cout << "InstructionCounter   " << setfill('0') << setw(6) << InstructionCounter
              << endl;
         cout << "IndexRegister        " << setfill('0') << setw(6) << IndexRegister
              << endl;
         cout << "operationCode        " << setfill('0') << "    " << setw(2) << operationCode
              << endl;
-        cout << "operand              " << setfill('0') << "  " << setw(4) << operand << endl
-             << endl;
+        if (operand > 0) {
+            cout << "operand              " << "+" << setfill('0') << setw(4)
+                 << operand << endl
+                 << endl;
+        } else if (operand < 0) {
+            cout << "operand              " << "-" << setfill('0') << setw(4)
+                 << -operand << endl
+                 << endl;
+        } else {
+            cout << "operand              " << setfill('0') << "  " << setw(4) << operand << endl
+                 << endl;
+        }
         cout << "MEMORY" << endl
              << endl
-             << "  ";
+             << "   ";
 
         // print column headers
         for (int col = 0; col < 10; ++col) {
-            cout << setw(7) << setfill(' ') << col;
+            cout << setw(7) << setfill(' ') << col << " ";
         }
         cout << endl;
 
@@ -310,7 +328,14 @@ void Memory::HALT(int operand) {
             // Print row header
             cout << setw(2) << row * 10 << " ";
             for (int col = 0; col < 10; ++col) {
-                cout << setw(6) << setfill('0') << memory[row * 10 + col + i * 100] << " ";
+                int value = memory[row * 10 + col + i * 100];
+                if (value > 0) {
+                    cout << "+" << setfill('0') << setw(6) << value << " ";
+                } else if (value < 0) {
+                    cout << "-" << setfill('0') << setw(6) << -value << " ";
+                } else {
+                    cout << " " << setfill('0') << setw(6) << value << " ";
+                }
             }
             cout << endl;
         }
