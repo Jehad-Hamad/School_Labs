@@ -34,7 +34,7 @@ int main() {
         cout << "FileName: ";
         cin >> filename;
         cout << endl;
-        memory->loadProgramFromFile(filename);
+        memory->loadProgram(filename);
 
     } else if (answer == 'N') {
         // if a user does not have a file
@@ -48,7 +48,7 @@ int main() {
                 "your program ***"
              << endl
              << endl;
-        memory->loadProgramFromInput();
+        memory->loadProgram();
 
     } else {
         cout << "Invalid input. Please enter Y or N." << endl;
@@ -56,6 +56,13 @@ int main() {
     cout << endl;
     cout << "*** Program loading completed ***" << endl;
     cout << "*** Program execution begins  ***" << endl;
-    memory->HALT();
+
+    // Execute the loaded program
+    while (true) {
+        memory->executeInstruction();
+        if (memory->operationCode == 45) { // HALT operation code
+            break;
+        }
+    }
     return 0;
 }
