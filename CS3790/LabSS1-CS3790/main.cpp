@@ -2,7 +2,9 @@
 
 #include "Memory/memory.h"
 
+#include <cctype>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -10,6 +12,10 @@
 using namespace std;
 
 int main() {
+    // Create an instance of the Memory class
+    Memory *memory = new Memory();
+    string  line;
+
     // starting message
     cout << endl;
     cout << "*** Welcome to Simpletron V2! ***" << endl
@@ -18,25 +24,20 @@ int main() {
          << "Do you have a file that contains your SML program (Y/N) ? ";
     char answer;
     cin >> answer;
+    answer = toupper(answer);
     cout << endl;
 
     // Handle user input
-    if (answer == 'Y' || answer == 'y') {
+    if (answer == 'Y') {
+        // if use has a file
         string filename;
         cout << "FileName: ";
         cin >> filename;
+        cout << endl;
+        memory->loadProgramFromFile(filename);
 
-        ifstream file(filename);
-        if (!file.is_open()) {
-            cout << "Error: Could not open file " << filename << endl;
-            return 1;
-        }
-        string line;
-        while (getline(file, line)) {
-            cout << line << endl;
-        }
-        file.close();
-    } else if (answer == 'N' || answer == 'n') {
+    } else if (answer == 'N') {
+        // if a user does not have a file
         cout << "*** Please enter your program one instruction( or data word ) at "
                 "a time        ***"
              << endl;
@@ -47,13 +48,14 @@ int main() {
                 "your program ***"
              << endl
              << endl;
-        cout << "000000 ? ";
+        memory->loadProgramFromInput();
+
     } else {
         cout << "Invalid input. Please enter Y or N." << endl;
     }
     cout << endl;
-    Memory *memory = new Memory();
-    memory->printMemory();
-
+    cout << "*** Program loading completed ***" << endl;
+    cout << "*** Program execution begins  ***" << endl;
+    memory->HALT();
     return 0;
 }
