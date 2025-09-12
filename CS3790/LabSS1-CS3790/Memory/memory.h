@@ -8,12 +8,13 @@ using namespace std;
 class Memory {
 
   public:
-    int         accumulator;        // Accumulator register
-    int         InstructionCounter; // Instruction counter register
-    int         IndexRegister;      // Index register
-    int         operationCode;      // Operation code of the current instruction
-    int         operand;            // Operand of the current instruction
-    vector<int> memory;             // 1D vector to represent memory
+    int         accumulator;         // Accumulator register
+    int         InstructionCounter;  // Instruction counter register
+    int         IndexRegister;       // Index register
+    int         InstructionRegister; // Instruction register
+    int         operationCode;       // Operation code of the current instruction
+    int         operand;             // Operand of the current instruction
+    vector<int> memory;              // 1D vector to represent memory
 
     Memory();                               // Private constructor for singleton pattern
     void loadProgram(string fileName = ""); // Function to load program from file

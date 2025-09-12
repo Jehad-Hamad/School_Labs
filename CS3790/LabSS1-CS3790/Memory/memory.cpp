@@ -11,11 +11,12 @@ Memory::Memory() {
     memory = vector<int>(10000, 0);
 
     // Initialize registers to zero
-    accumulator        = 0;
-    InstructionCounter = 0;
-    IndexRegister      = 0;
-    operationCode      = 0;
-    operand            = 0;
+    accumulator         = 0;
+    InstructionCounter  = 0;
+    IndexRegister       = 0;
+    InstructionRegister = 0;
+    operationCode       = 0;
+    operand             = 0;
 }
 
 // function to load program from file or user input
@@ -68,16 +69,16 @@ void Memory::loadProgram(string fileName) {
 }
 
 // function to parse instruction into operation code and operand
-void Memory::parseInstruction(int instruction) {
-    operationCode = instruction / 10000; // Extract operation code (first two digits)
-    operand       = instruction % 10000; // Extract operand (last four digits)
+void Memory::parseInstruction(int InstructionRegister) {
+    operationCode = InstructionRegister / 10000; // Extract operation code (first two digits)
+    operand       = InstructionRegister % 10000; // Extract operand (last four digits)
 }
 
 // function to execute the current instruction
 void Memory::executeInstruction() {
     // Fetch the instruction from memory
-    int instruction = memory[InstructionCounter];
-    parseInstruction(instruction);
+    InstructionRegister = memory[InstructionCounter];
+    parseInstruction(InstructionRegister);
     InstructionCounter++; // Increment instruction counter
     // Execute the instruction based on the operation code
     switch (operationCode) {
@@ -209,20 +210,26 @@ void Memory::SUBTRACTX(int IndexRegister) {
 }
 
 void Memory::DIVIDE(int operand) {
-    if (memory[operand] != 0) {
-        accumulator /= memory[operand];
-    } else {
-        cout << "Error: Division by zero" << endl;
-        // Handle division by zero error appropriately
+    try {
+        if (memory[operand] != 0) {
+            accumulator /= memory[operand];
+        } else {
+            throw runtime_error("Division by zero");
+        }
+    } catch (const runtime_error &e) {
+        cout << "Error: " << e.what() << endl;
     }
 }
 
 void Memory::DIVIDEX(int IndexRegister) {
-    if (memory[IndexRegister] != 0) {
-        accumulator /= memory[IndexRegister];
-    } else {
-        cout << "Error: Division by zero" << endl;
-        // Handle division by zero error appropriately
+    try {
+        if (memory[IndexRegister] != 0) {
+            accumulator /= memory[IndexRegister];
+        } else {
+            throw runtime_error("Division by zero");
+        }
+    } catch (const runtime_error &e) {
+        cout << "Error: " << e.what() << endl;
     }
 }
 
