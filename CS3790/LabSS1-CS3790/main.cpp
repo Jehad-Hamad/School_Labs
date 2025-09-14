@@ -52,17 +52,14 @@ int main() {
 
     } else {
         cout << "Invalid input. Please enter Y or N." << endl;
+        return 1;
     }
     cout << endl;
     cout << "*** Program loading completed ***" << endl;
     cout << "*** Program execution begins  ***" << endl;
 
-    // Execute the loaded program
-    while (true) {
+    while (!memory->halted) {
         memory->executeInstruction();
-        if (memory->operationCode == 45) { // HALT operation code
-            break;
-        }
     }
     return 0;
 }

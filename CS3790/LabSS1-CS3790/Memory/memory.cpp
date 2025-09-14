@@ -1,4 +1,3 @@
-
 #include "memory.h"
 
 #include <fstream>
@@ -17,6 +16,7 @@ Memory::Memory() {
     InstructionRegister = 0;
     operationCode       = 0;
     operand             = 0;
+    halted              = false; // new flag
 }
 
 // function to load program from file or user input
@@ -53,7 +53,7 @@ void Memory::loadProgram(string fileName) {
             // Validate input is an integer within bounds
             while (true) {
                 int value = stoi(input);
-                if ((value > -999999) && (value < 999999)) {
+                if (value >= -999999 && value <= 999999) {
                     memory[address++] = value;
                     break;
                 } else {
@@ -70,89 +70,142 @@ void Memory::loadProgram(string fileName) {
 
 // function to parse instruction into operation code and operand
 void Memory::parseInstruction(int InstructionRegister) {
-    operationCode = InstructionRegister / 10000; // Extract operation code (first two digits)
-    operand       = InstructionRegister % 10000; // Extract operand (last four digits)
+    int absIR     = abs(InstructionRegister); // handle negative instructions safely
+    operationCode = absIR / 10000;            // Extract opcode (first 2 digits)
+    operand       = absIR % 10000;            // Extract operand (last 4 digits)
 }
 
 // function to execute the current instruction
 void Memory::executeInstruction() {
-    // Fetch the instruction from memory
+    // Fetch the instruction
     InstructionRegister = memory[InstructionCounter];
     parseInstruction(InstructionRegister);
-    InstructionCounter++; // Increment instruction counter
-    // Execute the instruction based on the operation code
+
     switch (operationCode) {
-    case 10:
+    case 10: // READ
         READ(operand);
+        InstructionCounter++;
         break;
-    case 11:
+
+    case 11: // WRITE
         WRITE(operand);
+        InstructionCounter++;
         break;
-    case 20:
+
+    case 20: // LOAD
         LOAD(operand);
+        InstructionCounter++;
         break;
-    case 21:
+
+    case 21: // LOADIM
         LOADIM(operand);
+        InstructionCounter++;
         break;
-    case 22:
+
+    case 22: // LOADX
         LOADX(operand);
+        InstructionCounter++;
         break;
-    case 23:
-        LOADIDX(IndexRegister);
+
+    case 23: // LOADIDX
+        LOADIDX();
+        InstructionCounter++;
         break;
-    case 25:
+
+    case 25: // STORE
         STORE(operand);
+        InstructionCounter++;
         break;
-    case 26:
-        STOREIDX(IndexRegister);
+
+    case 26: // STOREIDX
+        STOREIDX();
+        InstructionCounter++;
         break;
-    case 30:
+
+    case 30: // ADD
         ADD(operand);
+        InstructionCounter++;
         break;
-    case 31:
-        ADDX(IndexRegister);
+
+    case 31: // ADDX
+        ADDX();
+        InstructionCounter++;
         break;
-    case 32:
+
+    case 32: // SUBTRACT
         SUBTRACT(operand);
+        InstructionCounter++;
         break;
-    case 33:
-        SUBTRACTX(IndexRegister);
+
+    case 33: // SUBTRACTX
+        SUBTRACTX();
+        InstructionCounter++;
         break;
-    case 34:
+
+    case 34: // DIVIDE
         DIVIDE(operand);
+        InstructionCounter++;
         break;
-    case 35:
-        DIVIDEX(IndexRegister);
+
+    case 35: // DIVIDEX
+        DIVIDEX();
+        InstructionCounter++;
         break;
-    case 36:
+
+    case 36: // MULTIPLY
         MULTIPLY(operand);
+        InstructionCounter++;
         break;
-    case 37:
-        MULTIPLYX(IndexRegister);
+
+    case 37: // MULTIPLYX
+        MULTIPLYX();
+        InstructionCounter++;
         break;
-    case 38:
+
+    case 38: // INC
         INC();
+        InstructionCounter++;
         break;
-    case 39:
+
+    case 39: // DEC
         DEC();
+        InstructionCounter++;
         break;
-    case 40:
-        BRANCH(operand);
+
+    case 40: // BRANCH (always jump, no increment)
+        InstructionCounter = operand;
         break;
-    case 41:
-        BRANCHNEG(IndexRegister, operand);
+
+    case 41: // BRANCHNEG
+        if (accumulator < 0) {
+            InstructionCounter = operand; // jump
+        } else {
+            InstructionCounter++; // fall-through
+        }
         break;
-    case 42:
-        BRANCHZERO(IndexRegister, operand);
+
+    case 42: // BRANCHZERO
+        if (accumulator == 0) {
+            InstructionCounter = operand; // jump
+        } else {
+            InstructionCounter++; // fall-through
+        }
         break;
-    case 43:
+
+    case 43: // SWAP
         SWAP();
+        InstructionCounter++;
         break;
-    case 45:
+
+    case 45: // HALT
         HALT(operand);
+        halted = true; // stop execution
         break;
+
     default:
         cout << "Error: Invalid operation code " << operationCode << endl;
+        HALT(0);
+        halted = true;
         break;
     }
 }
@@ -161,12 +214,17 @@ void Memory::READ(int operand) {
     int input;
     cout << " ? ";
     cin >> input;
-    cout << endl;
+
+    while (input < -999999 || input > 999999) {
+        cout << "Out of bounds (-999999 to +999999). Try again: ";
+        cin >> input;
+    }
+
     memory[operand] = input;
 }
 
 void Memory::WRITE(int operand) {
-    cout << memory[operand] << endl;
+    cout << "Output: " << memory[operand] << endl;
 }
 
 void Memory::LOAD(int operand) {
@@ -181,7 +239,7 @@ void Memory::LOADX(int operand) {
     IndexRegister = memory[operand];
 }
 
-void Memory::LOADIDX(int IndexRegister) {
+void Memory::LOADIDX() {
     accumulator = memory[IndexRegister];
 }
 
@@ -189,7 +247,7 @@ void Memory::STORE(int operand) {
     memory[operand] = accumulator;
 }
 
-void Memory::STOREIDX(int IndexRegister) {
+void Memory::STOREIDX() {
     memory[IndexRegister] = accumulator;
 }
 
@@ -197,7 +255,7 @@ void Memory::ADD(int operand) {
     accumulator += memory[operand];
 }
 
-void Memory::ADDX(int IndexRegister) {
+void Memory::ADDX() {
     accumulator += memory[IndexRegister];
 }
 
@@ -205,31 +263,27 @@ void Memory::SUBTRACT(int operand) {
     accumulator -= memory[operand];
 }
 
-void Memory::SUBTRACTX(int IndexRegister) {
+void Memory::SUBTRACTX() {
     accumulator -= memory[IndexRegister];
 }
 
 void Memory::DIVIDE(int operand) {
-    try {
-        if (memory[operand] != 0) {
-            accumulator /= memory[operand];
-        } else {
-            throw runtime_error("Division by zero");
-        }
-    } catch (const runtime_error &e) {
-        cout << "Error: " << e.what() << endl;
+    if (memory[operand] != 0) {
+        accumulator /= memory[operand];
+    } else {
+        cout << "Error: Division by zero" << endl;
+        HALT(0);
+        halted = true;
     }
 }
 
-void Memory::DIVIDEX(int IndexRegister) {
-    try {
-        if (memory[IndexRegister] != 0) {
-            accumulator /= memory[IndexRegister];
-        } else {
-            throw runtime_error("Division by zero");
-        }
-    } catch (const runtime_error &e) {
-        cout << "Error: " << e.what() << endl;
+void Memory::DIVIDEX() {
+    if (memory[IndexRegister] != 0) {
+        accumulator /= memory[IndexRegister];
+    } else {
+        cout << "Error: Division by zero" << endl;
+        HALT(0);
+        halted = true;
     }
 }
 
@@ -237,32 +291,16 @@ void Memory::MULTIPLY(int operand) {
     accumulator *= memory[operand];
 }
 
-void Memory::MULTIPLYX(int IndexRegister) {
+void Memory::MULTIPLYX() {
     accumulator *= memory[IndexRegister];
 }
 
 void Memory::INC() {
-    accumulator++;
+    IndexRegister++;
 }
 
 void Memory::DEC() {
-    accumulator--;
-}
-
-void Memory::BRANCH(int operand) {
-    InstructionCounter = operand;
-}
-
-void Memory::BRANCHNEG(int accumulator, int operand) {
-    if (accumulator < 0) {
-        InstructionCounter = operand;
-    }
-}
-
-void Memory::BRANCHZERO(int accumulator, int operand) {
-    if (accumulator == 0) {
-        InstructionCounter = operand;
-    }
+    IndexRegister--;
 }
 
 void Memory::SWAP() {
