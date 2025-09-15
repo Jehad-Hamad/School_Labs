@@ -1,11 +1,6 @@
-#include "memory.h"
+#include "simpletronV2.h"
 
-#include <fstream>
-#include <iomanip>
-#include <iostream>
-using namespace std;
-
-Memory::Memory() {
+Simpletron::Simpletron() {
     // Initialize a 1D vector with size MEMORY_SIZE filled with zeros
     this->memory = vector<int>(MEMORY_SIZE, 0);
 
@@ -20,12 +15,12 @@ Memory::Memory() {
 }
 
 // function to load program from file or user input
-void Memory::loadProgram(string fileName) {
+void Simpletron::loadProgram(string fileName) {
     int address = 0;
 
     // Load program from file if filename is provided, else load from user input
     if (!fileName.empty()) {
-        ifstream file("programs/" + fileName);
+        ifstream file("Programs/" + fileName);
         // Check if file opened successfully
         if (!file.is_open()) {
             cout << "Error: Could not open file " << fileName << endl;
@@ -67,16 +62,21 @@ void Memory::loadProgram(string fileName) {
         }
     }
 }
-
 // function to parse instruction into operation code and operand
-void Memory::parseInstruction(int InstructionRegister) {
-    this->InstructionRegister = abs(InstructionRegister);                  // handle negative instructions safely
-    this->operationCode       = InstructionRegister / INSTRUCTION_DIVISOR; // Extract opcode (first 2 digits)
-    this->operand             = InstructionRegister % OPERAND_MODULO;      // Extract operand (last 4 digits)
+void Simpletron::parseInstruction(int InstructionRegister) {
+    if (InstructionRegister < 0) {
+        InstructionRegister = -1 * InstructionRegister;                  // Make it positive for parsing
+        this->operationCode = InstructionRegister / INSTRUCTION_DIVISOR; // Extract opcode (first 2 digits)
+        this->operand       = InstructionRegister % OPERAND_MODULO;      // Extract operand (last 4 digits)
+        this->operand       = -1 * this->operand;                        // Restore negative sign to operand
+    } else {
+        this->operationCode = InstructionRegister / INSTRUCTION_DIVISOR; // Extract opcode (first 2 digits)
+        this->operand       = InstructionRegister % OPERAND_MODULO;      // Extract operand (last 4 digits)
+    }
 }
 
 // function to execute the current instruction
-void Memory::executeInstruction() {
+void Simpletron::execute() {
     // Fetch the instruction
     this->InstructionRegister = this->memory[this->InstructionCounter];
     parseInstruction(InstructionRegister);
@@ -210,59 +210,58 @@ void Memory::executeInstruction() {
     }
 }
 
-void Memory::READ(int operand) {
+void Simpletron::READ(int operand) {
     int input;
     cout << " ? ";
     cin >> input;
-    
 
     this->memory[operand] = input;
 }
-void Memory::WRITE(int operand) {
+void Simpletron::WRITE(int operand) {
     cout << "Output: " << this->memory[operand] << endl;
 }
 
-void Memory::LOAD(int operand) {
+void Simpletron::LOAD(int operand) {
     this->accumulator = this->memory[operand];
 }
 
-void Memory::LOADIM(int operand) {
+void Simpletron::LOADIM(int operand) {
     this->accumulator = operand;
 }
 
-void Memory::LOADX(int operand) {
+void Simpletron::LOADX(int operand) {
     this->IndexRegister = this->memory[operand];
 }
 
-void Memory::LOADIDX() {
+void Simpletron::LOADIDX() {
     this->accumulator = this->memory[this->IndexRegister];
 }
 
-void Memory::STORE(int operand) {
+void Simpletron::STORE(int operand) {
     this->memory[operand] = this->accumulator;
 }
 
-void Memory::STOREIDX() {
+void Simpletron::STOREIDX() {
     this->memory[this->IndexRegister] = this->accumulator;
 }
 
-void Memory::ADD(int operand) {
+void Simpletron::ADD(int operand) {
     this->accumulator += this->memory[operand];
 }
 
-void Memory::ADDX() {
+void Simpletron::ADDX() {
     this->accumulator += this->memory[this->IndexRegister];
 }
 
-void Memory::SUBTRACT(int operand) {
+void Simpletron::SUBTRACT(int operand) {
     this->accumulator -= this->memory[operand];
 }
 
-void Memory::SUBTRACTX() {
+void Simpletron::SUBTRACTX() {
     this->accumulator -= this->memory[this->IndexRegister];
 }
 
-void Memory::DIVIDE(int operand) {
+void Simpletron::DIVIDE(int operand) {
     if (this->memory[operand] != 0) {
         this->accumulator /= this->memory[operand];
     } else {
@@ -272,7 +271,7 @@ void Memory::DIVIDE(int operand) {
     }
 }
 
-void Memory::DIVIDEX() {
+void Simpletron::DIVIDEX() {
     if (this->memory[this->IndexRegister] != 0) {
         this->accumulator /= this->memory[this->IndexRegister];
     } else {
@@ -282,29 +281,29 @@ void Memory::DIVIDEX() {
     }
 }
 
-void Memory::MULTIPLY(int operand) {
+void Simpletron::MULTIPLY(int operand) {
     this->accumulator *= this->memory[operand];
 }
 
-void Memory::MULTIPLYX() {
+void Simpletron::MULTIPLYX() {
     this->accumulator *= this->memory[this->IndexRegister];
 }
 
-void Memory::INC() {
+void Simpletron::INC() {
     this->IndexRegister++;
 }
 
-void Memory::DEC() {
+void Simpletron::DEC() {
     this->IndexRegister--;
 }
 
-void Memory::SWAP() {
+void Simpletron::SWAP() {
     int temp            = accumulator;
     this->accumulator   = this->IndexRegister;
     this->IndexRegister = temp;
 }
 
-void Memory::HALT(int operand) {
+void Simpletron::HALT(int operand) {
     // Extract start and end page from operand
     int startPage = operand / PAGE_SIZE;
     int endPage   = operand % PAGE_SIZE;
@@ -321,7 +320,7 @@ void Memory::HALT(int operand) {
     }
 }
 
-void Memory::printMemoryPage(int pageNumber) {
+void Simpletron::printMemoryPage(int pageNumber) {
     printMemoryPageHeader(pageNumber);
     printRegisters();
     cout << "MEMORY" << endl
@@ -336,7 +335,7 @@ void Memory::printMemoryPage(int pageNumber) {
     cout << endl;
 }
 
-void Memory::printMemoryPageHeader(int pageNumber) {
+void Simpletron::printMemoryPageHeader(int pageNumber) {
     cout << endl;
     cout << "PAGE # " << setfill('0') << setw(2) << pageNumber << endl
          << endl;
@@ -344,7 +343,7 @@ void Memory::printMemoryPageHeader(int pageNumber) {
          << endl;
 }
 
-void Memory::printRegisters() {
+void Simpletron::printRegisters() {
     // Print accumulator with appropriate formatting
     if (this->accumulator > 0) {
         cout << "accumulator         " << "+" << setfill('0') << setw(6)
@@ -367,11 +366,11 @@ void Memory::printRegisters() {
 
     // Print operand with appropriate formatting
     if (this->operand > 0) {
-        cout << "operand              " << "+" << setfill('0') << setw(4)
+        cout << "operand               " << "+" << setfill('0') << setw(4)
              << this->operand << endl
              << endl;
     } else if (this->operand < 0) {
-        cout << "operand              " << "-" << setfill('0') << setw(4)
+        cout << "operand               " << "-" << setfill('0') << setw(4)
              << -this->operand << endl
              << endl;
     } else {
@@ -380,13 +379,13 @@ void Memory::printRegisters() {
     }
 }
 
-void Memory::printMemoryColumnHeaders() {
+void Simpletron::printMemoryColumnHeaders() {
     for (int col = 0; col < MEMORY_COLUMNS; ++col) {
         cout << setw(7) << setfill(' ') << col << " ";
     }
 }
 
-void Memory::printMemoryRow(int row, int pageNumber) {
+void Simpletron::printMemoryRow(int row, int pageNumber) {
     // Print row header
     cout << setw(2) << row * MEMORY_COLUMNS << " ";
 
