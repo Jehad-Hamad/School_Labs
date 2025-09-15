@@ -6,17 +6,17 @@
 using namespace std;
 
 Memory::Memory() {
-    // Initialize a 1D vector with size 10000 filled with zeros
-    memory = vector<int>(10000, 0);
+    // Initialize a 1D vector with size MEMORY_SIZE filled with zeros
+    this->memory = vector<int>(MEMORY_SIZE, 0);
 
     // Initialize registers to zero
-    accumulator         = 0;
-    InstructionCounter  = 0;
-    IndexRegister       = 0;
-    InstructionRegister = 0;
-    operationCode       = 0;
-    operand             = 0;
-    halted              = false; // new flag
+    this->accumulator         = 0;
+    this->InstructionCounter  = 0;
+    this->IndexRegister       = 0;
+    this->InstructionRegister = 0;
+    this->operationCode       = 0;
+    this->operand             = 0;
+    this->halted              = false; // new flag
 }
 
 // function to load program from file or user input
@@ -25,7 +25,7 @@ void Memory::loadProgram(string fileName) {
 
     // Load program from file if filename is provided, else load from user input
     if (!fileName.empty()) {
-        ifstream file(fileName);
+        ifstream file("programs/" + fileName);
         // Check if file opened successfully
         if (!file.is_open()) {
             cout << "Error: Could not open file " << fileName << endl;
@@ -34,7 +34,7 @@ void Memory::loadProgram(string fileName) {
 
         int value;
         while (file >> value) {
-            memory[address++] = value;
+            this->memory[address++] = value;
         }
         file.close();
 
@@ -53,8 +53,8 @@ void Memory::loadProgram(string fileName) {
             // Validate input is an integer within bounds
             while (true) {
                 int value = stoi(input);
-                if (value >= -999999 && value <= 999999) {
-                    memory[address++] = value;
+                if (value >= MIN_VALUE && value <= MAX_VALUE) {
+                    this->memory[address++] = value;
                     break;
                 } else {
                     cout << endl;
@@ -70,140 +70,140 @@ void Memory::loadProgram(string fileName) {
 
 // function to parse instruction into operation code and operand
 void Memory::parseInstruction(int InstructionRegister) {
-    int absIR     = abs(InstructionRegister); // handle negative instructions safely
-    operationCode = absIR / 10000;            // Extract opcode (first 2 digits)
-    operand       = absIR % 10000;            // Extract operand (last 4 digits)
+    this->InstructionRegister = abs(InstructionRegister);                  // handle negative instructions safely
+    this->operationCode       = InstructionRegister / INSTRUCTION_DIVISOR; // Extract opcode (first 2 digits)
+    this->operand             = InstructionRegister % OPERAND_MODULO;      // Extract operand (last 4 digits)
 }
 
 // function to execute the current instruction
 void Memory::executeInstruction() {
     // Fetch the instruction
-    InstructionRegister = memory[InstructionCounter];
+    this->InstructionRegister = this->memory[this->InstructionCounter];
     parseInstruction(InstructionRegister);
 
-    switch (operationCode) {
+    switch (this->operationCode) {
     case 10: // READ
-        READ(operand);
-        InstructionCounter++;
+        READ(this->operand);
+        this->InstructionCounter++;
         break;
 
     case 11: // WRITE
-        WRITE(operand);
-        InstructionCounter++;
+        WRITE(this->operand);
+        this->InstructionCounter++;
         break;
 
     case 20: // LOAD
-        LOAD(operand);
-        InstructionCounter++;
+        LOAD(this->operand);
+        this->InstructionCounter++;
         break;
 
     case 21: // LOADIM
-        LOADIM(operand);
-        InstructionCounter++;
+        LOADIM(this->operand);
+        this->InstructionCounter++;
         break;
 
     case 22: // LOADX
-        LOADX(operand);
-        InstructionCounter++;
+        LOADX(this->operand);
+        this->InstructionCounter++;
         break;
 
     case 23: // LOADIDX
         LOADIDX();
-        InstructionCounter++;
+        this->InstructionCounter++;
         break;
 
     case 25: // STORE
-        STORE(operand);
-        InstructionCounter++;
+        STORE(this->operand);
+        this->InstructionCounter++;
         break;
 
     case 26: // STOREIDX
         STOREIDX();
-        InstructionCounter++;
+        this->InstructionCounter++;
         break;
 
     case 30: // ADD
-        ADD(operand);
-        InstructionCounter++;
+        ADD(this->operand);
+        this->InstructionCounter++;
         break;
 
     case 31: // ADDX
         ADDX();
-        InstructionCounter++;
+        this->InstructionCounter++;
         break;
 
     case 32: // SUBTRACT
-        SUBTRACT(operand);
-        InstructionCounter++;
+        SUBTRACT(this->operand);
+        this->InstructionCounter++;
         break;
 
     case 33: // SUBTRACTX
         SUBTRACTX();
-        InstructionCounter++;
+        this->InstructionCounter++;
         break;
 
     case 34: // DIVIDE
-        DIVIDE(operand);
-        InstructionCounter++;
+        DIVIDE(this->operand);
+        this->InstructionCounter++;
         break;
 
     case 35: // DIVIDEX
         DIVIDEX();
-        InstructionCounter++;
+        this->InstructionCounter++;
         break;
 
     case 36: // MULTIPLY
-        MULTIPLY(operand);
-        InstructionCounter++;
+        MULTIPLY(this->operand);
+        this->InstructionCounter++;
         break;
 
     case 37: // MULTIPLYX
         MULTIPLYX();
-        InstructionCounter++;
+        this->InstructionCounter++;
         break;
 
     case 38: // INC
         INC();
-        InstructionCounter++;
+        this->InstructionCounter++;
         break;
 
     case 39: // DEC
         DEC();
-        InstructionCounter++;
+        this->InstructionCounter++;
         break;
 
     case 40: // BRANCH (always jump, no increment)
-        InstructionCounter = operand;
+        this->InstructionCounter = this->operand;
         break;
 
     case 41: // BRANCHNEG
-        if (accumulator < 0) {
-            InstructionCounter = operand; // jump
+        if (this->accumulator < 0) {
+            this->InstructionCounter = this->operand; // jump
         } else {
-            InstructionCounter++; // fall-through
+            this->InstructionCounter++; // fall-through
         }
         break;
 
     case 42: // BRANCHZERO
-        if (accumulator == 0) {
-            InstructionCounter = operand; // jump
+        if (this->accumulator == 0) {
+            this->InstructionCounter = this->operand; // jump
         } else {
-            InstructionCounter++; // fall-through
+            this->InstructionCounter++; // fall-through
         }
         break;
 
     case 43: // SWAP
         SWAP();
-        InstructionCounter++;
+        this->InstructionCounter++;
         break;
 
     case 45: // HALT
-        HALT(operand);
+        HALT(this->operand);
         halted = true; // stop execution
         break;
 
     default:
-        cout << "Error: Invalid operation code " << operationCode << endl;
+        cout << "Error: Invalid operation code " << this->operationCode << endl;
         HALT(0);
         halted = true;
         break;
@@ -214,176 +214,192 @@ void Memory::READ(int operand) {
     int input;
     cout << " ? ";
     cin >> input;
+    
 
-    while (input < -999999 || input > 999999) {
-        cout << "Out of bounds (-999999 to +999999). Try again: ";
-        cin >> input;
-    }
-
-    memory[operand] = input;
+    this->memory[operand] = input;
 }
-
 void Memory::WRITE(int operand) {
-    cout << "Output: " << memory[operand] << endl;
+    cout << "Output: " << this->memory[operand] << endl;
 }
 
 void Memory::LOAD(int operand) {
-    accumulator = memory[operand];
+    this->accumulator = this->memory[operand];
 }
 
 void Memory::LOADIM(int operand) {
-    accumulator = operand;
+    this->accumulator = operand;
 }
 
 void Memory::LOADX(int operand) {
-    IndexRegister = memory[operand];
+    this->IndexRegister = this->memory[operand];
 }
 
 void Memory::LOADIDX() {
-    accumulator = memory[IndexRegister];
+    this->accumulator = this->memory[this->IndexRegister];
 }
 
 void Memory::STORE(int operand) {
-    memory[operand] = accumulator;
+    this->memory[operand] = this->accumulator;
 }
 
 void Memory::STOREIDX() {
-    memory[IndexRegister] = accumulator;
+    this->memory[this->IndexRegister] = this->accumulator;
 }
 
 void Memory::ADD(int operand) {
-    accumulator += memory[operand];
+    this->accumulator += this->memory[operand];
 }
 
 void Memory::ADDX() {
-    accumulator += memory[IndexRegister];
+    this->accumulator += this->memory[this->IndexRegister];
 }
 
 void Memory::SUBTRACT(int operand) {
-    accumulator -= memory[operand];
+    this->accumulator -= this->memory[operand];
 }
 
 void Memory::SUBTRACTX() {
-    accumulator -= memory[IndexRegister];
+    this->accumulator -= this->memory[this->IndexRegister];
 }
 
 void Memory::DIVIDE(int operand) {
-    if (memory[operand] != 0) {
-        accumulator /= memory[operand];
+    if (this->memory[operand] != 0) {
+        this->accumulator /= this->memory[operand];
     } else {
         cout << "Error: Division by zero" << endl;
         HALT(0);
-        halted = true;
+        this->halted = true;
     }
 }
 
 void Memory::DIVIDEX() {
-    if (memory[IndexRegister] != 0) {
-        accumulator /= memory[IndexRegister];
+    if (this->memory[this->IndexRegister] != 0) {
+        this->accumulator /= this->memory[this->IndexRegister];
     } else {
         cout << "Error: Division by zero" << endl;
         HALT(0);
-        halted = true;
+        this->halted = true;
     }
 }
 
 void Memory::MULTIPLY(int operand) {
-    accumulator *= memory[operand];
+    this->accumulator *= this->memory[operand];
 }
 
 void Memory::MULTIPLYX() {
-    accumulator *= memory[IndexRegister];
+    this->accumulator *= this->memory[this->IndexRegister];
 }
 
 void Memory::INC() {
-    IndexRegister++;
+    this->IndexRegister++;
 }
 
 void Memory::DEC() {
-    IndexRegister--;
+    this->IndexRegister--;
 }
 
 void Memory::SWAP() {
-    int temp      = accumulator;
-    accumulator   = IndexRegister;
-    IndexRegister = temp;
+    int temp            = accumulator;
+    this->accumulator   = this->IndexRegister;
+    this->IndexRegister = temp;
 }
 
 void Memory::HALT(int operand) {
-
     // Extract start and end page from operand
-    int startPage = operand / 100;
-    int endPage   = operand % 100;
+    int startPage = operand / PAGE_SIZE;
+    int endPage   = operand % PAGE_SIZE;
 
     // Validate page range
     if (startPage < 0 || endPage > 99 || startPage > endPage) {
         cout << "Error: Invalid page range for HALT" << endl;
         return;
     }
+
     // Print the memory dump for the specified range of pages
     for (int i = startPage; i <= endPage; i++) {
-        // Print page header
-        cout << endl;
-        cout << "PAGE # " << setfill('0') << setw(2) << i << endl
-             << endl;
-        cout << "REGISTERS:" << endl
-             << endl;
-
-        // Print register values with appropriate formatting
-        if (accumulator > 0) {
-            cout << "accumulator         " << "+" << setfill('0') << setw(6)
-                 << accumulator << endl;
-        } else if (accumulator < 0) {
-            cout << "accumulator         " << "-" << setfill('0') << setw(6)
-                 << -accumulator << endl;
-        } else {
-            cout << "accumulator          " << setfill('0') << setw(6) << accumulator
-                 << endl;
-        }
-        cout << "InstructionCounter   " << setfill('0') << setw(6) << InstructionCounter
-             << endl;
-        cout << "IndexRegister        " << setfill('0') << setw(6) << IndexRegister
-             << endl;
-        cout << "operationCode        " << setfill('0') << "    " << setw(2) << operationCode
-             << endl;
-        if (operand > 0) {
-            cout << "operand              " << "+" << setfill('0') << setw(4)
-                 << operand << endl
-                 << endl;
-        } else if (operand < 0) {
-            cout << "operand              " << "-" << setfill('0') << setw(4)
-                 << -operand << endl
-                 << endl;
-        } else {
-            cout << "operand              " << setfill('0') << "  " << setw(4) << operand << endl
-                 << endl;
-        }
-        cout << "MEMORY" << endl
-             << endl
-             << "   ";
-
-        // print column headers
-        for (int col = 0; col < 10; ++col) {
-            cout << setw(7) << setfill(' ') << col << " ";
-        }
-        cout << endl;
-
-        // Print memory contents in rows of 10
-        for (int row = 0; row < 10; ++row) {
-            // Print row header
-            cout << setw(2) << row * 10 << " ";
-            for (int col = 0; col < 10; ++col) {
-                int value = memory[row * 10 + col + i * 100];
-                if (value > 0) {
-                    cout << "+" << setfill('0') << setw(6) << value << " ";
-                } else if (value < 0) {
-                    cout << "-" << setfill('0') << setw(6) << -value << " ";
-                } else {
-                    cout << " " << setfill('0') << setw(6) << value << " ";
-                }
-            }
-            cout << endl;
-        }
-        cout << endl;
+        printMemoryPage(i);
     }
+}
+
+void Memory::printMemoryPage(int pageNumber) {
+    printMemoryPageHeader(pageNumber);
+    printRegisters();
+    cout << "MEMORY" << endl
+         << endl
+         << "   ";
+    printMemoryColumnHeaders();
+    cout << endl;
+
+    for (int row = 0; row < MEMORY_ROWS; ++row) {
+        printMemoryRow(row, pageNumber);
+    }
+    cout << endl;
+}
+
+void Memory::printMemoryPageHeader(int pageNumber) {
+    cout << endl;
+    cout << "PAGE # " << setfill('0') << setw(2) << pageNumber << endl
+         << endl;
+    cout << "REGISTERS:" << endl
+         << endl;
+}
+
+void Memory::printRegisters() {
+    // Print accumulator with appropriate formatting
+    if (this->accumulator > 0) {
+        cout << "accumulator         " << "+" << setfill('0') << setw(6)
+             << this->accumulator << endl;
+    } else if (this->accumulator < 0) {
+        cout << "accumulator         " << "-" << setfill('0') << setw(6)
+             << -this->accumulator << endl;
+    } else {
+        cout << "accumulator          " << setfill('0') << setw(6) << this->accumulator
+             << endl;
+    }
+
+    // Print other registers
+    cout << "InstructionCounter   " << setfill('0') << setw(6) << this->InstructionCounter
+         << endl;
+    cout << "IndexRegister        " << setfill('0') << setw(6) << this->IndexRegister
+         << endl;
+    cout << "operationCode        " << setfill('0') << "    " << setw(2) << this->operationCode
+         << endl;
+
+    // Print operand with appropriate formatting
+    if (this->operand > 0) {
+        cout << "operand              " << "+" << setfill('0') << setw(4)
+             << this->operand << endl
+             << endl;
+    } else if (this->operand < 0) {
+        cout << "operand              " << "-" << setfill('0') << setw(4)
+             << -this->operand << endl
+             << endl;
+    } else {
+        cout << "operand              " << setfill('0') << "  " << setw(4) << this->operand << endl
+             << endl;
+    }
+}
+
+void Memory::printMemoryColumnHeaders() {
+    for (int col = 0; col < MEMORY_COLUMNS; ++col) {
+        cout << setw(7) << setfill(' ') << col << " ";
+    }
+}
+
+void Memory::printMemoryRow(int row, int pageNumber) {
+    // Print row header
+    cout << setw(2) << row * MEMORY_COLUMNS << " ";
+
+    // Print memory values in this row
+    for (int col = 0; col < MEMORY_COLUMNS; ++col) {
+        int value = this->memory[row * MEMORY_COLUMNS + col + pageNumber * PAGE_SIZE];
+        if (value > 0) {
+            cout << "+" << setfill('0') << setw(6) << value << " ";
+        } else if (value < 0) {
+            cout << "-" << setfill('0') << setw(6) << -value << " ";
+        } else {
+            cout << " " << setfill('0') << setw(6) << value << " ";
+        }
+    }
+    cout << endl;
 }
