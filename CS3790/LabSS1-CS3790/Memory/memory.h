@@ -7,6 +7,17 @@ using namespace std;
 
 class Memory {
 
+  private:
+    // Constants for magic numbers
+    static const int MEMORY_SIZE         = 10000;
+    static const int PAGE_SIZE           = 100;
+    static const int INSTRUCTION_DIVISOR = 10000;
+    static const int OPERAND_MODULO      = 10000;
+    static const int MIN_VALUE           = -999999;
+    static const int MAX_VALUE           = 999999;
+    static const int MEMORY_COLUMNS      = 10;
+    static const int MEMORY_ROWS         = 10;
+
   public:
     int         accumulator;         // Accumulator register
     int         InstructionCounter;  // Instruction counter register
@@ -14,14 +25,18 @@ class Memory {
     int         InstructionRegister; // Instruction register
     int         operationCode;       // Operation code of the current instruction
     int         operand;             // Operand of the current instruction
-    bool        halted;              // vbool to stop excution
+    bool        halted;              // bool to stop execution
     vector<int> memory;              // 1D vector to represent memory
 
-    Memory();                               // Private constructor for singleton pattern
+    // Public interface methods
+    Memory();                               // Constructor
     void loadProgram(string fileName = ""); // Function to load program from file
-    void parseInstruction(int instruction); // Function to parse instruction into operation code and operand
     void executeInstruction();              // Function to execute the current instruction
 
+  private:
+    void parseInstruction(int instruction); // Function to parse instruction into operation code and operand
+
+    // SML Instruction implementations (private - called only by executeInstruction)
     void READ(int operand);  // 10: Read a word from the keyboard into a specific location in memory
     void WRITE(int operand); // 11: Write a word from a specific location in memory to the screen
 
@@ -43,11 +58,18 @@ class Memory {
     void INC();                 // 38: Increase index register by 1
     void DEC();                 // 39: Decrease index register by 1
 
-    void BRANCH(int operand);     // 40: Branch to a specific location in memory, location address is in operand
-    void BRANCHNEG(int operand);  // 41: Branch to a specific location in memory if accumulator is negative
-    void BRANCHZERO(int operand); // 42: Branch to a specific location in memory if the accumulator is zero
-    void SWAP();                  // 43: Swap contents of index register and accumulator
-    void HALT(int operand);       // 45: Halt program, dump register values and a range of pages
+    // 40: Branch to a specific location in memory, location address is in operand (handled in executeInstruction switch)
+    // 41: Branch to a specific location in memory if accumulator is negative (handled in executeInstruction switch)
+    // 42: Branch to a specific location in memory if the accumulator is zero (handled in executeInstruction switch)
+    void SWAP();            // 43: Swap contents of index register and accumulator
+    void HALT(int operand); // 45: Halt program, dump register values and a range of pages
+
+    // Helper methods for HALT functionality
+    void printRegisters();
+    void printMemoryPage(int pageNumber);
+    void printMemoryPageHeader(int pageNumber);
+    void printMemoryColumnHeaders();
+    void printMemoryRow(int row, int pageNumber);
 };
 
 #endif
