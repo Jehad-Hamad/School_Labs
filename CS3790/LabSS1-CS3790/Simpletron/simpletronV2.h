@@ -1,11 +1,14 @@
 #ifndef MEMORY_H
 #define MEMORY_H
 
+#include <fstream>
+#include <iomanip>
+#include <iostream>
 #include <string>
 #include <vector>
 using namespace std;
 
-class Memory {
+class Simpletron {
 
   private:
     // Constants for magic numbers
@@ -29,14 +32,14 @@ class Memory {
     vector<int> memory;              // 1D vector to represent memory
 
     // Public interface methods
-    Memory();                               // Constructor
+    Simpletron();                           // Constructor
     void loadProgram(string fileName = ""); // Function to load program from file
-    void executeInstruction();              // Function to execute the current instruction
+    void execute();                         // Function to execute the current instruction
 
   private:
-    void parseInstruction(int instruction); // Function to parse instruction into operation code and operand
+    void parseInstruction(int InstructionRegister); // Function to parse instruction into operation code and operand
 
-    // SML Instruction implementations (private - called only by executeInstruction)
+    // SML Instruction implementations (private - called only by execute)
     void READ(int operand);  // 10: Read a word from the keyboard into a specific location in memory
     void WRITE(int operand); // 11: Write a word from a specific location in memory to the screen
 
@@ -58,9 +61,9 @@ class Memory {
     void INC();                 // 38: Increase index register by 1
     void DEC();                 // 39: Decrease index register by 1
 
-    // 40: Branch to a specific location in memory, location address is in operand (handled in executeInstruction switch)
-    // 41: Branch to a specific location in memory if accumulator is negative (handled in executeInstruction switch)
-    // 42: Branch to a specific location in memory if the accumulator is zero (handled in executeInstruction switch)
+    // 40: Branch to a specific location in memory, location address is in operand (handled in execute switch)
+    // 41: Branch to a specific location in memory if accumulator is negative (handled in execute switch)
+    // 42: Branch to a specific location in memory if the accumulator is zero (handled in execute switch)
     void SWAP();            // 43: Swap contents of index register and accumulator
     void HALT(int operand); // 45: Halt program, dump register values and a range of pages
 
