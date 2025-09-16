@@ -37,7 +37,8 @@ class Simpletron {
     void execute();                         // Function to execute the current instruction
 
   private:
-    void parseInstruction(int InstructionRegister); // Function to parse instruction into operation code and operand
+    string getInstruction(string line);               // Function to get instruction part (before semicolon)
+    void   parseInstruction(int InstructionRegister); // Function to parse instruction into operation code and operand
 
     // SML Instruction implementations (private - called only by execute)
     void READ(int operand);  // 10: Read a word from the keyboard into a specific location in memory
