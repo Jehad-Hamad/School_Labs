@@ -14,10 +14,19 @@ Simpletron::Simpletron() {
     this->halted              = false; // new flag
 }
 
+// simple function to get just the instruction part (before semicolon)
+string Simpletron::getInstruction(string line) {
+    size_t pos = line.find(';');
+    if (pos != string::npos) {
+        return line.substr(0, pos); // return everything before the semicolon
+    }
+    return line; // no semicolon found, return the whole line
+}
+
 // function to load program from file or user input
 void Simpletron::loadProgram(string fileName) {
-    int address = 0;
-
+    int    address = 0;
+    string input;
     // Load program from file if filename is provided, else load from user input
     if (!fileName.empty()) {
         ifstream file("Programs/" + fileName);
@@ -26,16 +35,16 @@ void Simpletron::loadProgram(string fileName) {
             fatalError("Could not open file " + fileName);
             return;
         }
-
-        int value;
-        while (file >> value) {
-            this->memory[address++] = value;
+        while (getline(file, input)) {
+            string instruction = getInstruction(input);
+            if (!instruction.empty()) {
+                int value               = stoi(instruction);
+                this->memory[address++] = value;
+            }
         }
         file.close();
 
     } else {
-        string input;
-
         while (true) {
             cout << setfill('0') << setw(6) << address << " ? ";
             cin >> input;
@@ -219,7 +228,8 @@ void Simpletron::READ(int operand) {
     this->memory[operand] = input;
 }
 void Simpletron::WRITE(int operand) {
-    cout << "Output: " << this->memory[operand] << endl;
+    cout << endl
+         << "Output: " << this->memory[operand] << endl;
 }
 
 void Simpletron::LOAD(int operand) {
@@ -297,7 +307,7 @@ void Simpletron::DEC() {
 }
 
 void Simpletron::SWAP() {
-    int temp            = accumulator;
+    int temp            = this->accumulator;
     this->accumulator   = this->IndexRegister;
     this->IndexRegister = temp;
 }
