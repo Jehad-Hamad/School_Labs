@@ -3,12 +3,7 @@
 #include "Simpletron/simpletronV2.h"
 #include "Startup/startup.h"
 
-#include <cctype>
-#include <fstream>
-#include <iomanip>
 #include <iostream>
-#include <string>
-#include <vector>
 
 using namespace std;
 
