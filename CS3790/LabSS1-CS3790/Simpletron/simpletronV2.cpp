@@ -23,7 +23,7 @@ void Simpletron::loadProgram(string fileName) {
         ifstream file("Programs/" + fileName);
         // Check if file opened successfully
         if (!file.is_open()) {
-            cout << "Error: Could not open file " << fileName << endl;
+            fatalError("Could not open file " + fileName);
             return;
         }
 
@@ -48,7 +48,7 @@ void Simpletron::loadProgram(string fileName) {
             // Validate input is an integer within bounds
             while (true) {
                 int value = stoi(input);
-                if (value >= MIN_VALUE && value <= MAX_VALUE) {
+                if (!checkOverflow(value)) {
                     this->memory[address++] = value;
                     break;
                 } else {
@@ -203,9 +203,7 @@ void Simpletron::execute() {
         break;
 
     default:
-        cout << "Error: Invalid operation code " << this->operationCode << endl;
-        HALT(0);
-        halted = true;
+        fatalError("Invalid operation code " + to_string(this->operationCode));
         break;
     }
 }
@@ -214,7 +212,10 @@ void Simpletron::READ(int operand) {
     int input;
     cout << " ? ";
     cin >> input;
-
+    if (checkOverflow(input)) {
+        fatalError("Input out of bounds: " + to_string(input));
+        return;
+    }
     this->memory[operand] = input;
 }
 void Simpletron::WRITE(int operand) {
@@ -265,9 +266,7 @@ void Simpletron::DIVIDE(int operand) {
     if (this->memory[operand] != 0) {
         this->accumulator /= this->memory[operand];
     } else {
-        cout << "Error: Division by zero" << endl;
-        HALT(0);
-        this->halted = true;
+        fatalError("Division by zero");
     }
 }
 
@@ -401,4 +400,28 @@ void Simpletron::printMemoryRow(int row, int pageNumber) {
         }
     }
     cout << endl;
+}
+
+void Simpletron::fatalError(string errorMessage) {
+    cout << endl
+         << "*** FATAL ERROR ***" << endl;
+    cout << "Error: " << errorMessage << endl;
+    cout << "*** CORE DUMP ***" << endl;
+    dumpCore();
+    cout << "*** PROGRAM HALTED ***" << endl;
+    this->halted = true;
+}
+
+bool Simpletron::checkOverflow(long result) {
+    return (result < MIN_VALUE || result > MAX_VALUE);
+}
+bool Simpletron::checkMemoryBounds(int address) {
+    return (address >= 0 && address < MEMORY_SIZE);
+}
+bool Simpletron::checkIndexRegisterOverflow(int result) {
+    return (result < 0 || result > MEMORY_SIZE);
+}
+void Simpletron::dumpCore() {
+    // Dump all memory pages (0) for complete core dump
+    printMemoryPage(0);
 }

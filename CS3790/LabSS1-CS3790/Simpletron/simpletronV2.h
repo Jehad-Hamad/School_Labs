@@ -12,14 +12,14 @@ class Simpletron {
 
   private:
     // Constants for magic numbers
-    static const int MEMORY_SIZE         = 10000;
-    static const int PAGE_SIZE           = 100;
-    static const int INSTRUCTION_DIVISOR = 10000;
-    static const int OPERAND_MODULO      = 10000;
-    static const int MIN_VALUE           = -999999;
-    static const int MAX_VALUE           = 999999;
-    static const int MEMORY_COLUMNS      = 10;
-    static const int MEMORY_ROWS         = 10;
+    const int MEMORY_SIZE         = 10000;
+    const int PAGE_SIZE           = 100;
+    const int INSTRUCTION_DIVISOR = 10000;
+    const int OPERAND_MODULO      = 10000;
+    const int MIN_VALUE           = -999999;
+    const int MAX_VALUE           = 999999;
+    const int MEMORY_COLUMNS      = 10;
+    const int MEMORY_ROWS         = 10;
 
   public:
     int         accumulator;         // Accumulator register
@@ -73,6 +73,13 @@ class Simpletron {
     void printMemoryPageHeader(int pageNumber);
     void printMemoryColumnHeaders();
     void printMemoryRow(int row, int pageNumber);
+
+    // Error handling
+    void fatalError(string message);
+    bool checkOverflow(long value);
+    bool checkMemoryBounds(int address);
+    bool checkIndexRegisterOverflow(int result);
+    void dumpCore();
 };
 
 #endif
