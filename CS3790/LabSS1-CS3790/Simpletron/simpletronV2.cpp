@@ -425,20 +425,14 @@ void Simpletron::MULTIPLYX() {
 }
 
 void Simpletron::INC() {
-    // Cant access Negative memory
-    if (!checkMemoryBounds(this->IndexRegister+1)) {
-        opcodeError(38, "IndexRegister overflow", "IndexRegister value " + to_string(this->IndexRegister) + " would exceed memory bounds (0-9999) after increment");
-        return;
-    }
+    // Allow IndexRegister to hold any value, including negative
+    // Memory access validation happens in LOADIDX/STOREIDX/etc.
     this->IndexRegister++;
 }
 
 void Simpletron::DEC() {
-    // Check if decrement would make IndexRegister negative
-    if (this->IndexRegister <= 0) {
-        opcodeError(39, "IndexRegister underflow", "IndexRegister value " + to_string(this->IndexRegister) + " would become negative after decrement");
-        return;
-    }
+    // Allow IndexRegister to hold any value, including negative
+    // Memory access validation happens in LOADIDX/STOREIDX/etc.
     this->IndexRegister--;
 }
 
