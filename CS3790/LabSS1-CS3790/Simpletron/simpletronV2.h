@@ -77,9 +77,9 @@ class Simpletron {
 
     // Error handling
     void fatalError(string message);
+    void opcodeError(int opcode, string errorType, string details);
     bool checkOverflow(long value);
     bool checkMemoryBounds(int address);
-    bool checkIndexRegisterOverflow(int result);
     void dumpCore();
 };
 

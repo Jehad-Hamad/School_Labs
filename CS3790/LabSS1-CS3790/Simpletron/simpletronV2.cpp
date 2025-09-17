@@ -32,13 +32,21 @@ void Simpletron::loadProgram(string fileName) {
         ifstream file("Programs/" + fileName);
         // Check if file opened successfully
         if (!file.is_open()) {
-            fatalError("Could not open file " + fileName);
+            fatalError("Could not open file:" + fileName);
             return;
         }
         while (getline(file, input)) {
             string instruction = getInstruction(input);
             if (!instruction.empty()) {
-                int value               = stoi(instruction);
+                int value = stoi(instruction);
+                if (checkOverflow(value)) {
+                    fatalError("Instruction out of bounds: " + to_string(value));
+                    return;
+                }
+                if (address >= MEMORY_SIZE) {
+                    fatalError("Program too large to fit in memory");
+                    return;
+                }
                 this->memory[address++] = value;
             }
         }
@@ -50,14 +58,14 @@ void Simpletron::loadProgram(string fileName) {
             cin >> input;
 
             // Check if the user wants to execute the program
-            if (input == "GO" || input == "go" || input == "Go") {
+            if (input == "GO" || input == "go" || input == "Go" || input == "gO!") {
                 break;
             }
 
             // Validate input is an integer within bounds
             while (true) {
                 int value = stoi(input);
-                if (!checkOverflow(value)) {
+                if (checkOverflow(value)) {
                     this->memory[address++] = value;
                     break;
                 } else {
@@ -182,11 +190,19 @@ void Simpletron::execute() {
         break;
 
     case 40: // BRANCH (always jump, no increment)
+        if (!checkMemoryBounds(this->operand)) {
+            opcodeError(40, "Branch target out of bounds", "Target address " + to_string(this->operand) + " is out of memory bounds (0-9999)");
+            return;
+        }
         this->InstructionCounter = this->operand;
         break;
 
     case 41: // BRANCHNEG
         if (this->accumulator < 0) {
+            if (!checkMemoryBounds(this->operand)) {
+                opcodeError(41, "Branch target out of bounds", "Target address " + to_string(this->operand) + " is out of memory bounds (0-9999)");
+                return;
+            }
             this->InstructionCounter = this->operand; // jump
         } else {
             this->InstructionCounter++; // fall-through
@@ -195,6 +211,10 @@ void Simpletron::execute() {
 
     case 42: // BRANCHZERO
         if (this->accumulator == 0) {
+            if (!checkMemoryBounds(this->operand)) {
+                opcodeError(42, "Branch target out of bounds", "Target address " + to_string(this->operand) + " is out of memory bounds (0-9999)");
+                return;
+            }
             this->InstructionCounter = this->operand; // jump
         } else {
             this->InstructionCounter++; // fall-through
@@ -212,97 +232,213 @@ void Simpletron::execute() {
         break;
 
     default:
-        fatalError("Invalid operation code " + to_string(this->operationCode));
+        opcodeError(this->operationCode, "Invalid operation code", "Operation code " + to_string(this->operationCode) + " is not recognized");
         break;
     }
 }
 
 void Simpletron::READ(int operand) {
+    // Cant access Negative memory
+    if (!checkMemoryBounds(operand)) {
+        opcodeError(10, "Memory bounds violation", "Operand " + to_string(operand) + " is out of memory bounds (0-9999)");
+        return;
+    }
     int input;
     cout << " ? ";
     cin >> input;
     if (checkOverflow(input)) {
-        fatalError("Input out of bounds: " + to_string(input));
+        opcodeError(10, "Input overflow", "Input value " + to_string(input) + " exceeds valid range (-999999 to 999999)");
         return;
     }
     this->memory[operand] = input;
 }
 void Simpletron::WRITE(int operand) {
+    // Cant access Negative memory
+    if (!checkMemoryBounds(operand)) {
+        opcodeError(11, "Memory bounds violation", "Operand " + to_string(operand) + " is out of memory bounds (0-9999)");
+        return;
+    }
     cout << endl
          << "Output: " << this->memory[operand] << endl;
 }
 
 void Simpletron::LOAD(int operand) {
+    // Cant access Negative memory
+    if (!checkMemoryBounds(operand)) {
+        opcodeError(20, "Memory bounds violation", "Operand " + to_string(operand) + " is out of memory bounds (0-9999)");
+        return;
+    }
     this->accumulator = this->memory[operand];
 }
 
 void Simpletron::LOADIM(int operand) {
+    // Load immediate value directly into accumulator
+    // No overflow check needed - operand is limited to 4 digits (0-9999) by instruction format
     this->accumulator = operand;
 }
 
 void Simpletron::LOADX(int operand) {
+    // Cant access Negative memory
+    if (!checkMemoryBounds(operand)) {
+        opcodeError(22, "Memory bounds violation", "Operand " + to_string(operand) + " is out of memory bounds (0-9999)");
+        return;
+    }
     this->IndexRegister = this->memory[operand];
 }
 
 void Simpletron::LOADIDX() {
+    // Cant access Negative memory
+    if (!checkMemoryBounds(this->IndexRegister)) {
+        opcodeError(23, "IndexRegister bounds violation", "IndexRegister value " + to_string(this->IndexRegister) + " is out of memory bounds (0-9999)");
+        return;
+    }
     this->accumulator = this->memory[this->IndexRegister];
 }
 
 void Simpletron::STORE(int operand) {
+    // Cant access Negative memory
+    if (!checkMemoryBounds(operand)) {
+        opcodeError(25, "Memory bounds violation", "Operand " + to_string(operand) + " is out of memory bounds (0-9999)");
+        return;
+    }
     this->memory[operand] = this->accumulator;
 }
 
 void Simpletron::STOREIDX() {
+    // Cant access Negative memory
+    if (!checkMemoryBounds(this->IndexRegister)) {
+        opcodeError(26, "IndexRegister bounds violation", "IndexRegister value " + to_string(this->IndexRegister) + " is out of memory bounds (0-9999)");
+        return;
+    }
     this->memory[this->IndexRegister] = this->accumulator;
 }
 
 void Simpletron::ADD(int operand) {
+    // Cant access Negative memory
+    if (!checkMemoryBounds(operand)) {
+        opcodeError(30, "Memory bounds violation", "Operand " + to_string(operand) + " is out of memory bounds (0-9999)");
+        return;
+    }
+    if (checkOverflow(this->accumulator + this->memory[operand])) {
+        opcodeError(30, "Arithmetic overflow", "Result " + to_string(this->accumulator + this->memory[operand]) + " exceeds valid range (-999999 to 999999)");
+        return;
+    }
     this->accumulator += this->memory[operand];
 }
 
 void Simpletron::ADDX() {
+    // Cant access Negative memory
+    if (!checkMemoryBounds(this->IndexRegister)) {
+        opcodeError(31, "IndexRegister bounds violation", "IndexRegister value " + to_string(this->IndexRegister) + " is out of memory bounds (0-9999)");
+        return;
+    }
+    // Overflow
+    if (checkOverflow(this->accumulator + this->memory[this->IndexRegister])) {
+        opcodeError(31, "Arithmetic overflow", "Result " + to_string(this->accumulator + this->memory[this->IndexRegister]) + " exceeds valid range (-999999 to 999999)");
+        return;
+    }
     this->accumulator += this->memory[this->IndexRegister];
 }
 
 void Simpletron::SUBTRACT(int operand) {
+    // Cant access Negative memory
+    if (!checkMemoryBounds(operand)) {
+        opcodeError(32, "Memory bounds violation", "Operand " + to_string(operand) + " is out of memory bounds (0-9999)");
+        return;
+    }
+    // Overflow
+    if (checkOverflow(this->accumulator - this->memory[operand])) {
+        opcodeError(32, "Arithmetic overflow", "Result " + to_string(this->accumulator - this->memory[operand]) + " exceeds valid range (-999999 to 999999)");
+        return;
+    }
     this->accumulator -= this->memory[operand];
 }
 
 void Simpletron::SUBTRACTX() {
+    // Cant access Negative memory
+    if (!checkMemoryBounds(this->IndexRegister)) {
+        opcodeError(33, "IndexRegister bounds violation", "IndexRegister value " + to_string(this->IndexRegister) + " is out of memory bounds (0-9999)");
+        return;
+    }
+    // Overflow
+    if (checkOverflow(this->accumulator - this->memory[this->IndexRegister])) {
+        opcodeError(33, "Arithmetic overflow", "Result " + to_string(this->accumulator - this->memory[this->IndexRegister]) + " exceeds valid range (-999999 to 999999)");
+        return;
+    }
     this->accumulator -= this->memory[this->IndexRegister];
 }
 
 void Simpletron::DIVIDE(int operand) {
+    // Cant access Negative memory
+    if (!checkMemoryBounds(operand)) {
+        opcodeError(34, "Memory bounds violation", "Operand " + to_string(operand) + " is out of memory bounds (0-9999)");
+        return;
+    }
+    // Division by zero
     if (this->memory[operand] != 0) {
         this->accumulator /= this->memory[operand];
     } else {
-        fatalError("Division by zero");
+        opcodeError(34, "Division by zero", "Cannot divide by zero at memory location " + to_string(operand));
     }
 }
 
 void Simpletron::DIVIDEX() {
+    // Cant access Negative memory
+    if (!checkMemoryBounds(this->IndexRegister)) {
+        opcodeError(35, "IndexRegister bounds violation", "IndexRegister value " + to_string(this->IndexRegister) + " is out of memory bounds (0-9999)");
+        return;
+    }
+    // Division by zero
     if (this->memory[this->IndexRegister] != 0) {
         this->accumulator /= this->memory[this->IndexRegister];
     } else {
-        cout << "Error: Division by zero" << endl;
-        HALT(0);
-        this->halted = true;
+        opcodeError(35, "Division by zero", "Cannot divide by zero at memory location " + to_string(this->IndexRegister));
     }
 }
 
 void Simpletron::MULTIPLY(int operand) {
+    // Cant access Negative memory
+    if (!checkMemoryBounds(operand)) {
+        opcodeError(36, "Memory bounds violation", "Operand " + to_string(operand) + " is out of memory bounds (0-9999)");
+        return;
+    }
+    // Overflow
+    if (checkOverflow(this->accumulator * this->memory[operand])) {
+        opcodeError(36, "Arithmetic overflow", "Result " + to_string(this->accumulator * this->memory[operand]) + " exceeds valid range (-999999 to 999999)");
+        return;
+    }
     this->accumulator *= this->memory[operand];
 }
 
 void Simpletron::MULTIPLYX() {
+    // Cant access Negative memory
+    if (!checkMemoryBounds(this->IndexRegister)) {
+        opcodeError(37, "IndexRegister bounds violation", "IndexRegister value " + to_string(this->IndexRegister) + " is out of memory bounds (0-9999)");
+        return;
+    }
+    // Overflow
+    if (checkOverflow(this->accumulator * this->memory[this->IndexRegister])) {
+        opcodeError(37, "Arithmetic overflow", "Result " + to_string(this->accumulator * this->memory[this->IndexRegister]) + " exceeds valid range (-999999 to 999999)");
+        return;
+    }
     this->accumulator *= this->memory[this->IndexRegister];
 }
 
 void Simpletron::INC() {
+    // Cant access Negative memory
+    if (!checkMemoryBounds(this->IndexRegister+1)) {
+        opcodeError(38, "IndexRegister overflow", "IndexRegister value " + to_string(this->IndexRegister) + " would exceed memory bounds (0-9999) after increment");
+        return;
+    }
     this->IndexRegister++;
 }
 
 void Simpletron::DEC() {
+    // Check if decrement would make IndexRegister negative
+    if (this->IndexRegister <= 0) {
+        opcodeError(39, "IndexRegister underflow", "IndexRegister value " + to_string(this->IndexRegister) + " would become negative after decrement");
+        return;
+    }
     this->IndexRegister--;
 }
 
@@ -422,14 +558,22 @@ void Simpletron::fatalError(string errorMessage) {
     this->halted = true;
 }
 
+void Simpletron::opcodeError(int opcode, string errorType, string details) {
+    cout << endl
+         << "*** FATAL ERROR ***" << endl;
+    cout << "Error in Opcode " << setfill('0') << setw(2) << opcode << ": " << errorType << endl;
+    cout << "Details: " << details << endl;
+    cout << "*** CORE DUMP ***" << endl;
+    dumpCore();
+    cout << "*** PROGRAM HALTED ***" << endl;
+    this->halted = true;
+}
+
 bool Simpletron::checkOverflow(long result) {
     return (result < MIN_VALUE || result > MAX_VALUE);
 }
 bool Simpletron::checkMemoryBounds(int address) {
     return (address >= 0 && address < MEMORY_SIZE);
-}
-bool Simpletron::checkIndexRegisterOverflow(int result) {
-    return (result < 0 || result > MEMORY_SIZE);
 }
 void Simpletron::dumpCore() {
     // Dump all memory pages (0) for complete core dump
