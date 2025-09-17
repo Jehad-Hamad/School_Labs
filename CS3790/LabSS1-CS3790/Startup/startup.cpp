@@ -35,7 +35,7 @@ void loadProgram(Simpletron *memory, char answer) {
         memory->loadProgram();
 
     } else {
-        cout << "Invalid input. Please enter Y or N." << endl;
+        fatalError("Invalid input. Please enter Y or N.");
         return;
     }
 }
