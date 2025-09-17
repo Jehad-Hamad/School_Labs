@@ -9,10 +9,6 @@ We are implmenting simpletron instuction architecture in a virtual machine.
 
 ## Building the Executable
 
-### Prerequisites
-- C++ compiler with C++11 support (g++ recommended)
-
-
 ### Build Commands
 
 To compile the program:
