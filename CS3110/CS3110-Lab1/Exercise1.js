@@ -32,7 +32,7 @@ function main() {
     console.log('Failed to intialize shaders.');
     return;
   }
-  // // Get the storage location of a_Position
+  // Get the storage location of a_Position
   var a_Position = gl.getAttribLocation(gl.program, 'a_Position');
   if (a_Position < 0) {
     console.log('Failed to get the storage location of a_Position');
@@ -53,7 +53,7 @@ function main() {
   gl.clear(gl.COLOR_BUFFER_BIT);
 
   // Draw a point
-  drawPoints(gl, a_Position, u_FragColor);
+  drawSmile(gl, a_Position, u_FragColor);
 }
 var g_points = [
   //left eye
@@ -90,7 +90,7 @@ var g_points = [
   0.45,   0.00,
 ];
 
-function drawPoints(gl, a_Position, u_FragColor) {
+function drawSmile(gl, a_Position, u_FragColor) {
   // Write the positions of vertices to a vertex shader
   var len = g_points.length;
 
@@ -102,7 +102,7 @@ function drawPoints(gl, a_Position, u_FragColor) {
 
     // Pass the color of a point to u_FragColor variable
     gl.uniform4f(u_FragColor, Math.random(), Math.random(), Math.random(), 1.0);
-    
+
     // Draw
     gl.drawArrays(gl.POINTS, 0, 1);
   }
