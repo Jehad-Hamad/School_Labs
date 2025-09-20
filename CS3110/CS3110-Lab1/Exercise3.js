@@ -14,6 +14,12 @@ var FSHADER_SOURCE =
   '  gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);\n' + // Set the point color
   '}\n';
 
+var FSHADER_SOURCE2 =
+  'precision mediump float;\n' + 
+  'uniform vec4 u_FragColor;\n' + // uniform variable
+  'void main() {\n' +
+  '  gl_FragColor = u_FragColor;\n' + // Set the point color
+  '}\n';
 function main(){
     // Retrieve <canvas> element
     var canvas1 = document.getElementById('webgl1');
@@ -36,7 +42,7 @@ function main(){
     console.log('Failed to intialize shaders.');
     return;
     }
-    if (!initShaders(gl2, VSHADER_SOURCE, FSHADER_SOURCE)) {
+    if (!initShaders(gl2, VSHADER_SOURCE, FSHADER_SOURCE2)) {
     console.log('Failed to intialize shaders.');
     return;
     }
@@ -52,7 +58,14 @@ function main(){
     console.log('Failed to get the storage location of a_Position');
     return;
     }
-    
+
+    // Get the storage location of u_FragColor2 
+    u_FragColor2 = gl2.getUniformLocation(gl2.program, 'u_FragColor')
+    if (u_FragColor2 < 0) {
+    console.log('Failed to get the storage location of u_FragColor2');
+    return;
+    }
+
     // Specify the color for clearing <canvas>
     gl1.clearColor(0.0, 0.0, 0.0, 1.0);
     gl1.clear(gl1.COLOR_BUFFER_BIT);
@@ -62,13 +75,13 @@ function main(){
     gl2.clear(gl2.COLOR_BUFFER_BIT);
 
     // Draw
-    draw(gl1, a_Position1, g_points[0]); // draw square
-    draw(gl2, a_Position2, g_points[1]); // draw triangle
+    drawSolid(gl1, a_Position1, g_points[0]); // draw solid
+    drawGrad(gl2, a_Position2, u_FragColor2, g_points[1]); // draw gradient
 }
 
 var g_points = [
-    // draw square
     [
+    // draw square
         // TOP BORDER
         -0.50, 0.20,
         -0.45, 0.20,
@@ -111,8 +124,7 @@ var g_points = [
         0.00,   0.10,
         0.00,   0.15
     ],
-
-    // draw triangle
+      // draw triangle
     [
          // tip
          0.00, 0.20,
@@ -137,23 +149,38 @@ var g_points = [
          0.10, 0.10,
          0.15, 0.05,
          0.20, 0.00,
-
-
     ],
 ];
 
-// Function to draw
-function draw(gl, a_Position, array){
+// Function to draw with solid
+function drawSolid(gl1, a_Position1, g_points){
     // Get length of array
-    var len = array.length;
+    var len = g_points.length;
 
     // Loop to draw points
     for(var i = 0; i < len; i+=2){
 
     // Pass the position of a point to a_Position variable
-    gl.vertexAttrib3f(a_Position, array[i], array[i+1], 0.0);
+    gl1.vertexAttrib3f(a_Position1, g_points[i], g_points[i+1], 0.0);
 
     // Draw
-    gl.drawArrays(gl.POINTS, 0, 1)
+    gl1.drawArrays(gl1.POINTS, 0, 1)
+    }
+}
+
+// Function to draw with gradient
+function drawGrad(gl2, a_Position2, u_FragColor2, g_points){
+    // Get length of array
+    var len = g_points.length;
+
+    // Loop to draw points
+    for(var i = 0; i < len; i+=2){
+    let t = i / len;
+    // Pass the position of a point to a_Position variable
+    gl2.vertexAttrib3f(a_Position2, g_points[i], g_points[i+1], 0.0);
+    gl2.uniform4f(u_FragColor2, t, t - 1, 0.0, 1.0);
+
+    // Draw
+    gl2.drawArrays(gl2.POINTS, 0, 1)
     }
 }
