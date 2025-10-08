@@ -1,10 +1,10 @@
 CC=g++
-CC_FLAGS= -std=c++11 -Wall -Wextra -Werror -pedantic 
+CC_FLAGS= -std=c++11 -Wall -Wextra -pedantic 
 all: worker.cpp
-	$(CC) $(CC_FLAGS) $^ -o a.out
+	$(CC) $(CC_FLAGS) $^ -o worker.out
 
 run: 
-	./a.out 
+	./worker.out 
 
 check: worker.cpp
 	cppcheck $^

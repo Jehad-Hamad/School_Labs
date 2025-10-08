@@ -1,8 +1,6 @@
 #include "worker.h"
 
 int main(int argc, char* argv[]) {
-    cout << "This is my count: " << argc << endl;
-
     // Start and end from command line
     int start = stoi(argv[1]);
     int end = stoi(argv[2]);
@@ -11,7 +9,7 @@ int main(int argc, char* argv[]) {
     primes(start, end);
 
     // Build file name from range
-    string fileName = "results/" + to_string(start) + "to" + to_string(end) + ".txt";
+    string fileName = "Results/" + to_string(start) + "to" + to_string(end) + ".txt";
 
     // Write results to file (create/overwrite each time)
     if (!(oss.str().empty())) {
