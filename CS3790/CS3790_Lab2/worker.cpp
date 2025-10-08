@@ -1,43 +1,54 @@
-#include <cmath>
-#include <iostream>
-#include <vector>
-
-using namespace std;
-
-vector<int> primes(int, int);
+#include "worker.h"
 
 int main(int argc, char* argv[]) {
-    cout << "My argc is " << argc << endl;
+    cout << "This is my count: " << argc << endl;
 
-    vector<int> vec = primes(stoi(argv[1]), stoi(argv[2]));
-    for (auto i : vec) {
-        cout << i << " ";
+    // Start and end from command line
+    int start = stoi(argv[1]);
+    int end = stoi(argv[2]);
+
+    // Call the prime function
+    primes(start, end);
+
+    // Build file name from range
+    string fileName = "results/" + to_string(start) + "to" + to_string(end) + ".txt";
+
+    // Write results to file (create/overwrite each time)
+    if (!(oss.str().empty())) {
+        ofstream file(fileName);
+        file << oss.str();
+        file.close();
+        return 0;
     }
-    cout << endl;
 }
 
 // Function to find the list of prime numbers
 // Sieve of Eratosthenes
-vector<int> primes(int start, int end) {
-    vector<bool> A(end, true);             // Bool vector of all true
-    for (int i = 2; i < sqrt(end); i++) {  // Go from 2 -> sqrt(n)
+void primes(int start, int end) {
+    // Invaild range
+    if (start > end) return;
+
+    // No primes less than 2 and negative end value
+    if (end < 2) return;
+
+    // Start at 2 if start less than 2
+    if (start < 2) start = 2;
+
+    vector<bool> A(end + 1, true);  // Bool vector of all true
+    int limit = sqrt(end);
+
+    for (int i = 2; i <= limit; i++) {  // Go from 2 -> sqrt(n)
         // Checks all multiples of i and sets them false so we dont do them all again
-        if (A[i] == true) {
-            for (int j = 0; (i * i) + (j * i) < end; j++) {
+        if (A[i]) {
+            for (int j = 0; (i * i) + (j * i) <= end; j++) {
                 int pos = (i * i) + (j * i);
                 A[pos] = false;
             }
         }
     }
 
-    vector<int> vec;
     // Start loop at number you want to add and go till end
-    // Push to the vector you will return
-    for (int i = start; i < end; i++) {
-        if (A[i] == true) {
-            vec.push_back(i);
-        }
+    for (int i = start; i <= end; i++) {
+        if (A[i]) oss << i << " ";
     }
-
-    return vec;  // return vec
 }
