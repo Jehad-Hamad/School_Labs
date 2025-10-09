@@ -9,6 +9,7 @@
 using namespace std;
 
 void primes(int, int);
+int fileOrPrint(int, int, int);
 ostringstream oss;
 
 #endif

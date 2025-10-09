@@ -8,16 +8,8 @@ int main(int argc, char* argv[]) {
     // Call the prime function
     primes(start, end);
 
-    // Build file name from range
-    string fileName = "Results/" + to_string(start) + "to" + to_string(end) + ".txt";
-
-    // Write results to file (create/overwrite each time)
-    if (!(oss.str().empty())) {
-        ofstream file(fileName);
-        file << oss.str();
-        file.close();
-        return 0;
-    }
+    int status = fileOrPrint(argc, start, end);
+    return status;
 }
 
 // Function to find the list of prime numbers
@@ -49,4 +41,27 @@ void primes(int start, int end) {
     for (int i = start; i <= end; i++) {
         if (A[i]) oss << i << " ";
     }
+}
+
+int fileOrPrint(int argc, int start, int end) {
+    int status = -10;
+    if (argc == 3) {
+        // Build file name from range
+        string fileName = "Results/" + to_string(start) + "to" + to_string(end) + ".txt";
+
+        // Write results to file (create/overwrite each time)
+        if (!(oss.str().empty())) {
+            ofstream file(fileName);
+            file << oss.str();
+            file.close();
+            status = 0;
+        }
+    } else if (argc >= 4) {
+        cout << "primes found : " << oss.str();
+        status = 0;
+    } else {
+        cout << "You cant pass me less than three";
+        status = -1;
+    }
+    return status;
 }
