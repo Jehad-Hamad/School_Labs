@@ -12,14 +12,16 @@ var VSHADER_SOURCE =
 // Fragment shader program
 var FSHADER_SOURCE =
   'precision mediump float;\n' +
-  'uniform vec4 u_FragColor;\n' +
   'void main() {\n' +
-  '  gl_FragColor = u_FragColor;\n' +
+  '  gl_FragColor =  vec4(gl_FragCoord.x/450.0, gl_FragCoord.y/400.0, 0.0, 1.0);\n' +
   '}\n';
 
-var angleStep = 45.0; // degrees per second
-var level = 0; // nesting level
-var currentAngle = 0.0;
+var radStep = 0.1; // RAD per second
+var currentRad = 0.0;
+var level = 2;
+
+var rotationAngle = 0.0;
+var angleStep = 40.0;
 
 function main() {
   var canvas = document.getElementById('webgl');
@@ -35,35 +37,36 @@ function main() {
   }
 
   var a_Position = gl.getAttribLocation(gl.program, 'a_Position');
-  var u_FragColor = gl.getUniformLocation(gl.program, 'u_FragColor');
   var u_xformMatrix = gl.getUniformLocation(gl.program, 'u_xformMatrix');
-  if (a_Position < 0 || !u_FragColor || !u_xformMatrix) {
+  if (a_Position < 0 || !u_xformMatrix) {
     console.log('Failed to get shader variable locations');
     return;
   }
 
-  // a square
-  var vertices = new Float32Array([-0.9, 0.9, 0.9, 0.9, 0.9, -0.9, -0.9, -0.9]);
-  var n = initVertexBuffers(gl, vertices, a_Position);
-
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
   gl.clear(gl.COLOR_BUFFER_BIT);
+  // a square
+  var vertices = generatePoints(currentRad, level, 0.0, 0.02, radStep);
+  var n = initVertexBuffers(gl, vertices, a_Position);
 
   canvas.tabIndex = 0;
   canvas.focus();
 
-  // Keyboard controls for nesting level
   var animating = false;
   var animationId = null;
 
-  drawShapes(gl, n, u_FragColor, u_xformMatrix, currentAngle);
+  draw(gl, n, u_xformMatrix);
   canvas.onkeydown = function (ev) {
     if (ev.key === 'ArrowUp') {
       level = Math.min(level + 1, 7);
-      drawShapes(gl, n, u_FragColor, u_xformMatrix, currentAngle);
+      vertices = generatePoints(currentRad, level, 0.0, 0.02, radStep);
+      n = initVertexBuffers(gl, vertices, a_Position, u_xformMatrix);
+      draw(gl, n, u_xformMatrix);
     } else if (ev.key === 'ArrowDown') {
-      level = Math.max(level - 1, 1);
-      drawShapes(gl, n, u_FragColor, u_xformMatrix, currentAngle);
+      level = Math.max(level - 1, 2);
+      vertices = generatePoints(currentRad, level, 0.0, 0.02, radStep);
+      n = initVertexBuffers(gl, vertices, a_Position);
+      draw(gl, n, u_xformMatrix);
     } else if (ev.key === 'z') {
       animating = !animating;
       if (animating) {
@@ -75,52 +78,53 @@ function main() {
   };
 
   var tick = function () {
-    currentAngle = animate(currentAngle);
-    drawShapes(gl, n, u_FragColor, u_xformMatrix, currentAngle);
+    rotationAngle = animate(rotationAngle);
+    draw(gl, n, u_xformMatrix);
     animationId = requestAnimationFrame(tick);
   };
 }
 
+function generatePoints(currentAngle, N_turns, a, b, radStep) {
+  var vertices = [];
+  var angle = currentAngle;
+  var endAngle = N_turns * 2 * Math.PI;
+  var r;
+  var x_coord;
+  var y_coord;
+  while (angle <= endAngle) {
+    r = a + b * angle;
+    x_coord = r * Math.cos(angle);
+    y_coord = -1 * r * Math.sin(angle);
+    vertices.push(x_coord);
+    vertices.push(y_coord);
+    angle += radStep;
+  }
+  return vertices;
+}
 // Create and fill a vertex buffer
 function initVertexBuffers(gl, points, a_Position) {
   var vertexBuffer = gl.createBuffer();
   if (!vertexBuffer) return -1;
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, points, gl.STATIC_DRAW);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(points), gl.STATIC_DRAW);
   gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(a_Position);
   return points.length / 2;
 }
-
 // Apply rotation and scaling
-function rotateScale(gl, step, baseAngle, u_xformMatrix) {
-  var angle = baseAngle + 45 * (step - 1);
-  var scale = Math.pow(1 / Math.SQRT2, step - 1);
-
+function rotate(gl, u_xformMatrix) {
   var xformMatrix = new Matrix4();
-  xformMatrix.setRotate(angle, 0, 0, 1);
-  xformMatrix.scale(scale, scale, 1);
-
+  xformMatrix.setIdentity();
+  xformMatrix.rotate(rotationAngle, 0, 1, 0);
   gl.uniformMatrix4fv(u_xformMatrix, false, xformMatrix.elements);
 }
-
-// Draw nested squares and diamonds
-function drawShapes(gl, n, u_FragColor, u_xformMatrix, baseAngle) {
+function draw(gl, n, u_xformMatrix) {
   gl.clear(gl.COLOR_BUFFER_BIT);
-
-  for (var i = 1; i <= level * 2; i++) {
-    rotateScale(gl, i, baseAngle, u_xformMatrix);
-    if (i % 2 === 1) {
-      gl.uniform4f(u_FragColor, 1.0, 0.0, 0.0, 1.0); // red
-    } else {
-      gl.uniform4f(u_FragColor, 0.0, 0.0, 1.0, 1.0); // blue
-    }
-    gl.drawArrays(gl.LINE_LOOP, 0, n);
-  }
+  rotate(gl, u_xformMatrix);
+  gl.drawArrays(gl.LINE_STRIP, 0, n);
 }
-
-// Rotation animation control
 var g_last = Date.now();
+
 function animate(angle) {
   var now = Date.now();
   var elapsed = now - g_last;
