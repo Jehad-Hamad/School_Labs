@@ -15,8 +15,9 @@ string hasher(string password) {
         perror("crypt");
         return "Error";
     }
-
-    return string(hash);
+    string cppString = hash;
+    string hashed = cppString.substr(2);
+    return hashed;
 }
 
 int main(int argc, char* argv[]) {
