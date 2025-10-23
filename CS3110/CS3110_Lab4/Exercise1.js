@@ -45,7 +45,9 @@ function main() {
   }
 
   var verticesTexCoords = new Float32Array([
-    -0.8, -0.8, 0.0, 0.0, 0.8, -0.8, 2.0, 0.0, 0.0, 0.8, 1.5, 3.0,
+    -0.8, -0.8, -1.0, 0.0, 
+    0.8, -0.8, 2.0, 0.0, 
+    0.0, 0.8, 0.0, 3.0,
   ]);
 
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
@@ -216,56 +218,26 @@ function collectPoints(points, level, type) {
   var CAx = (points[8] + points[0]) / 2;
   var CAy = (points[9] + points[1]) / 2;
 
-  var ABs = (points[2] + points[6]) / 2;
-  var ABt = (points[3] + points[7]) / 2;
-  var BCs = (points[6] + points[10]) / 2;
-  var BCt = (points[7] + points[11]) / 2;
-  var CAs = (points[10] + points[2]) / 2;
-  var CAt = (points[11] + points[3]) / 2;
 
-  //Sub-triangles var
+    //Sub-triangles var
   var points1 = new Float32Array([
-    points[0],
-    points[1],
-    points[2],
-    points[3],
-    ABx,
-    ABy,
-    ABs,
-    ABt,
-    CAx,
-    CAy,
-    CAs,
-    CAt,
+    points[0], points[1], -1.0, 0.0,
+    ABx,        ABy,      2.0, 0.0,
+    CAx,        CAy,      0.5, 2.0
   ]);
+
   var points2 = new Float32Array([
-    ABx,
-    ABy,
-    ABs,
-    ABt,
-    points[4],
-    points[5],
-    points[6],
-    points[7],
-    BCx,
-    BCy,
-    BCs,
-    BCt,
+    ABx,        ABy,       -1.0, 0.0,
+    points[4],  points[5], 2.0, 0.0, 
+    BCx,        BCy,       0.5, 2.0
   ]);
+
   var points3 = new Float32Array([
-    CAx,
-    CAy,
-    CAs,
-    CAt,
-    BCx,
-    BCy,
-    BCs,
-    BCt,
-    points[8],
-    points[9],
-    points[10],
-    points[11],
+    CAx, CAy,             -1.0, 0.0,
+    BCx, BCy,             2.0, 0.0, 
+    points[8], points[9], 0.5, 2.0
   ]);
+
   collectPoints(points1, level - 1, 0);
   collectPoints(points2, level - 1, 1);
   collectPoints(points3, level - 1, 2);
