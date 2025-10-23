@@ -25,7 +25,7 @@ var FSHADER_SOURCE =
 var all_triangles = [];
 var level = 0; // Recursion level for Sierpinski triangle
 var currentAngle = 0.0; // Starting angle
-var angleStep = 90.0; // Degrees per second
+var angleStep = 30.0; // Degrees per second
 
 function main() {
   // Retrieve <canvas> element
@@ -45,7 +45,7 @@ function main() {
   }
 
   var verticesTexCoords = new Float32Array([
-    -0.8, -0.8, 0.0, 0.0, 0.8, -0.8, 2.0, 0.0, 0.0, 0.8, 1.5, 3.0,
+    -0.8, -0.8, 0.0, 0.0, 0.8, -0.8, 1.0, 0.0, 0.0, 0.8, 0.5, 1.0,
   ]);
 
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
@@ -58,7 +58,7 @@ function main() {
   var animating = false;
   var animationId = null;
 
-  DrawSierpinskiTriangle(gl, verticesTexCoords, level, 0);
+  DrawSierpinskiTriangle(gl, verticesTexCoords, 0, 0);
 
   canvas.onkeydown = function (event) {
     if (event.key === 'ArrowUp') {
@@ -127,8 +127,11 @@ function initVertexBuffers(gl, verticesTexCoords) {
 }
 
 function initTextures(gl, n) {
-  var texture = gl.createTexture(); // Create a texture object
-  if (!texture) {
+  var texture0 = gl.createTexture();
+  var texture1 = gl.createTexture();
+  var texture2 = gl.createTexture();
+
+  if (!texture0 || !texture1 || !texture2) {
     console.log('Failed to create the texture object');
     return false;
   }
@@ -139,54 +142,70 @@ function initTextures(gl, n) {
     console.log('Failed to get the storage location of u_Sampler');
     return false;
   }
-  var image = new Image(); // Create the image object
-  if (!image) {
+  var image0 = new Image(); // Create the image object
+  var image1 = new Image();
+  var image2 = new Image();
+  if (!image0 || !image1 || !image2) {
     console.log('Failed to create the image object');
     return false;
   }
   // Register the event handler to be called on loading an image
-  image.onload = function () {
-    loadTexture(gl, n, texture, u_Sampler, image);
+  image0.onload = function () {
+    loadTexture(gl, n, texture0, u_Sampler, image0, 0);
+  };
+  image1.onload = function () {
+    loadTexture(gl, n, texture1, u_Sampler, image1, 1);
+  };
+  image2.onload = function () {
+    loadTexture(gl, n, texture2, u_Sampler, image2, 2);
   };
   // Tell the browser to load an image
-  image.src = 'pictures/J1.jpg';
+  image0.src = 'pictures/Grass.jpg';
+  image1.src = 'pictures/Metal.jpg';
+  image2.src = 'pictures/Wood.jpg';
+
   return true;
 }
 
-function loadTexture(gl, n, texture, u_Sampler, image) {
+var g_texUnit0 = false;
+var g_texUnit1 = false;
+var g_texUnit2 = false;
+
+function loadTexture(gl, n, texture, u_Sampler, image, loading) {
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1); // Flip the image's y axis
-  // Activate texture unit0
-  gl.activeTexture(gl.TEXTURE0);
-  // Bind the texture object to the target
-  gl.bindTexture(gl.TEXTURE_2D, texture);
-  // Set the texture parameter
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 
   gl.clear(gl.COLOR_BUFFER_BIT);
 
   for (var i = 0; i < n; i++) {
     var points = all_triangles[i][0];
-    var triangleType = all_triangles[i][1];
+    var textUnit = all_triangles[i][1];
     var numVertices = initVertexBuffers(gl, points);
 
-    if (triangleType === 0) {
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    } else if (triangleType === 1) {
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.MIRRORED_REPEAT);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.MIRRORED_REPEAT);
-    } else if (triangleType === 2) {
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+    if (loading === 0) {
+      gl.activeTexture(gl.TEXTURE0);
+      g_texUnit0 = true;
+    } else if (loading === 1) {
+      gl.activeTexture(gl.TEXTURE1);
+      g_texUnit1 = true;
+    } else if (loading === 2) {
+      gl.activeTexture(gl.TEXTURE2);
+      g_texUnit2 = true;
     }
+
+    // Bind the texture object to the target
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    // Set the texture parameter
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 
     // Set the image to texture
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
 
     // Set the texture unit 0 to the sampler
-    gl.uniform1i(u_Sampler, 0);
+    gl.uniform1i(u_Sampler, textUnit);
     rotate(gl);
-    gl.drawArrays(gl.TRIANGLES, 0, numVertices);
+    if (g_texUnit0 && g_texUnit1 && g_texUnit2) {
+      gl.drawArrays(gl.TRIANGLES, 0, numVertices);
+    }
   }
 }
 
@@ -195,7 +214,7 @@ function rotate(gl) {
   var u_xformMatrix = gl.getUniformLocation(gl.program, 'u_xformMatrix');
   var xformMatrix = new Matrix4();
   xformMatrix.setIdentity();
-  xformMatrix.rotate(currentAngle, 0, 1, 0); // rotate around y axis
+  xformMatrix.rotate(currentAngle, 0, 0, 1); // rotate around y axis
   if (!u_xformMatrix) {
     console.log('Failed to get the storage location of u_xformMatrix');
     return;
@@ -203,9 +222,9 @@ function rotate(gl) {
   gl.uniformMatrix4fv(u_xformMatrix, false, xformMatrix.elements);
 }
 
-function collectPoints(points, level, type) {
+function collectPoints(points, level, textureType) {
   if (level === 0) {
-    all_triangles.push([points, type]);
+    all_triangles.push([points, textureType]);
     return;
   }
 
@@ -271,9 +290,9 @@ function collectPoints(points, level, type) {
   collectPoints(points3, level - 1, 2);
 }
 
-function DrawSierpinskiTriangle(gl, verticesTexCoords, level, type) {
+function DrawSierpinskiTriangle(gl, verticesTexCoords, level, textureType) {
   all_triangles = [];
-  collectPoints(verticesTexCoords, level, type);
+  collectPoints(verticesTexCoords, level, textureType);
   initTextures(gl, all_triangles.length);
 }
 
