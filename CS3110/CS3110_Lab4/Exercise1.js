@@ -5,8 +5,9 @@ var VSHADER_SOURCE =
   "attribute vec4 a_Position;\n" +
   "attribute vec2 a_TexCoord;\n" +
   "varying vec2 v_TexCoord;\n" +
+  "uniform mat4 u_xformMatrix;\n" +
   "void main() {\n" +
-  "  gl_Position = a_Position;\n" +
+  "  gl_Position = u_xformMatrix * a_Position;\n" +
   " v_TexCoord = a_TexCoord;\n" +
   "}\n";
 
@@ -23,6 +24,8 @@ var FSHADER_SOURCE =
 
 var all_triangles = [];
 var level = 0; // Recursion level for Sierpinski triangle
+var currentAngle = 0.0; // Starting angle
+var angleStep = 90.0; // Degrees per second
 
 function main() {
   // Retrieve <canvas> element
@@ -51,16 +54,33 @@ function main() {
   canvas.tabIndex = 0;
   canvas.focus();
 
+  // Keyboard controls for recursion level
+  var animating = false;
+  var animationId = null;
+
   DrawSierpinskiTriangle(gl, verticesTexCoords, level, 0);
 
   canvas.onkeydown = function (event) {
     if (event.key === "ArrowUp") {
-      level = Math.min(level + 1, 3);
+      level = Math.min(level + 1, 2);
       DrawSierpinskiTriangle(gl, verticesTexCoords, level, 0);
     } else if (event.key === "ArrowDown") {
       level = Math.max(level - 1, 0);
       DrawSierpinskiTriangle(gl, verticesTexCoords, level, 0);
+    } else if (event.key === "z") {
+      animating = !animating;
+      if (animating) {
+        tick();
+      } else {
+        cancelAnimationFrame(animationId);
+      }
     }
+  };
+
+  var tick = function () {
+    currentAngle = animate(currentAngle);
+    DrawSierpinskiTriangle(gl, verticesTexCoords, level, 0);
+    animationId = requestAnimationFrame(tick);
   };
 }
 
@@ -165,8 +185,22 @@ function loadTexture(gl, n, texture, u_Sampler, image) {
 
     // Set the texture unit 0 to the sampler
     gl.uniform1i(u_Sampler, 0);
+    rotate(gl);
     gl.drawArrays(gl.TRIANGLES, 0, numVertices);
   }
+}
+
+// Apply rotation to the triangle
+function rotate(gl) {
+  var u_xformMatrix = gl.getUniformLocation(gl.program, "u_xformMatrix");
+  var xformMatrix = new Matrix4();
+  xformMatrix.setIdentity();
+  xformMatrix.rotate(currentAngle, 0, 1, 0); // rotate around y axis
+  if (!u_xformMatrix) {
+    console.log("Failed to get the storage location of u_xformMatrix");
+    return;
+  }
+  gl.uniformMatrix4fv(u_xformMatrix, false, xformMatrix.elements);
 }
 
 function collectPoints(points, level, type) {
@@ -241,4 +275,14 @@ function DrawSierpinskiTriangle(gl, verticesTexCoords, level, type) {
   all_triangles = [];
   collectPoints(verticesTexCoords, level, type);
   initTextures(gl, all_triangles.length);
+}
+
+// Rotation animation control
+var g_last = Date.now();
+function animate(angle) {
+  var now = Date.now();
+  var elapsed = now - g_last;
+  g_last = now;
+  var newAngle = angle + (angleStep * elapsed) / 1000.0;
+  return newAngle % 360;
 }
