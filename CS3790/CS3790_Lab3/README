@@ -28,50 +28,39 @@ For testing purposes, use the following credentials:
 
 To generate the hash and add it to the password file:
 
-```bash
-make
-```
 
-```bash
+make
+
 bin/hash.out <name> <password>
-```
 
 Store name then hash in passwords.txt like:
 
-```bash
 name hash
-```
+
 
 ## Usage
 
 1. Compile the programs:
 
-   ```bash
    make
-   ```
+
 
 2. Run the RJE server first:
 
-   ```bash
    bin/server.out
-   ```
 
 3. Run the client next in another terminal:
-   ```bash
+
    bin/client.out
-   ```
+
 4. Client interaction:
    Enter credentials in the format:
 
-   ```bash
    USER <username> <hashed_password>
-   ```
 
    If authorized, send a job to execute:
 
-   ```bash
    EXEC <path_of_command> <command> <par1> ... <parN>
-   ```
 
 5. rm fifo_c2s
    rm fifo_s2c
