@@ -1,23 +1,28 @@
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <vector>
-using namespace std;
+#include "server.h"
 
-vector<string> parse(string);
-bool dbLookUp(string, string);
+int main() {
+    mkfifo(fifo_c2s, 0666);
+    mkfifo(fifo_s2c, 0666);
 
-int main(int argc, char* argv[]) {
-    string userName = argv[1];
-    string hashed = argv[2];
-
-    bool authorized = dbLookUp(userName, hashed);
-
-    if (authorized) {
-        cout << "+ACCOUNT VALID" << endl;
-    } else {
-        cout << "-INVALID ACCOUNT." << endl << "+GOODBY" << endl;
+    while (1) {
+        vector<string> messages = ReceiveMessage(fifo_c2s);
+        if ((messages.size() != 3) || (messages[0] != "USER")) {
+            string message = "-INVALID ACCOUNT. \n +GOODBYE \n";
+            SendMessage(fifo_s2c, message);
+        } else {
+            bool found = dbLookUp(messages[1], messages[2]);
+            if (found) {
+                string message = "+ACCOUNT VALID";
+                SendMessage(fifo_s2c, message);
+            } else {
+                string message = "-INVALID ACCOUNT. \n +GOODBYE \n";
+                SendMessage(fifo_s2c, message);
+            }
+        }
     }
+
+    unlink(fifo_c2s);
+    unlink(fifo_s2c);
 }
 
 bool dbLookUp(string userName, string hashedPassword) {
@@ -63,4 +68,26 @@ vector<string> parse(string line) {
         parsed.push_back(word);
     }
     return parsed;
+}
+
+vector<string> ReceiveMessage(const char* fifo) {
+    int fd = open(fifo, O_RDONLY);
+    char buf[80];
+    int n = read(fd, buf, 80);
+    close(fd);
+
+    vector<string> result;
+    if (n <= 0) return result;
+
+    buf[n] = '\0';
+    stringstream ss(buf);
+    string token;
+    while (ss >> token) result.push_back(token);
+    return result;
+}
+
+void SendMessage(const char* fifo, string msg) {
+    int fd = open(fifo, O_WRONLY);
+    write(fd, msg.c_str(), msg.size() + 1);
+    close(fd);
 }

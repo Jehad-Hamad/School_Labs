@@ -1,17 +1,23 @@
-CC=g++
-CC_FLAGS= -std=c++11 -Wall -Wextra -pedantic 
+CC = g++
+CC_FLAGS = -std=c++11 -Wall -Wextra -pedantic
+BIN = bin
 
-all: hash.out server.out
+all: $(BIN)/hash.out $(BIN)/server.out $(BIN)/client.out
 
-hash.out: 
-	$(CC) $(CC_FLAGS) hash.cpp -o hash.out
+$(BIN)/hash.out: hash.cpp
+	mkdir -p $(BIN)
+	$(CC) $(CC_FLAGS) hash.cpp -o $(BIN)/hash.out
 
-server.out: 
-	$(CC) $(CC_FLAGS) server.cpp -o server.out
+$(BIN)/server.out: server.cpp
+	mkdir -p $(BIN)
+	$(CC) $(CC_FLAGS) server.cpp -o $(BIN)/server.out
 
+$(BIN)/client.out: client.cpp
+	mkdir -p $(BIN)
+	$(CC) $(CC_FLAGS) client.cpp -o $(BIN)/client.out
 
-check: hash.cpp
-	cppcheck hash.cpp server.cpp
+check:
+	cppcheck hash.cpp server.cpp client.cpp
 
 clean:
-	rm -f hash.out server.out
+	rm -rf $(BIN)
