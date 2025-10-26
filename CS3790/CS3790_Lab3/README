@@ -1,0 +1,78 @@
+# CS3790 Assignment 3
+
+**Name:** Jehad M Hamad  
+**Assignment:** CS3790 Assignment 3
+
+## Description
+
+Remote Job Execution (RJE) server and client using named pipes for authenticated job execution.
+The server verifies users against a password file, executes client-specified commands via execv(), and returns the PID or an error message to the client.
+
+## Files
+
+- `server.cpp` - RJE server that handles authentication, receives client jobs, and executes them via exec().
+- `client.cpp` - Client program that connects to the server, sends credentials, and requests job execution.
+- `hash.cpp` - Utility for creating and accessing the password file with hashed passphrases.
+- `addNums.cpp` - Sample job program executed by the server (e.g., sums numbers as a test job).
+- `passwords.txt` - Sample password file for user authentication.
+- `makefile` - Build configuration for compiling server, client, hash, and addNums.
+
+## How to Run
+
+## Sample Username and Password
+
+For testing purposes, use the following credentials:
+
+- **Username:** jehad
+- **Password:** rB1qc8QxvbY
+
+To generate the hash and add it to the password file:
+
+```bash
+make
+```
+
+```bash
+bin/hash.out <name> <password>
+```
+
+Store name then hash in passwords.txt like:
+
+```bash
+name hash
+```
+
+## Usage
+
+1. Compile the programs:
+
+   ```bash
+   make
+   ```
+
+2. Run the RJE server first:
+
+   ```bash
+   bin/server.out
+   ```
+
+3. Run the client next in another terminal:
+   ```bash
+   bin/client.out
+   ```
+4. Client interaction:
+   Enter credentials in the format:
+
+   ```bash
+   USER <username> <hashed_password>
+   ```
+
+   If authorized, send a job to execute:
+
+   ```bash
+   EXEC <path_of_command> <command> <par1> ... <parN>
+   ```
+
+5. rm fifo_c2s
+   rm fifo_s2c
+   When done
