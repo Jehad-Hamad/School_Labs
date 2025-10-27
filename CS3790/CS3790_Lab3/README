@@ -66,11 +66,13 @@ name hash
 
 6. Full example
 
+make 
+
 Terminal 1) bin/server.out
 Terminal 2) bin/client.out
 
 Terminal 2) USER Jehad HelloWorld
-Terminal 2) EXEC /Users/jehadhamad/Desktop/School_Labs/CS3790/CS3790_Lab3/bin/addNums.out 1 10
+Terminal 2) EXEC bin/addNums.out 1 10
 
 Then look for file that says 1_10.txt that has 11
 rm fifo_c2s
