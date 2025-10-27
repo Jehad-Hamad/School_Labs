@@ -7,6 +7,4 @@
 #include <string>
 using namespace std;
 
-string hasher(string);
-
 #endif

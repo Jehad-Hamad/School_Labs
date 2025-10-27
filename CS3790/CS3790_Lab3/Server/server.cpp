@@ -1,4 +1,5 @@
 #include "server.h"
+#include "../lib/commonFunctions.h"
 
 int main() {
     // Open both pipes to talk
@@ -15,7 +16,8 @@ int main() {
             SendMessage(fifo_s2c, message);
         } else {
             // Do a database search if you do pass needed info to search
-            bool found = dbLookUp(logInDetails[1], logInDetails[2]);
+            string hashofPassword = hasher(logInDetails[2]);
+            bool found = dbLookUp(logInDetails[1], hashofPassword);
 
             if (found) {  // If you have been found
 
@@ -129,29 +131,4 @@ vector<string> parse(string line) {
         parsed.push_back(word);
     }
     return parsed;
-}
-
-// Function to receive from chosen given
-// Return vector of strings
-vector<string> ReceiveMessage(const char* fifo) {
-    int fd = open(fifo, O_RDONLY);
-    char buf[256];
-    int n = read(fd, buf, 256);
-    close(fd);
-
-    vector<string> result;
-    if (n <= 0) return result;
-
-    buf[n] = '\0';
-    stringstream ss(buf);
-    string token;
-    while (ss >> token) result.push_back(token);
-    return result;
-}
-
-// Function to send message to a chosen pipe
-void SendMessage(const char* fifo, string msg) {
-    int fd = open(fifo, O_WRONLY);
-    write(fd, msg.c_str(), msg.size() + 1);
-    close(fd);
 }

@@ -15,6 +15,7 @@ The server verifies users against a password file, executes client-specified com
 - `hash.cpp` - Utility for creating and accessing the password file with hashed passphrases.
 - `addNums.cpp` - Sample job program executed by the server (e.g., sums numbers as a test job).
 - `passwords.txt` - Sample password file for user authentication.
+- `commonFunctions.cpp` - Common functions shared between two or more files
 - `makefile` - Build configuration for compiling server, client, hash, and addNums.
 
 ## How to Run
@@ -23,11 +24,10 @@ The server verifies users against a password file, executes client-specified com
 
 For testing purposes, use the following credentials:
 
-- **Username:** jehad
-- **Password:** rB1qc8QxvbY
+- **Username:** Jehad
+- **Password:** HelloWorld
 
 To generate the hash and add it to the password file:
-
 
 make
 
@@ -37,13 +37,11 @@ Store name then hash in passwords.txt like:
 
 name hash
 
-
 ## Usage
 
 1. Compile the programs:
 
    make
-
 
 2. Run the RJE server first:
 
@@ -65,3 +63,15 @@ name hash
 5. rm fifo_c2s
    rm fifo_s2c
    When done
+
+6. Full example
+
+Terminal 1) bin/server.out
+Terminal 2) bin/client.out
+
+Terminal 2) USER Jehad HelloWorld
+Terminal 2) EXEC /Users/jehadhamad/Desktop/School_Labs/CS3790/CS3790_Lab3/bin/addNums.out 1 10
+
+Then look for file that says 1_10.txt that has 11
+rm fifo_c2s
+rm fifo_s2c

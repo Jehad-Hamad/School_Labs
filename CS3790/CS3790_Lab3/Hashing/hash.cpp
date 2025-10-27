@@ -1,17 +1,6 @@
 #include <iostream>
 #include "hash.h"
-
-string hasher(string password) {
-    const char* salt = "$6$imsosalty$";
-    char* hash = crypt(password.c_str(), salt);
-    if (!hash) {
-        perror("crypt");
-        return "Error";
-    }
-    string cppString = hash;
-    string hashed = cppString.substr(2);
-    return hashed;
-}
+#include "../lib/commonFunctions.h"
 
 int main(int argc, char* argv[]) {
     if (argc < 3) {

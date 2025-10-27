@@ -18,8 +18,6 @@ using namespace std;
 const char* fifo_c2s = "fifo_c2s";  // Client sends, Server receives
 const char* fifo_s2c = "fifo_s2c";  // Server sends, Client receives
 
-vector<string> ReceiveMessage(const char* fifo);
-void SendMessage(const char* fifo, string msg);
 void writeMessage(vector<string> messages);
 
 #endif

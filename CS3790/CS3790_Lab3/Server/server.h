@@ -21,7 +21,4 @@ const char* fifo_s2c = "fifo_s2c";  // Server sends, Client receives
 vector<string> parse(string);
 bool dbLookUp(string, string);
 
-vector<string> ReceiveMessage(const char* fifo);
-void SendMessage(const char* fifo, string msg);
-
 #endif
