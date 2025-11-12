@@ -78,7 +78,7 @@ int main() {
         exit(-1);
     }
     while (1) {
-        alarm(2);
+        alarm(1);
         pause();
     }
     return 0;
