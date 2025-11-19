@@ -37,7 +37,7 @@ function main() {
 
     viewMatrix = new Matrix4();
     viewMatrix.setLookAt(
-        1, 2.5, 17,   
+        1.5, 1.5, 5,   
         0, 0, 0,        
         0, 1, 0
     );
@@ -54,16 +54,63 @@ function main() {
 
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    const floor = createPlane(gl, "floor", [.54, 0.60, 0.36,]);
-    const right = createPlane(gl, "wallRight",[1.0, 0.0, 0.0]);     // Red
-    const left  = createPlane(gl, "wallLeft",[0.0, 0.0, 1.0]);     // True Blue 0.53, 0.81, 0.92
-    const back  = createPlane(gl, "wallBack",[1, 1, 0.4]);        // Yellow
+    const floor = createPlane(gl, "floor",    [0.54, 0.60, 0.36]);
+    const right = createPlane(gl, "wallRight",[0.53, 0.81, 0.92]);     
+    const left  = createPlane(gl, "wallLeft", [0.53, 0.81, 0.92]);     
+    const back  = createPlane(gl, "wallBack", [0.53, 0.81, 0.92]);       
 
     const planes = [floor, right, left, back]
     drawPlanes(gl, planes)
 
-    const sphere = createSphere(gl, [.54, 0.9, 0.36]);
-    drawSpheres(gl, sphere, 10)
+    const greenSphere = createSphere(gl, [.54, 0.9, 0.36]);
+    drawSpheres(gl, greenSphere, 10)
+
+    const blueBodySphere = createSphere(gl, [0.0, 0.4, 0.8]);
+    const redSphere =      createSphere(gl, [1.0, 0.0, 0.0]);
+    const yellowSphere =   createSphere(gl, [1.0, 1, 0.1]);
+    const whiteSphere =    createSphere(gl, [1.0, 1, 1.0]);
+    const blackSphere =    createSphere(gl, [0.0, 0, 0.0]);
+    const natchoSphere =   createSphere(gl, [1, 0.65, 0.17]);
+
+    const armCylinder = createCylinder(gl, [0.0, 0.4, 0.8])
+    const mallotCylinder = createCylinder(gl, [0.55, 0.27, 0.07])
+    const whiteCylinder = createCylinder(gl, [1.0, 1.0, 1.0])
+
+
+    // PENGUIN
+    // Body
+    drawSphere(gl, blueBodySphere, [0, 0.6, 0], [0.5, 0.5, 0.5]);
+    // Head
+    drawSphere(gl, blueBodySphere, [0, 1.2, 0], [0.3, 0.3, 0.3]);
+    // Eyes
+    drawSphere(gl, whiteSphere, [-0.15, 1.2, 0.2], [0.05, 0.1, 0.1]);
+    drawSphere(gl, whiteSphere, [0.15, 1.2, 0.2],  [0.05, 0.1, 0.1]);
+    drawSphere(gl, blackSphere, [-0.15, 1.2, 0.21], [0.05, 0.09, 0.1]);
+    drawSphere(gl, blackSphere, [0.15, 1.2, 0.21],  [0.05, 0.09, 0.1]);
+    drawSphere(gl, whiteSphere, [-0.15, 1.2, 0.3], [0.03, 0.03, 0.03]);
+    drawSphere(gl, whiteSphere, [0.15, 1.2, 0.3],  [0.03, 0.03, 0.03]);
+    // Arms
+    drawCylinder(gl, armCylinder, [-0.23, 0.9, -0.2], [0.1, 0.1, 0.1],   [100, 1, 0, 0], [20, 0, 0, 1]);
+    drawCylinder(gl, armCylinder, [0.23, 0.9, -0.2],  [0.1, 0.1, 0.1],   [100, 1, 0, 0], [-20, 0, 0, 1]);
+    // Hand
+    drawSphere(gl, whiteSphere, [-0.6, 0.725, 0.8],  [0.11, 0.11, 0.11]);
+    drawSphere(gl, whiteSphere, [0.6, 0.725, 0.8],  [0.11, 0.11, 0.11]);
+    drawSphere(gl, natchoSphere, [-0.65, 0.71, 0.85],  [0.12, 0.12, 0.12]);
+    drawSphere(gl, natchoSphere, [0.65, 0.71, 0.85],  [0.12, 0.12, 0.12]);
+    // Feet
+    drawSphere(gl, natchoSphere, [-0.2, 0.2, 0.25], [0.2, 0.2, 0.2]);
+    drawSphere(gl, natchoSphere, [0.2, 0.2, 0.25],  [0.2, 0.2, 0.2]);
+    // Hat
+    drawSphere(gl, redSphere,     [0, 1.4, 0],      [ 0.2, 0.2, 0.2]);
+    drawSphere(gl, yellowSphere,  [0, 1.35, 0],     [0.3, 0.1, 0.3]);
+    drawSphere(gl, yellowSphere,  [0.0, 1.35, 0.25],[0.1, 0.1, 0.1]);
+    drawSphere(gl, whiteSphere,   [0, 1.6, -0.1],   [0.1, 0.1, 0.1]);
+    // Mallot
+    drawCylinder(gl, mallotCylinder, [-0.75, 0.4, 0.95],  [0.1, 0.1, 0.1],   [0, 1, 0, 0], [0, 0, 0, 1])
+    drawCylinder(gl, mallotCylinder, [-0.77, 1.36, 0.55],  [0.2, 0.2, 0.07],   [90, 1, 0, 0], [0, 0, 0, 1]);
+    drawCylinder(gl, whiteCylinder, [-0.77, 1.36, 1.3],  [0.2, 0.2, 0.01],   [90, 1, 0, 0], [0, 0, 0, 1]);
+    drawCylinder(gl, whiteCylinder, [-0.77, 1.36, 0.45],  [0.2, 0.2, 0.01],   [90, 1, 0, 0], [0, 0, 0, 1]);
+
 }
 
 // Function to create my plane aka my wall i just just need to give it a type and color
@@ -184,6 +231,52 @@ function createSphere(gl, color) {
     );
 }
 
+// Function to create Cylinder give just color
+function createCylinder(gl, color){
+
+    const vertices = [];
+    const colors = [];
+    const indices = [];
+
+    var height = 11;
+    var steps = 20;
+
+    for (var i = 0; i <= steps; i++){
+        var angle = (i/steps) * 2 * Math.PI;
+
+        var x = Math.cos(angle);
+        var z = Math.sin(angle);
+
+        // bottom vertex
+        vertices.push(x, 0, z);
+        colors.push(...color);
+
+        // top vertex
+        vertices.push(x, height, z);
+        colors.push(...color);
+
+    }
+
+    for (var i = 0; i < steps; i++) {
+        var b0 = 2 * i;         // bottom i
+        var t0 = b0 + 1;        // top i
+        var b1 = 2 * (i + 1);   // bottom next
+        var t1 = b1 + 1;        // top next
+
+        // Triangle 1
+        indices.push(b0, b1, t0);
+        // Triangle 2
+        indices.push(t0, b1, t1);
+    }
+
+    return initBuffers(
+        gl,
+        new Float32Array(vertices),
+        new Float32Array(colors),
+        new Uint16Array(indices)
+    );
+}
+
 // Function to initialize buffers for the first time 
 function initBuffers(gl, vertices, colors, indices) {
 
@@ -222,8 +315,6 @@ function initBuffers(gl, vertices, colors, indices) {
     return { vertexBuffer, colorBuffer, indicesBuffer, vertexCount, indicesCount, a_Position, a_Color };
 }
 
-
-
 // Function to initialize buffers for the object so I can draw later rather than calling initBuffers()
 function initObject(gl, object) {
     // Bind the objects vertex buffer to the webgl buffer
@@ -241,6 +332,8 @@ function initObject(gl, object) {
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, object.indicesBuffer);
     }
 }
+
+
 
 // Function to draw the flat Plane for floors and walls
 function drawPlane(gl, plane) {
@@ -263,6 +356,18 @@ function drawSphere(gl, sphere, moving, scaling) {
 
     initObject(gl, sphere)
     gl.drawElements(gl.TRIANGLES, sphere.indicesCount, gl.UNSIGNED_SHORT, 0);
+}
+
+// Function to draw one sphere and move it and scale it
+function drawCylinder(gl, cylinder, moving, scaling, rotating1, rotating2) {
+
+    var xformMatrix = new Matrix4();
+    xformMatrix.setTranslate(...moving).scale(...scaling).rotate(...rotating1).rotate(...rotating2)
+
+    gl.uniformMatrix4fv(u_xformMatrix, false, xformMatrix.elements);
+
+    initObject(gl, cylinder)
+    gl.drawElements(gl.TRIANGLES, cylinder.indicesCount, gl.UNSIGNED_SHORT, 0);
 }
 
 // Function that draws my spheres going parallel to each other
