@@ -53,18 +53,18 @@ function main() {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     const floor = createPlane(gl, "floor", [.54, 0.60, 0.36,]);
-    // Red
-    const right = createPlane(gl, "wallRight",[1.0, 0.0, 0.0]);
-    // True Blue 0.53, 0.81, 0.92
-    const left  = createPlane(gl, "wallLeft",[0.0, 0.0, 1.0]);
-    // Yellow
-    const back  = createPlane(gl, "wallBack",[1, 1, 0.4]);
+    const right = createPlane(gl, "wallRight",[1.0, 0.0, 0.0]);     // Red
+    const left  = createPlane(gl, "wallLeft",[0.0, 0.0, 1.0]);     // True Blue 0.53, 0.81, 0.92
+    const back  = createPlane(gl, "wallBack",[1, 1, 0.4]);        // Yellow
+
 
     drawPlane(gl, floor);
     drawPlane(gl, right)
     drawPlane(gl, left)
     drawPlane(gl, back)
 
+    const sphere = createSphere(gl, [0.5, 0.5, 0.5])
+    drawSphere(gl, sphere)
 }
 
 function createPlane(gl, wall, color) {
@@ -137,6 +137,51 @@ function createPlane(gl, wall, color) {
     return initBuffers(gl, vertices, colors, null);
 }
 
+function createSphere(gl, color) {
+
+    const latSteps = 21;
+    const lonSteps = 21;
+
+    const vertices = [];
+    const colors = [];
+    const indices = [];
+
+    for (let i = 0; i <= latSteps; i++) {
+        const theta = i * Math.PI / latSteps;
+        const sinT = Math.sin(theta);
+        const cosT = Math.cos(theta);
+
+        for (let j = 0; j <= lonSteps; j++) {
+            const phi = j * 2 * Math.PI / lonSteps;
+            const sinP = Math.sin(phi);
+            const cosP = Math.cos(phi);
+
+            const x =  sinT * cosP;
+            const y =  cosT;
+            const z =  sinT * sinP;
+
+            vertices.push(x, y, z);
+            colors.push(...color);
+        }
+    }
+
+    for (let i = 0; i < latSteps; i++) {
+        for (let j = 0; j < lonSteps; j++) {
+            const a = i * (lonSteps + 1) + j;
+            const b = a + lonSteps + 1;
+
+            indices.push(a, b, a + 1);
+            indices.push(a + 1, b, b + 1);
+        }
+    }
+
+    return initBuffers(
+        gl,
+        new Float32Array(vertices),
+        new Float32Array(colors),
+        new Uint16Array(indices)
+    );
+}
 
 function initBuffers(gl, vertices, colors, indices) {
 
@@ -199,4 +244,9 @@ function initObject(gl, object) {
 function drawPlane(gl, plane) {
     initObject(gl, plane)
     gl.drawArrays(gl.TRIANGLE_FAN, 0, plane.vertexCount);
+}
+
+function drawSphere(gl, sphere) {
+    initObject(gl, sphere)
+    gl.drawElements(gl.TRIANGLES, sphere.indicesCount, gl.UNSIGNED_SHORT, 0);
 }
