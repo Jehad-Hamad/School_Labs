@@ -3,9 +3,10 @@ var VSHADER_SOURCE = `
     attribute vec4 a_Position;
     attribute vec4 a_Color;
     uniform mat4 u_ModelViewMatrix;
+    uniform mat4 u_xformMatrix;
     varying vec4 v_Color;
     void main() {
-        gl_Position = u_ModelViewMatrix * a_Position;
+        gl_Position = u_ModelViewMatrix * u_xformMatrix * a_Position;
         v_Color = a_Color;
     }`;
 
@@ -19,7 +20,7 @@ var FSHADER_SOURCE = `
         gl_FragColor = v_Color;
     }`;
 
-let viewMatrix, modelMatrix, projMatrix, modelViewMatrix, u_ModelViewMatrix;
+let viewMatrix, modelMatrix, projMatrix, modelViewMatrix, u_ModelViewMatrix, u_xformMatrix;
 
 function main() {
     const canvas = document.getElementById('webgl');
@@ -32,10 +33,11 @@ function main() {
     gl.enable(gl.DEPTH_TEST);
 
     u_ModelViewMatrix = gl.getUniformLocation(gl.program, 'u_ModelViewMatrix');
+    u_xformMatrix = gl.getUniformLocation(gl.program, 'u_xformMatrix');
 
     viewMatrix = new Matrix4();
     viewMatrix.setLookAt(
-        10, 10.5, 5,   
+        1, 2.5, 17,   
         0, 0, 0,        
         0, 1, 0
     );
@@ -57,16 +59,14 @@ function main() {
     const left  = createPlane(gl, "wallLeft",[0.0, 0.0, 1.0]);     // True Blue 0.53, 0.81, 0.92
     const back  = createPlane(gl, "wallBack",[1, 1, 0.4]);        // Yellow
 
+    const planes = [floor, right, left, back]
+    drawPlanes(gl, planes)
 
-    drawPlane(gl, floor);
-    drawPlane(gl, right)
-    drawPlane(gl, left)
-    drawPlane(gl, back)
-
-    const sphere = createSphere(gl, [0.5, 0.5, 0.5])
-    drawSphere(gl, sphere)
+    const sphere = createSphere(gl, [.54, 0.9, 0.36]);
+    drawSpheres(gl, sphere, 10)
 }
 
+// Function to create my plane aka my wall i just just need to give it a type and color
 function createPlane(gl, wall, color) {
 
     // Eight points for all walls
@@ -137,6 +137,7 @@ function createPlane(gl, wall, color) {
     return initBuffers(gl, vertices, colors, null);
 }
 
+// Function to create Sphere just give color
 function createSphere(gl, color) {
 
     const latSteps = 21;
@@ -183,6 +184,7 @@ function createSphere(gl, color) {
     );
 }
 
+// Function to initialize buffers for the first time 
 function initBuffers(gl, vertices, colors, indices) {
 
     // Create Buffers 
@@ -222,7 +224,7 @@ function initBuffers(gl, vertices, colors, indices) {
 
 
 
-// Function to initialize buffers for the object so I can draw later 
+// Function to initialize buffers for the object so I can draw later rather than calling initBuffers()
 function initObject(gl, object) {
     // Bind the objects vertex buffer to the webgl buffer
     gl.bindBuffer(gl.ARRAY_BUFFER, object.vertexBuffer);
@@ -242,11 +244,40 @@ function initObject(gl, object) {
 
 // Function to draw the flat Plane for floors and walls
 function drawPlane(gl, plane) {
+
+    var xformMatrix = new Matrix4();
+    xformMatrix.setIdentity();
+    gl.uniformMatrix4fv(u_xformMatrix, false, xformMatrix.elements);
+
     initObject(gl, plane)
     gl.drawArrays(gl.TRIANGLE_FAN, 0, plane.vertexCount);
 }
 
-function drawSphere(gl, sphere) {
+// Function to draw one sphere and move it and scale it
+function drawSphere(gl, sphere, moving, scaling) {
+
+    var xformMatrix = new Matrix4();
+    xformMatrix.setTranslate(...moving).scale(...scaling)
+
+    gl.uniformMatrix4fv(u_xformMatrix, false, xformMatrix.elements);
+
     initObject(gl, sphere)
     gl.drawElements(gl.TRIANGLES, sphere.indicesCount, gl.UNSIGNED_SHORT, 0);
+}
+
+// Function that draws my spheres going parallel to each other
+function drawSpheres(gl, sphere, amount){
+    var j = -6.5;
+    for(var i = 1; i <= amount; i++){
+        drawSphere(gl, sphere, [-3, 0.3, j], [0.3, 0.3, 0.3])
+        drawSphere(gl, sphere, [ 3, 0.3, j], [0.3, 0.3, 0.3])
+        j += 1.5;
+    }
+}
+
+// Function that draws my walls all together
+function drawPlanes(gl, planes){
+    for(var i = 0; i < planes.length; i ++){
+        drawPlane(gl, planes[i])
+    }
 }
