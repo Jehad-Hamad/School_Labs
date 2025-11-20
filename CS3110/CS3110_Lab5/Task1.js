@@ -22,6 +22,13 @@ var FSHADER_SOURCE = `
 
 let viewMatrix, modelMatrix, projMatrix, modelViewMatrix, u_ModelViewMatrix, u_xformMatrix;
 
+let eyeX = 0; eyeY = 1; eyeZ = 6;
+let atX = 0, atY = 0, atZ = 0;
+let upX = 0, upY = 1, upZ = 0;
+
+let near = 0.1;
+let fov = 45;
+let far =  100
 function main() {
     const canvas = document.getElementById('webgl');
     const gl = getWebGLContext(canvas);
@@ -36,19 +43,21 @@ function main() {
     u_xformMatrix = gl.getUniformLocation(gl.program, 'u_xformMatrix');
 
     viewMatrix = new Matrix4();
+
+    let camAngle = 1.5;
+    let camRadius = 5;   // distance from object
+
+    eyeX = Math.cos(camAngle) * camRadius;
+    eyeZ = Math.sin(camAngle) * camRadius;
+    
     viewMatrix.setLookAt(
-        //-6.0, 3.5, 1,
-        //6.0, 3.5, 1,
-         0, 1, 6,       
-        //0, 1, -6,
-        //0, 10, 1,
-   
-        0, 0, 0,        
-        0, 1, 0
+        eyeX, eyeY, eyeZ,       
+        atX, atY, atZ,        
+        upX, upY, upZ
     );
 
     projMatrix = new Matrix4();
-    projMatrix.setPerspective(45, canvas.width / canvas.height, 0.1, 100);
+    projMatrix.setPerspective(fov, canvas.width / canvas.height, near, far);
 
     modelMatrix = new Matrix4();
     modelMatrix.setRotate(0, 0, 1, 0);
@@ -91,10 +100,58 @@ function main() {
 
     const pyramid = createPyramid(gl, [1.0, 1.0, 0.0]);
     const pyramids = [pyramid]
-    
+
     drawPlanes(gl, planes)
     drawSpheres(gl, spheres[0], 10)
     drawPenguin(gl, spheres, cylinders, pyramids, circles, triangles, stars)
+
+
+    function keyDown(ev) {
+
+        if (ev.keyCode === 39) {      // RIGHT → orbit clockwise
+            camAngle -= 0.05;
+            eyeX = Math.cos(camAngle) * camRadius;
+            eyeZ = Math.sin(camAngle) * camRadius;
+        }
+        else if (ev.keyCode === 37) { // LEFT → orbit counter-clockwise
+            camAngle += 0.05;
+            eyeX = Math.cos(camAngle) * camRadius;
+            eyeZ = Math.sin(camAngle) * camRadius;
+        }
+        else if (ev.keyCode === 38) {  // UP
+            camAngle += 0.05;
+            eyeZ = Math.cos(camAngle) * camRadius;
+            eyeY = Math.max(0.5, Math.sin(camAngle) * camRadius);
+        }
+        else if (ev.keyCode === 40) { // DOWN
+            camAngle -= 0.05;
+            eyeZ = Math.cos(camAngle) * camRadius;
+            eyeY = Math.max(0.5, Math.sin(camAngle) * camRadius);
+        }
+        
+
+        viewMatrix.setLookAt(
+            eyeX, eyeY, eyeZ,       
+            atX, atY, atZ,        
+            upX, upY, upZ
+        );
+
+        projMatrix.setPerspective(fov, canvas.width / canvas.height, near, far);
+
+        modelMatrix.setRotate(0, 0, 1, 0);
+
+        modelViewMatrix = projMatrix.multiply(viewMatrix).multiply(modelMatrix);
+
+        gl.uniformMatrix4fv(u_ModelViewMatrix, false, modelViewMatrix.elements);
+
+        drawPlanes(gl, planes)
+        drawSpheres(gl, spheres[0], 10)
+        drawPenguin(gl, spheres, cylinders, pyramids, circles, triangles, stars)
+    }  
+    
+    document.onkeydown = function(ev){ keyDown(ev)}
+    
+
 }
 
 // Function to create my plane aka my wall i just just need to give it a type and color
