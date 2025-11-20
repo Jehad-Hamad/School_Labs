@@ -64,7 +64,6 @@ function main() {
     const left  = createPlane(gl, "wallLeft", [0.53, 0.81, 0.92]);     
     const back  = createPlane(gl, "wallBack", [0.53, 0.81, 0.92]);       
     const planes = [floor, right, left, back]
-    drawPlanes(gl, planes)
 
     const greenSphere =    createSphere(gl, [.54, 0.9, 0.36]);
     const blueBodySphere = createSphere(gl, [0.0, 0.4, 0.8]);
@@ -73,84 +72,29 @@ function main() {
     const whiteSphere =    createSphere(gl, [1.0, 1.0, 1.0]);
     const blackSphere =    createSphere(gl, [0.0, 0.0, 0.0]);
     const natchoSphere =   createSphere(gl, [1.0, 0.65, 0.17]);
+    const spheres = [greenSphere, blueBodySphere, redSphere, yellowSphere, whiteSphere, blackSphere, natchoSphere]
 
     const armCylinder = createCylinder(gl, [1.0, 0.0, 0.0]);
     const mallotCylinder = createCylinder(gl, [0.55, 0.27, 0.07]);
     const whiteCylinder = createCylinder(gl, [1.0, 1.0, 1.0]);
+    const cylinders = [armCylinder, mallotCylinder, whiteCylinder]
 
     const mallotCircle = createCircle(gl, [1.0, 0.0, 0.00]);
+    const circles = [mallotCircle]
 
     const yellowTriangle = createTriangle(gl, [1.0, 1.0, 0.0]);
     const redTriangle = createTriangle(gl, [1.0, 0.0, 0.0]);
+    const triangles = [yellowTriangle, redTriangle]
 
     const star = createStar(gl, [ 1.0, 1.0, 0.0]);
+    const stars = [star]
 
     const pyramid = createPyramid(gl, [1.0, 1.0, 0.0]);
-
-    drawSpheres(gl, greenSphere, 10)
-
-    // PENGUIN
-    // Body
-    drawSphere(gl, blueBodySphere, [0, 0.63, .2], [0.4, 0.4, 0.4], [0, 1, 0, 0], [0, 1, 0, 0]); 
-
-    // White scarf and coat
-    drawSphere(gl, redSphere, [0.0, 0.6, 0.0,], [0.5, 0.5, 0.5], [0, 1, 0, 0], [0, 1, 0, 0]); 
-    drawSphere(gl, whiteSphere, [0.15, 0.60, 0.09], [0.13, 0.5, 0.4], [0, 0, 0, 1], [40, 0, 1, 0]); 
-    drawSphere(gl, whiteSphere, [-0.15, 0.60, 0.09], [0.13, 0.5, 0.4], [0, 0, 0, 1], [-40, 0, 1, 0]); 
-    drawSphere(gl, whiteSphere, [-0.011, 1.0, 0.04], [0.2, 0.17, 0.35], [0, 0, 0, 1], [90, 0, 1, 0]); 
-
-    // Head
-    drawSphere(gl, blueBodySphere, [0, 1.2, .2], [0.3, 0.3, 0.3], [0, 1, 0, 0], [0, 1, 0, 0]);
-
-    // Beak
-    drawPyramid(gl, pyramid, [0.0, 1.07, 0.5], [0.15, 0.06, 0.23], [0, 1, 0, 0], [0, 0, 1, 0]);  // Top beak
-    drawPyramid(gl, pyramid, [0.0, 1.07, 0.5], [0.15, 0.1, 0.23], [0, 1, 0, 0], [180, 0, 0, 1]); // Bottom beak
-
-    // Eyes
-    drawSphere(gl, whiteSphere, [-0.15, 1.2, 0.4], [0.05, 0.1, 0.1], [0, 1, 0, 0], [0, 1, 0, 0]); // Left sclara 
-    drawSphere(gl, whiteSphere, [0.15, 1.2, 0.4],  [0.05, 0.1, 0.1], [0, 1, 0, 0], [0, 1, 0, 0]); // Right sclara
-    drawSphere(gl, blackSphere, [-0.15, 1.2, 0.403], [0.05, 0.09, 0.1], [0, 1, 0, 0], [0, 1, 0, 0]); // Left pupil
-    drawSphere(gl, blackSphere, [0.15, 1.2, 0.403],  [0.05, 0.09, 0.1], [0, 1, 0, 0], [0, 1, 0, 0]); // Right pupil
-    drawSphere(gl, whiteSphere, [-0.15, 1.2, 0.476], [0.03, 0.03, 0.03], [0, 1, 0, 0], [0, 1, 0, 0]) // Left iris
-    drawSphere(gl, whiteSphere, [0.15, 1.2, 0.476],  [0.03, 0.03, 0.03], [0, 1, 0, 0], [0, 1, 0, 0]) // right iris
-
-    // Hat
-    drawSphere(gl, redSphere,     [0, 1.4, .2],      [ 0.2, 0.2, 0.2], [0, 1, 0, 0], [0, 1, 0, 0]) 
-    drawSphere(gl, yellowSphere,  [0, 1.35, .2],     [0.3, 0.1, 0.3], [0, 1, 0, 0], [0, 1, 0, 0])
-    drawSphere(gl, yellowSphere,  [0.0, 1.35, 0.45],[0.1, 0.1, 0.1], [0, 1, 0, 0], [0, 1, 0, 0])
-    drawSphere(gl, whiteSphere,   [0, 1.6, 0.1],   [0.1, 0.1, 0.1], [0, 1, 0, 0], [0, 1, 0, 0])
-
-    // Arms
-    drawCylinder(gl, armCylinder, [-0.23, 0.9, -0.2], [0.1, 0.1, 0.1],   [100, 1, 0, 0], [20, 0, 0, 1]);  // Left arm coat
-    drawCylinder(gl, armCylinder, [0.23, 0.9, -0.2],  [0.1, 0.1, 0.1],   [100, 1, 0, 0], [-20, 0, 0, 1]); // Right arm coat
-
-    // Hand
-    drawSphere(gl, whiteSphere, [-0.6, 0.725, 0.8],  [0.11, 0.11, 0.11], [0, 1, 0, 0], [0, 1, 0, 0])    // Left Puff coat
-    drawSphere(gl, whiteSphere, [0.6, 0.725, 0.8],  [0.11, 0.11, 0.11], [0, 1, 0, 0], [0, 1, 0, 0])     // Right Puff coat
-    drawSphere(gl, natchoSphere, [-0.62, 0.71, 0.85],  [0.12, 0.12, 0.12], [0, 1, 0, 0], [0, 1, 0, 0])  // Left hand
-    drawSphere(gl, natchoSphere, [0.62, 0.71, 0.85],  [0.12, 0.12, 0.12], [0, 1, 0, 0], [0, 1, 0, 0])   // Right hand
-
-    // Mallot
-    drawCylinder(gl, mallotCylinder, [-0.75, 0.4, 0.95],  [0.1, 0.1, 0.1],   [0, 1, 0, 0], [0, 0, 0, 1])     // Handle 
-    drawCylinder(gl, mallotCylinder, [-0.77, 1.36, 0.55],  [0.2, 0.2, 0.07],   [90, 1, 0, 0], [0, 0, 0, 1]); // Hammer
-    drawCylinder(gl, whiteCylinder, [-0.77, 1.36, 1.3],  [0.2, 0.2, 0.01],   [90, 1, 0, 0], [0, 0, 0, 1]);   // White front circle
-    drawCylinder(gl, whiteCylinder, [-0.77, 1.36, 0.45],  [0.2, 0.2, 0.01],   [90, 1, 0, 0], [0, 0, 0, 1]);  // White back circle
-    drawCircle(gl, mallotCircle, [-.77, 1.36, 1.42], [0.2, 0.2, 0.1], [0, 1, 0, 0])                          // Mallot front circle
-    drawCircle(gl, mallotCircle, [-.77, 1.36, 0.44], [0.2, 0.2, 0.1], [0, 1, 0, 0])                          // Mallot back circle
-    drawStar(gl, star, [-0.77, 1.37, 1.43], [0.2, 0.2, 0.1], [0, 1, 0, 0])                                   // Front star
-    drawStar(gl, star, [-0.77, 1.37, .43], [0.2, 0.2, 0.1], [0, 1, 0, 0])                                    // Back star
+    const pyramids = [pyramid]
     
-    // Feet
-    drawSphere(gl, natchoSphere, [-0.2, 0.2, 0.25], [0.2, 0.2, 0.2], [0, 1, 0, 0], [0, 1, 0, 0]) // Left foot
-    drawSphere(gl, natchoSphere, [0.2, 0.2, 0.25],  [0.2, 0.2, 0.2], [0, 1, 0, 0], [0, 1, 0, 0]) // Right foot
-
-    // Belt    
-    drawTriangle(gl, redTriangle, [-0.31, 0.48, 0.4], [0.15, 0.15, 1], [14, 1, 0, 0], [-14, 0, 1, 0])
-    drawTriangle(gl, yellowTriangle, [-0.24, 0.58, 0.52], [0.25, 0.2, 1], [180, 1, 0, 0], [15,0, 1, 0])
-    drawTriangle(gl, redTriangle,  [-0.10, 0.46, 0.57], [0.25, 0.2, 1], [0, 1, 0, 0], [-4, 0, 1, 0])
-    drawTriangle(gl, yellowTriangle, [0.04, 0.58, 0.6], [0.25, 0.2, 1], [180, 1, 0, 0], [-2, 0, 1, 0])
-    drawTriangle(gl, redTriangle,  [0.18, 0.46, 0.55], [0.25, 0.2, 1], [0, 1, 0, 0], [7.5, 0, 1, 0])
-    drawTriangle(gl, yellowTriangle, [0.27, 0.58, 0.50], [0.15, 0.2, 1], [180, 1, 0, 0], [-6, 0, 1, 0])
+    drawPlanes(gl, planes)
+    drawSpheres(gl, spheres[0], 10)
+    drawPenguin(gl, spheres, cylinders, pyramids, circles, triangles, stars)
 }
 
 // Function to create my plane aka my wall i just just need to give it a type and color
@@ -227,20 +171,20 @@ function createPlane(gl, wall, color) {
 // Function to create Sphere just give color
 function createSphere(gl, color) {
 
-    const latSteps = 21;
-    const lonSteps = 21;
+    const latSteps = 21;      // vertical divisions
+    const lonSteps = 21;      // horizontal divisions
 
     const vertices = [];
     const colors = [];
     const indices = [];
 
     for (let i = 0; i <= latSteps; i++) {
-        const theta = i * Math.PI / latSteps;
+        const theta = i * Math.PI / latSteps; // latitude angle
         const sinT = Math.sin(theta);
         const cosT = Math.cos(theta);
 
         for (let j = 0; j <= lonSteps; j++) {
-            const phi = j * 2 * Math.PI / lonSteps;
+            const phi = j * 2 * Math.PI / lonSteps; // longitude angle
             const sinP = Math.sin(phi);
             const cosP = Math.cos(phi);
 
@@ -249,17 +193,18 @@ function createSphere(gl, color) {
             const z =  sinT * sinP;
 
             vertices.push(x, y, z);
-            colors.push(...color);
+            colors.push(...color); // same color per vertex
         }
     }
 
+    // build triangles
     for (let i = 0; i < latSteps; i++) {
         for (let j = 0; j < lonSteps; j++) {
-            const a = i * (lonSteps + 1) + j;
-            const b = a + lonSteps + 1;
+            const a = i * (lonSteps + 1) + j; // Current
+            const b = a + lonSteps + 1; // next row
 
-            indices.push(a, b, a + 1);
-            indices.push(a + 1, b, b + 1);
+            indices.push(a, b, a + 1); //first tri
+            indices.push(a + 1, b, b + 1); // second tri
         }
     }
 
@@ -279,34 +224,33 @@ function createCylinder(gl, color){
     const indices = [];
 
     var height = 11;
-    var steps = 20;
+    var steps = 20; // circle 
 
     for (var i = 0; i <= steps; i++){
-        var angle = (i/steps) * 2 * Math.PI;
+        var angle = (i/steps) * 2 * Math.PI; // angle around circle
 
         var x = Math.cos(angle);
         var z = Math.sin(angle);
 
-        // bottom vertex
+        // bottom ring
         vertices.push(x, 0, z);
         colors.push(...color);
 
-        // top vertex
+        // top ring
         vertices.push(x, height, z);
         colors.push(...color);
 
     }
 
+    // connect side faces
     for (var i = 0; i < steps; i++) {
         var b0 = 2 * i;         // bottom i
         var t0 = b0 + 1;        // top i
         var b1 = 2 * (i + 1);   // bottom next
         var t1 = b1 + 1;        // top next
 
-        // Triangle 1
-        indices.push(b0, b1, t0);
-        // Triangle 2
-        indices.push(t0, b1, t1);
+        indices.push(b0, b1, t0);    // Triangle 1
+        indices.push(t0, b1, t1);    // Triangle 2
     }
 
     return initBuffers(
@@ -317,8 +261,10 @@ function createCylinder(gl, color){
     );
 }
 
+// Function to create Pyramid give just color
 function createPyramid(gl, color) {
 
+    // Points
     const vertices = [
         // Base
         -0.5, 0, -0.5,
@@ -329,15 +275,16 @@ function createPyramid(gl, color) {
          0.0, 1.0,  0.0
     ];
 
+    // Indices
     const indices = [
         //base
         0, 1, 2,
-
         0, 1, 3,
         1, 2, 3,
         0, 2, 3,
     ];
 
+    // Unpack color
     const colors = [];
     for (let i = 0; i < vertices.length / 3; i++) {
         colors.push(...color);
@@ -351,7 +298,7 @@ function createPyramid(gl, color) {
     );
 }
 
-// Function to create Circle
+// Function to create Circle give just color
 function createCircle(gl, color){
 
     const vertices = [];
@@ -381,18 +328,22 @@ function createCircle(gl, color){
     );
 }
 
+// Function to create Triangle give just color
 function createTriangle(gl, color){
-    const vertices = [
 
+    // Points
+    const vertices = [
        -0.5, 0.0, 0.0,
         0.0, 0.5, 0.0,
         0.5, 0.0, 0.0
     ];
-    const colors = [];
 
-    for (var i = 0; i <= vertices.length; i++){
+    // Push back color
+    const colors = [];
+    for (var i = 0; i < vertices.length; i++){
         colors.push(...color);
     }
+
     return initBuffers(
         gl,
         new Float32Array(vertices),
@@ -401,8 +352,10 @@ function createTriangle(gl, color){
     );
 }
 
+// Function to create star give just color
 function createStar(gl, color) {
 
+    // Points
     const vertices = [
         0.00,  0.00, 0.00,
         0.00,  1.00, 0.00,
@@ -418,6 +371,7 @@ function createStar(gl, color) {
         0.00,  1.00, 0.00
     ];
 
+    // Unpack Color
     const colors = [];
     for (let i = 0; i < vertices.length / 3; i++) {
         colors.push(...color);
@@ -490,18 +444,17 @@ function initObject(gl, object) {
 
 // Function to draw the flat Plane for floors and walls
 function drawPlane(gl, plane) {
-
     var xformMatrix = new Matrix4();
     xformMatrix.setIdentity();
+
     gl.uniformMatrix4fv(u_xformMatrix, false, xformMatrix.elements);
 
     initObject(gl, plane)
     gl.drawArrays(gl.TRIANGLE_FAN, 0, plane.vertexCount);
 }
 
-// Function to draw one sphere and move it and scale it
+// Function to draw sphere and move it and scale it and rotate it
 function drawSphere(gl, sphere, moving, scaling, rotating1, rotating2) {
-
     var xformMatrix = new Matrix4();
     xformMatrix.setTranslate(...moving).rotate(...rotating1).rotate(...rotating2).scale(...scaling); 
 
@@ -511,9 +464,8 @@ function drawSphere(gl, sphere, moving, scaling, rotating1, rotating2) {
     gl.drawElements(gl.TRIANGLES, sphere.indicesCount, gl.UNSIGNED_SHORT, 0);
 }
 
-// Function to draw one sphere and move it and scale it
+// Function to draw cylinder and move it and scale it and rotate it
 function drawCylinder(gl, cylinder, moving, scaling, rotating1, rotating2) {
-
     var xformMatrix = new Matrix4();
     xformMatrix.setTranslate(...moving).scale(...scaling).rotate(...rotating1).rotate(...rotating2)
 
@@ -523,8 +475,8 @@ function drawCylinder(gl, cylinder, moving, scaling, rotating1, rotating2) {
     gl.drawElements(gl.TRIANGLES, cylinder.indicesCount, gl.UNSIGNED_SHORT, 0);
 }
 
+// Function to draw pyramid and move it and scale it and rotate it
 function drawPyramid(gl, pyramid, moving, scaling, rotating1, rotating2) {
-
     var xformMatrix = new Matrix4();
     xformMatrix.setTranslate(...moving).scale(...scaling).rotate(...rotating1).rotate(...rotating2);
 
@@ -534,7 +486,7 @@ function drawPyramid(gl, pyramid, moving, scaling, rotating1, rotating2) {
     gl.drawElements(gl.TRIANGLES, pyramid.indicesCount, gl.UNSIGNED_SHORT, 0);
 }
 
-
+// Function to draw circle and move it and scale it and rotate it
 function drawCircle(gl, circle, moving, scaling, rotating1) {
     var xformMatrix = new Matrix4();
     xformMatrix.setTranslate(...moving).scale(...scaling).rotate(...rotating1)
@@ -545,6 +497,7 @@ function drawCircle(gl, circle, moving, scaling, rotating1) {
     gl.drawArrays(gl.TRIANGLE_FAN, 0, circle.vertexCount);
 }
 
+// Function to draw triangle and move it and scale it and rotate it
 function drawTriangle(gl, triangle, moving, scaling, rotating1, rotating2) {
     var xformMatrix = new Matrix4();
     xformMatrix.setTranslate(...moving).scale(...scaling).rotate(...rotating1).rotate(...rotating2)
@@ -555,6 +508,7 @@ function drawTriangle(gl, triangle, moving, scaling, rotating1, rotating2) {
     gl.drawArrays(gl.TRIANGLES, 0, triangle.vertexCount);
 }
 
+// Function to draw star and move it and scale it and rotate it
 function drawStar(gl, star, moving, scaling, rotating1) {
     var xformMatrix = new Matrix4();
     xformMatrix.setTranslate(...moving).scale(...scaling).rotate(...rotating1)
@@ -565,7 +519,7 @@ function drawStar(gl, star, moving, scaling, rotating1) {
     gl.drawArrays(gl.TRIANGLE_FAN, 0, star.vertexCount);
 }
 
-// Function that draws my spheres going parallel to each other
+// Function that draws spheres going parallel to each other
 function drawSpheres(gl, sphere, amount){
     var j = -6.5;
     for(var i = 1; i <= amount; i++){
@@ -575,9 +529,76 @@ function drawSpheres(gl, sphere, amount){
     }
 }
 
-// Function that draws my walls all together
+// Function that draws walls all together
 function drawPlanes(gl, planes){
     for(var i = 0; i < planes.length; i ++){
         drawPlane(gl, planes[i])
     }
+}
+
+// Function that draws entire penguin
+function drawPenguin(gl, spheres, cylinders, pyramids, circles, triangles, stars){
+
+    // PENGUIN
+    // Body
+    drawSphere(gl, spheres[1], [0, 0.63, .2], [0.4, 0.4, 0.4], [0, 1, 0, 0], [0, 1, 0, 0]); 
+
+    // White scarf and coat
+    drawSphere(gl, spheres[2], [0.0, 0.6, 0.0,], [0.5, 0.5, 0.5], [0, 1, 0, 0], [0, 1, 0, 0]); 
+    drawSphere(gl, spheres[4], [0.15, 0.60, 0.09], [0.13, 0.5, 0.4], [0, 0, 0, 1], [40, 0, 1, 0]); 
+    drawSphere(gl, spheres[4], [-0.15, 0.60, 0.09], [0.13, 0.5, 0.4], [0, 0, 0, 1], [-40, 0, 1, 0]); 
+    drawSphere(gl, spheres[4], [-0.011, 1.0, 0.04], [0.2, 0.17, 0.35], [0, 0, 0, 1], [90, 0, 1, 0]); 
+
+    // Head
+    drawSphere(gl, spheres[1], [0, 1.2, .2], [0.3, 0.3, 0.3], [0, 1, 0, 0], [0, 1, 0, 0]);
+
+    // Beak
+    drawPyramid(gl, pyramids[0], [0.0, 1.07, 0.5], [0.15, 0.06, 0.23], [0, 1, 0, 0], [0, 0, 1, 0]);  // Top beak
+    drawPyramid(gl, pyramids[0], [0.0, 1.07, 0.5], [0.15, 0.1, 0.23], [0, 1, 0, 0], [180, 0, 0, 1]); // Bottom beak
+
+    // Eyes
+    drawSphere(gl, spheres[4], [-0.15, 1.2, 0.4], [0.05, 0.1, 0.1], [0, 1, 0, 0], [0, 1, 0, 0]); // Left sclara 
+    drawSphere(gl, spheres[4], [0.15, 1.2, 0.4],  [0.05, 0.1, 0.1], [0, 1, 0, 0], [0, 1, 0, 0]); // Right sclara
+    drawSphere(gl, spheres[5], [-0.15, 1.2, 0.403], [0.05, 0.09, 0.1], [0, 1, 0, 0], [0, 1, 0, 0]); // Left pupil
+    drawSphere(gl, spheres[5], [0.15, 1.2, 0.403],  [0.05, 0.09, 0.1], [0, 1, 0, 0], [0, 1, 0, 0]); // Right pupil
+    drawSphere(gl, spheres[4], [-0.15, 1.2, 0.476], [0.03, 0.03, 0.03], [0, 1, 0, 0], [0, 1, 0, 0]) // Left iris
+    drawSphere(gl, spheres[4], [0.15, 1.2, 0.476],  [0.03, 0.03, 0.03], [0, 1, 0, 0], [0, 1, 0, 0]) // right iris
+
+    // Hat
+    drawSphere(gl, spheres[2],     [0, 1.4, .2],      [ 0.2, 0.2, 0.2], [0, 1, 0, 0], [0, 1, 0, 0]) 
+    drawSphere(gl, spheres[3],  [0, 1.35, .2],     [0.3, 0.1, 0.3], [0, 1, 0, 0], [0, 1, 0, 0])
+    drawSphere(gl, spheres[3],  [0.0, 1.35, 0.45],[0.1, 0.1, 0.1], [0, 1, 0, 0], [0, 1, 0, 0])
+    drawSphere(gl, spheres[4],   [0, 1.6, 0.1],   [0.1, 0.1, 0.1], [0, 1, 0, 0], [0, 1, 0, 0])
+
+    // Arms
+    drawCylinder(gl, cylinders[0], [-0.23, 0.9, -0.2], [0.1, 0.1, 0.1],   [100, 1, 0, 0], [20, 0, 0, 1]);  // Left arm coat
+    drawCylinder(gl, cylinders[0], [0.23, 0.9, -0.2],  [0.1, 0.1, 0.1],   [100, 1, 0, 0], [-20, 0, 0, 1]); // Right arm coat
+
+    // Hand
+    drawSphere(gl, spheres[4], [-0.6, 0.725, 0.8],  [0.11, 0.11, 0.11], [0, 1, 0, 0], [0, 1, 0, 0])    // Left Puff coat
+    drawSphere(gl, spheres[4], [0.6, 0.725, 0.8],  [0.11, 0.11, 0.11], [0, 1, 0, 0], [0, 1, 0, 0])     // Right Puff coat
+    drawSphere(gl, spheres[6], [-0.62, 0.71, 0.85],  [0.12, 0.12, 0.12], [0, 1, 0, 0], [0, 1, 0, 0])  // Left hand
+    drawSphere(gl, spheres[6], [0.62, 0.71, 0.85],  [0.12, 0.12, 0.12], [0, 1, 0, 0], [0, 1, 0, 0])   // Right hand
+
+    // Mallot
+    drawCylinder(gl, cylinders[1], [-0.75, 0.4, 0.95],  [0.1, 0.1, 0.1],   [0, 1, 0, 0], [0, 0, 0, 1])     // Handle 
+    drawCylinder(gl, cylinders[1], [-0.77, 1.36, 0.55],  [0.2, 0.2, 0.07],   [90, 1, 0, 0], [0, 0, 0, 1]); // Hammer
+    drawCylinder(gl, cylinders[2], [-0.77, 1.36, 1.3],  [0.2, 0.2, 0.01],   [90, 1, 0, 0], [0, 0, 0, 1]);   // White front circle
+    drawCylinder(gl, cylinders[2], [-0.77, 1.36, 0.45],  [0.2, 0.2, 0.01],   [90, 1, 0, 0], [0, 0, 0, 1]);  // White back circle
+    drawCircle(gl, circles[0], [-.77, 1.36, 1.42], [0.2, 0.2, 0.1], [0, 1, 0, 0])                          // Mallot front circle
+    drawCircle(gl, circles[0], [-.77, 1.36, 0.44], [0.2, 0.2, 0.1], [0, 1, 0, 0])                          // Mallot back circle
+    drawStar(gl, stars[0], [-0.77, 1.37, 1.43], [0.2, 0.2, 0.1], [0, 1, 0, 0])                                   // Front star
+    drawStar(gl, stars[0], [-0.77, 1.37, .43], [0.2, 0.2, 0.1], [0, 1, 0, 0])                                    // Back star
+    
+    // Feet
+    drawSphere(gl, spheres[6], [-0.2, 0.2, 0.25], [0.2, 0.2, 0.2], [0, 1, 0, 0], [0, 1, 0, 0]) // Left foot
+    drawSphere(gl, spheres[6], [0.2, 0.2, 0.25],  [0.2, 0.2, 0.2], [0, 1, 0, 0], [0, 1, 0, 0]) // Right foot
+
+    // Belt    
+    drawTriangle(gl, triangles[1], [-0.31, 0.48, 0.4], [0.15, 0.15, 1], [14, 1, 0, 0], [-14, 0, 1, 0])
+    drawTriangle(gl, triangles[0], [-0.24, 0.58, 0.52], [0.25, 0.2, 1], [180, 1, 0, 0], [15,0, 1, 0])
+    drawTriangle(gl, triangles[1],  [-0.10, 0.46, 0.57], [0.25, 0.2, 1], [0, 1, 0, 0], [-4, 0, 1, 0])
+    drawTriangle(gl, triangles[0], [0.04, 0.58, 0.6], [0.25, 0.2, 1], [180, 1, 0, 0], [-2, 0, 1, 0])
+    drawTriangle(gl, triangles[1],  [0.18, 0.46, 0.55], [0.25, 0.2, 1], [0, 1, 0, 0], [7.5, 0, 1, 0])
+    drawTriangle(gl, triangles[0], [0.27, 0.58, 0.50], [0.15, 0.2, 1], [180, 1, 0, 0], [-6, 0, 1, 0])
 }
