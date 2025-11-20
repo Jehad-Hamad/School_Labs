@@ -192,6 +192,8 @@ function main() {
 
         gl.uniformMatrix4fv(u_ModelViewMatrix, false, modelViewMatrix.elements);
 
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        
         drawPlanes(gl, planes)
         drawSpheres(gl, spheres[0], 10)
         drawPenguin(gl, spheres, cylinders, pyramids, circles, triangles, stars, x, z)
