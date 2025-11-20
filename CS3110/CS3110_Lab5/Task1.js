@@ -26,9 +26,9 @@ let eyeX = 0; eyeY = 1; eyeZ = 6;
 let atX = 0, atY = 0, atZ = 0;
 let upX = 0, upY = 1, upZ = 0;
 
-let near = 0.1;
+let near = 1;
 let fov = 45;
-let far =  100
+let far =  15
 function main() {
     const canvas = document.getElementById('webgl');
     const gl = getWebGLContext(canvas);
@@ -71,8 +71,10 @@ function main() {
     const floor = createPlane(gl, "floor",    [0.54, 0.60, 0.36]);
     const right = createPlane(gl, "wallRight",[0.53, 0.81, 0.92]);     
     const left  = createPlane(gl, "wallLeft", [0.53, 0.81, 0.92]);     
-    const back  = createPlane(gl, "wallBack", [0.53, 0.81, 0.92]);       
-    const planes = [floor, right, left, back]
+    const back  = createPlane(gl, "wallBack", [0.53, 0.81, 0.92]);   
+    const front  = createPlane(gl, "wallFront", [0.53, 0.81, 0.92]);       
+    
+    const planes = [floor, right, left, back, front]
 
     const greenSphere =    createSphere(gl, [.54, 0.9, 0.36]);
     const blueBodySphere = createSphere(gl, [0.0, 0.4, 0.8]);
@@ -100,35 +102,81 @@ function main() {
 
     const pyramid = createPyramid(gl, [1.0, 1.0, 0.0]);
     const pyramids = [pyramid]
+    
+    const redlLine = createLine(gl, [1.0, 0.0, 0.0]);
+    const blueLine = createLine(gl, [0.0, 0.0, 1.0]);
+    const lines = [redlLine, blueLine]
+
+    var x = 0; var z = 0;
+    var up_down = 0;
 
     drawPlanes(gl, planes)
     drawSpheres(gl, spheres[0], 10)
-    drawPenguin(gl, spheres, cylinders, pyramids, circles, triangles, stars)
-
+    drawPenguin(gl, spheres, cylinders, pyramids, circles, triangles, stars, x, z)
+    drawLines(gl, lines, x, z)
 
     function keyDown(ev) {
 
-        if (ev.keyCode === 39) {      // RIGHT → orbit clockwise
+        // CAMERA
+        if (ev.keyCode === 39) {      // RIGHT → orbit clockwise (left key)
             camAngle -= 0.05;
             eyeX = Math.cos(camAngle) * camRadius;
             eyeZ = Math.sin(camAngle) * camRadius;
         }
-        else if (ev.keyCode === 37) { // LEFT → orbit counter-clockwise
+        else if (ev.keyCode === 37) { // LEFT → orbit counter-clockwise (right key)
             camAngle += 0.05;
             eyeX = Math.cos(camAngle) * camRadius;
             eyeZ = Math.sin(camAngle) * camRadius;
         }
-        else if (ev.keyCode === 38) {  // UP
-            camAngle += 0.05;
-            eyeZ = Math.cos(camAngle) * camRadius;
-            eyeY = Math.max(0.5, Math.sin(camAngle) * camRadius);
+        else if (ev.keyCode === 38) {  // UP (up key)
+            up_down += 0.05;
+            eyeY = Math.max(0.5, Math.sin(up_down) * camRadius);
         }
-        else if (ev.keyCode === 40) { // DOWN
-            camAngle -= 0.05;
-            eyeZ = Math.cos(camAngle) * camRadius;
-            eyeY = Math.max(0.5, Math.sin(camAngle) * camRadius);
+        else if (ev.keyCode === 40) { // DOWN (down key)
+            up_down -= 0.05;
+            eyeY = Math.max(0.5, Math.sin(up_down) * camRadius);
+        } 
+        // MOVING
+        else if(ev.key.toLowerCase() == 'w'){ // FORWARD (w)
+            z +=0.2;
+            z = Math.min(7, z)
+        } 
+        else if(ev.key.toLowerCase() == 's'){ // BACKWARD (s)
+            z -=0.2;
+            z = Math.max(-7, z)
+        } 
+        else if(ev.key.toLowerCase() == 'd'){ //RIGHT SIDE (d)
+            x +=0.2;
+            x= Math.min(7, x)
+        } 
+        else if(ev.key.toLowerCase() == 'a'){ // LEFT SIDE (a)
+            x -=0.2;
+            x = Math.max(-7, x)
         }
-        
+        // FOV, NEAR, FAR
+        else if(ev.keyCode == '189'){ // FOV Smaller (=)
+            fov +=5;
+            fov = Math.min(100, fov)
+        } 
+        else if(ev.keyCode == '187'){ // FOV Bigger (-)
+            fov -=5;
+            fov = Math.max(45, fov)
+        }
+        else if(ev.keyCode == '77'){ // near Further (m)
+            near -=0.1;
+        } 
+        else if(ev.keyCode == '78'){ // near Closer (n)
+            near +=0.1;
+        }
+        else if(ev.keyCode == '70'){ // far Closer (f)
+            far -=0.5;
+            far = Math.max(5, far)
+
+        } 
+        else if(ev.keyCode == '71'){ // far Further (g)
+            far +=0.5;
+            far = Math.min(15, far)
+        }  
 
         viewMatrix.setLookAt(
             eyeX, eyeY, eyeZ,       
@@ -146,7 +194,8 @@ function main() {
 
         drawPlanes(gl, planes)
         drawSpheres(gl, spheres[0], 10)
-        drawPenguin(gl, spheres, cylinders, pyramids, circles, triangles, stars)
+        drawPenguin(gl, spheres, cylinders, pyramids, circles, triangles, stars, x, z)
+        drawLines(gl, lines, x, z)
     }  
     
     document.onkeydown = function(ev){ keyDown(ev)}
@@ -208,6 +257,16 @@ function createPlane(gl, wall, color) {
                 ...vertex[1],
                 ...vertex[2],
                 ...vertex[3]
+            ]);
+            break;
+
+        case "wallFront":
+            vertices = new Float32Array([
+                ...vertex[4],
+                ...vertex[5],
+                ...vertex[6],
+                ...vertex[7]
+
             ]);
             break;
 
@@ -442,6 +501,26 @@ function createStar(gl, color) {
     );
 }
 
+function createLine(gl, color){
+    const vertices = [
+        2.0, 0.5, 2,
+        -2.0, 0.5, 2
+    ]
+
+    // Unpack Color
+    const colors = [];
+    for (let i = 0; i < 2; i++) {
+        colors.push(...color);
+    }
+
+    return initBuffers(
+        gl,
+        new Float32Array(vertices),
+        new Float32Array(colors),
+        null
+    );
+}
+
 // Function to initialize buffers for the first time 
 function initBuffers(gl, vertices, colors, indices) {
 
@@ -576,6 +655,20 @@ function drawStar(gl, star, moving, scaling, rotating1) {
     gl.drawArrays(gl.TRIANGLE_FAN, 0, star.vertexCount);
 }
 
+function drawLine(gl, line, moving, scaling, rotating1){
+    var xformMatrix = new Matrix4();
+    xformMatrix.setTranslate(...moving).scale(...scaling).rotate(...rotating1);
+
+    gl.uniformMatrix4fv(u_xformMatrix, false, xformMatrix.elements);
+
+    initObject(gl, line)
+    gl.drawArrays(gl.LINES, 0, line.vertexCount);
+}
+
+function drawLines(gl, lines, x, z){
+    drawLine(gl, lines[0], [0.0 + x, 0.0, -1.7 + z], [10.0, 1.2, 1.0], [0, 1, 0, 0]);
+    drawLine(gl, lines[1], [-2.0 + x, 0.0, 0.0 + z], [1.0,  1.2, 10.0], [90, 0, 1, 0]);
+}
 // Function that draws spheres going parallel to each other
 function drawSpheres(gl, sphere, amount){
     var j = -6.5;
@@ -594,68 +687,68 @@ function drawPlanes(gl, planes){
 }
 
 // Function that draws entire penguin
-function drawPenguin(gl, spheres, cylinders, pyramids, circles, triangles, stars){
+function drawPenguin(gl, spheres, cylinders, pyramids, circles, triangles, stars, x, z){
 
     // PENGUIN
     // Body
-    drawSphere(gl, spheres[1], [0, 0.63, .2], [0.4, 0.4, 0.4], [0, 1, 0, 0], [0, 1, 0, 0]); 
+    drawSphere(gl, spheres[1], [0 + x, 0.63, .2+z], [0.4, 0.4, 0.4], [0, 1, 0, 0], [0, 1, 0, 0]); 
 
     // White scarf and coat
-    drawSphere(gl, spheres[2], [0.0, 0.6, 0.0,], [0.5, 0.5, 0.5], [0, 1, 0, 0], [0, 1, 0, 0]); 
-    drawSphere(gl, spheres[4], [0.15, 0.60, 0.09], [0.13, 0.5, 0.4], [0, 0, 0, 1], [40, 0, 1, 0]); 
-    drawSphere(gl, spheres[4], [-0.15, 0.60, 0.09], [0.13, 0.5, 0.4], [0, 0, 0, 1], [-40, 0, 1, 0]); 
-    drawSphere(gl, spheres[4], [-0.011, 1.0, 0.04], [0.2, 0.17, 0.35], [0, 0, 0, 1], [90, 0, 1, 0]); 
+    drawSphere(gl, spheres[2], [0.0+x, 0.6, 0.0+z,], [0.5, 0.5, 0.5], [0, 1, 0, 0], [0, 1, 0, 0]); 
+    drawSphere(gl, spheres[4], [0.15+x, 0.60, 0.09+z], [0.13, 0.5, 0.4], [0, 0, 0, 1], [40, 0, 1, 0]); 
+    drawSphere(gl, spheres[4], [-0.15+x, 0.60, 0.09+z], [0.13, 0.5, 0.4], [0, 0, 0, 1], [-40, 0, 1, 0]); 
+    drawSphere(gl, spheres[4], [-0.011+x, 1.0, 0.04+z], [0.2, 0.17, 0.35], [0, 0, 0, 1], [90, 0, 1, 0]); 
 
     // Head
-    drawSphere(gl, spheres[1], [0, 1.2, .2], [0.3, 0.3, 0.3], [0, 1, 0, 0], [0, 1, 0, 0]);
+    drawSphere(gl, spheres[1], [0+x, 1.2, .2+z], [0.3, 0.3, 0.3], [0, 1, 0, 0], [0, 1, 0, 0]);
 
     // Beak
-    drawPyramid(gl, pyramids[0], [0.0, 1.07, 0.5], [0.15, 0.06, 0.23], [0, 1, 0, 0], [0, 0, 1, 0]);  // Top beak
-    drawPyramid(gl, pyramids[0], [0.0, 1.07, 0.5], [0.15, 0.1, 0.23], [0, 1, 0, 0], [180, 0, 0, 1]); // Bottom beak
+    drawPyramid(gl, pyramids[0], [0.0+x, 1.07, 0.5+z], [0.15, 0.06, 0.23], [0, 1, 0, 0], [0, 0, 1, 0]);  // Top beak
+    drawPyramid(gl, pyramids[0], [0.0+x, 1.07, 0.5+z], [0.15, 0.1, 0.23], [0, 1, 0, 0], [180, 0, 0, 1]); // Bottom beak
 
     // Eyes
-    drawSphere(gl, spheres[4], [-0.15, 1.2, 0.4], [0.05, 0.1, 0.1], [0, 1, 0, 0], [0, 1, 0, 0]); // Left sclara 
-    drawSphere(gl, spheres[4], [0.15, 1.2, 0.4],  [0.05, 0.1, 0.1], [0, 1, 0, 0], [0, 1, 0, 0]); // Right sclara
-    drawSphere(gl, spheres[5], [-0.15, 1.2, 0.403], [0.05, 0.09, 0.1], [0, 1, 0, 0], [0, 1, 0, 0]); // Left pupil
-    drawSphere(gl, spheres[5], [0.15, 1.2, 0.403],  [0.05, 0.09, 0.1], [0, 1, 0, 0], [0, 1, 0, 0]); // Right pupil
-    drawSphere(gl, spheres[4], [-0.15, 1.2, 0.476], [0.03, 0.03, 0.03], [0, 1, 0, 0], [0, 1, 0, 0]) // Left iris
-    drawSphere(gl, spheres[4], [0.15, 1.2, 0.476],  [0.03, 0.03, 0.03], [0, 1, 0, 0], [0, 1, 0, 0]) // right iris
+    drawSphere(gl, spheres[4], [-0.15+x, 1.2, 0.4+z], [0.05, 0.1, 0.1], [0, 1, 0, 0], [0, 1, 0, 0]); // Left sclara 
+    drawSphere(gl, spheres[4], [0.15+x, 1.2, 0.4+z],  [0.05, 0.1, 0.1], [0, 1, 0, 0], [0, 1, 0, 0]); // Right sclara
+    drawSphere(gl, spheres[5], [-0.15+x, 1.2, 0.403+z], [0.05, 0.09, 0.1], [0, 1, 0, 0], [0, 1, 0, 0]); // Left pupil
+    drawSphere(gl, spheres[5], [0.15+x, 1.2, 0.403+z],  [0.05, 0.09, 0.1], [0, 1, 0, 0], [0, 1, 0, 0]); // Right pupil
+    drawSphere(gl, spheres[4], [-0.15+x, 1.2, 0.476+z], [0.03, 0.03, 0.03], [0, 1, 0, 0], [0, 1, 0, 0]) // Left iris
+    drawSphere(gl, spheres[4], [0.15+x, 1.2, 0.476+z],  [0.03, 0.03, 0.03], [0, 1, 0, 0], [0, 1, 0, 0]) // right iris
 
     // Hat
-    drawSphere(gl, spheres[2],     [0, 1.4, .2],      [ 0.2, 0.2, 0.2], [0, 1, 0, 0], [0, 1, 0, 0]) 
-    drawSphere(gl, spheres[3],  [0, 1.35, .2],     [0.3, 0.1, 0.3], [0, 1, 0, 0], [0, 1, 0, 0])
-    drawSphere(gl, spheres[3],  [0.0, 1.35, 0.45],[0.1, 0.1, 0.1], [0, 1, 0, 0], [0, 1, 0, 0])
-    drawSphere(gl, spheres[4],   [0, 1.6, 0.1],   [0.1, 0.1, 0.1], [0, 1, 0, 0], [0, 1, 0, 0])
+    drawSphere(gl, spheres[2],     [0+x, 1.4, .2+z],      [ 0.2, 0.2, 0.2], [0, 1, 0, 0], [0, 1, 0, 0]) 
+    drawSphere(gl, spheres[3],  [0+x, 1.35, .2+z],     [0.3, 0.1, 0.3], [0, 1, 0, 0], [0, 1, 0, 0])
+    drawSphere(gl, spheres[3],  [0.0+x, 1.35, 0.45+z],[0.1, 0.1, 0.1], [0, 1, 0, 0], [0, 1, 0, 0])
+    drawSphere(gl, spheres[4],   [0+x, 1.6, 0.1+z],   [0.1, 0.1, 0.1], [0, 1, 0, 0], [0, 1, 0, 0])
 
     // Arms
-    drawCylinder(gl, cylinders[0], [-0.23, 0.9, -0.2], [0.1, 0.1, 0.1],   [100, 1, 0, 0], [20, 0, 0, 1]);  // Left arm coat
-    drawCylinder(gl, cylinders[0], [0.23, 0.9, -0.2],  [0.1, 0.1, 0.1],   [100, 1, 0, 0], [-20, 0, 0, 1]); // Right arm coat
+    drawCylinder(gl, cylinders[0], [-0.23+x, 0.9, -0.2+z], [0.1, 0.1, 0.1],   [100, 1, 0, 0], [20, 0, 0, 1]);  // Left arm coat
+    drawCylinder(gl, cylinders[0], [0.23+x, 0.9, -0.2+z],  [0.1, 0.1, 0.1],   [100, 1, 0, 0], [-20, 0, 0, 1]); // Right arm coat
 
     // Hand
-    drawSphere(gl, spheres[4], [-0.6, 0.725, 0.8],  [0.11, 0.11, 0.11], [0, 1, 0, 0], [0, 1, 0, 0])    // Left Puff coat
-    drawSphere(gl, spheres[4], [0.6, 0.725, 0.8],  [0.11, 0.11, 0.11], [0, 1, 0, 0], [0, 1, 0, 0])     // Right Puff coat
-    drawSphere(gl, spheres[6], [-0.62, 0.71, 0.85],  [0.12, 0.12, 0.12], [0, 1, 0, 0], [0, 1, 0, 0])  // Left hand
-    drawSphere(gl, spheres[6], [0.62, 0.71, 0.85],  [0.12, 0.12, 0.12], [0, 1, 0, 0], [0, 1, 0, 0])   // Right hand
+    drawSphere(gl, spheres[4], [-0.6+x, 0.725, 0.8+z],  [0.11, 0.11, 0.11], [0, 1, 0, 0], [0, 1, 0, 0])    // Left Puff coat
+    drawSphere(gl, spheres[4], [0.6+x, 0.725, 0.8+z],  [0.11, 0.11, 0.11], [0, 1, 0, 0], [0, 1, 0, 0])     // Right Puff coat
+    drawSphere(gl, spheres[6], [-0.62+x, 0.71, 0.85+z],  [0.12, 0.12, 0.12], [0, 1, 0, 0], [0, 1, 0, 0])  // Left hand
+    drawSphere(gl, spheres[6], [0.62+x, 0.71, 0.85+z],  [0.12, 0.12, 0.12], [0, 1, 0, 0], [0, 1, 0, 0])   // Right hand
 
     // Mallot
-    drawCylinder(gl, cylinders[1], [-0.75, 0.4, 0.95],  [0.1, 0.1, 0.1],   [0, 1, 0, 0], [0, 0, 0, 1])     // Handle 
-    drawCylinder(gl, cylinders[1], [-0.77, 1.36, 0.55],  [0.2, 0.2, 0.07],   [90, 1, 0, 0], [0, 0, 0, 1]); // Hammer
-    drawCylinder(gl, cylinders[2], [-0.77, 1.36, 1.3],  [0.2, 0.2, 0.01],   [90, 1, 0, 0], [0, 0, 0, 1]);   // White front circle
-    drawCylinder(gl, cylinders[2], [-0.77, 1.36, 0.45],  [0.2, 0.2, 0.01],   [90, 1, 0, 0], [0, 0, 0, 1]);  // White back circle
-    drawCircle(gl, circles[0], [-.77, 1.36, 1.42], [0.2, 0.2, 0.1], [0, 1, 0, 0])                          // Mallot front circle
-    drawCircle(gl, circles[0], [-.77, 1.36, 0.44], [0.2, 0.2, 0.1], [0, 1, 0, 0])                          // Mallot back circle
-    drawStar(gl, stars[0], [-0.77, 1.37, 1.43], [0.2, 0.2, 0.1], [0, 1, 0, 0])                                   // Front star
-    drawStar(gl, stars[0], [-0.77, 1.37, .43], [0.2, 0.2, 0.1], [0, 1, 0, 0])                                    // Back star
+    drawCylinder(gl, cylinders[1], [-0.75+x, 0.4, 0.95+z],  [0.1, 0.1, 0.1],   [0, 1, 0, 0], [0, 0, 0, 1])     // Handle 
+    drawCylinder(gl, cylinders[1], [-0.77+x, 1.36, 0.55+z],  [0.2, 0.2, 0.07],   [90, 1, 0, 0], [0, 0, 0, 1]); // Hammer
+    drawCylinder(gl, cylinders[2], [-0.77+x, 1.36, 1.3+z],  [0.2, 0.2, 0.01],   [90, 1, 0, 0], [0, 0, 0, 1]);   // White front circle
+    drawCylinder(gl, cylinders[2], [-0.77+x, 1.36, 0.45+z],  [0.2, 0.2, 0.01],   [90, 1, 0, 0], [0, 0, 0, 1]);  // White back circle
+    drawCircle(gl, circles[0], [-.77+x, 1.36, 1.42+z], [0.2, 0.2, 0.1], [0, 1, 0, 0])                          // Mallot front circle
+    drawCircle(gl, circles[0], [-.77+x, 1.36, 0.44+z], [0.2, 0.2, 0.1], [0, 1, 0, 0])                          // Mallot back circle
+    drawStar(gl, stars[0], [-0.77+x, 1.37, 1.43+z], [0.2, 0.2, 0.1], [0, 1, 0, 0])                                   // Front star
+    drawStar(gl, stars[0], [-0.77+x, 1.37, .43+z], [0.2, 0.2, 0.1], [0, 1, 0, 0])                                    // Back star
     
     // Feet
-    drawSphere(gl, spheres[6], [-0.2, 0.2, 0.25], [0.2, 0.2, 0.2], [0, 1, 0, 0], [0, 1, 0, 0]) // Left foot
-    drawSphere(gl, spheres[6], [0.2, 0.2, 0.25],  [0.2, 0.2, 0.2], [0, 1, 0, 0], [0, 1, 0, 0]) // Right foot
+    drawSphere(gl, spheres[6], [-0.2+x, 0.2, 0.25+z], [0.2, 0.2, 0.2], [0, 1, 0, 0], [0, 1, 0, 0]) // Left foot
+    drawSphere(gl, spheres[6], [0.2+x, 0.2, 0.25+z],  [0.2, 0.2, 0.2], [0, 1, 0, 0], [0, 1, 0, 0]) // Right foot
 
     // Belt    
-    drawTriangle(gl, triangles[1], [-0.31, 0.48, 0.4], [0.15, 0.15, 1], [14, 1, 0, 0], [-14, 0, 1, 0])
-    drawTriangle(gl, triangles[0], [-0.24, 0.58, 0.52], [0.25, 0.2, 1], [180, 1, 0, 0], [15,0, 1, 0])
-    drawTriangle(gl, triangles[1],  [-0.10, 0.46, 0.57], [0.25, 0.2, 1], [0, 1, 0, 0], [-4, 0, 1, 0])
-    drawTriangle(gl, triangles[0], [0.04, 0.58, 0.6], [0.25, 0.2, 1], [180, 1, 0, 0], [-2, 0, 1, 0])
-    drawTriangle(gl, triangles[1],  [0.18, 0.46, 0.55], [0.25, 0.2, 1], [0, 1, 0, 0], [7.5, 0, 1, 0])
-    drawTriangle(gl, triangles[0], [0.27, 0.58, 0.50], [0.15, 0.2, 1], [180, 1, 0, 0], [-6, 0, 1, 0])
+    drawTriangle(gl, triangles[1], [-0.31+x, 0.48, 0.4+z], [0.15, 0.15, 1], [14, 1, 0, 0], [-14, 0, 1, 0])
+    drawTriangle(gl, triangles[0], [-0.24+x, 0.58, 0.52+z], [0.25, 0.2, 1], [180, 1, 0, 0], [15,0, 1, 0])
+    drawTriangle(gl, triangles[1],  [-0.10+x, 0.46, 0.57+z], [0.25, 0.2, 1], [0, 1, 0, 0], [-4, 0, 1, 0])
+    drawTriangle(gl, triangles[0], [0.04+x, 0.58, 0.6+z], [0.25, 0.2, 1], [180, 1, 0, 0], [-2, 0, 1, 0])
+    drawTriangle(gl, triangles[1],  [0.18+x, 0.46, 0.55+z], [0.25, 0.2, 1], [0, 1, 0, 0], [7.5, 0, 1, 0])
+    drawTriangle(gl, triangles[0], [0.27+x, 0.58, 0.50+z], [0.15, 0.2, 1], [180, 1, 0, 0], [-6, 0, 1, 0])
 }
