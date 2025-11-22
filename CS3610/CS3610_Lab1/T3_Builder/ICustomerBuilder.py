@@ -37,7 +37,7 @@ class IBuilder(ABC):
 
 class WebAppBuilder(IBuilder):
     def __init__(self):
-        self.customer:Customer = Customer("", "", "", "", "", "", "")
+        self.customer:Customer = Customer()
     
     def set_firstName(self, firstName:str):
         self.customer.firstName = firstName
@@ -72,7 +72,7 @@ class WebAppBuilder(IBuilder):
 
 class MobileAppBuilder(IBuilder):
     def __init__(self):
-        self.customer:Customer = Customer("", "", "", "", "", "", "")
+        self.customer:Customer = Customer()
     
     def set_firstName(self, firstName:str):
         self.customer.firstName = firstName

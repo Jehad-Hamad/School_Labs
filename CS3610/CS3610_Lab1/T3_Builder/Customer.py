@@ -1,10 +1,10 @@
 
 class Customer:
-    def __init__(self, firstName:str, lastName:str, midName:str, primaryEmail:str, secondaryEmail:str, primaryPhone:str, secondaryPhone:str) -> None:
-        self.firstName:str = firstName
-        self.lastName:str = lastName
-        self.midName:str = midName
-        self.primaryEmail:str = primaryEmail
-        self.secondaryEmail:str = secondaryEmail
-        self.primaryPhone:str = primaryPhone
-        self.secondaryPhone:str = secondaryPhone
+    def __init__(self) -> None:
+        self.firstName:str = ""
+        self.lastName:str = ""
+        self.midName:str = ""
+        self.primaryEmail:str = ""
+        self.secondaryEmail:str = ""
+        self.primaryPhone:str = ""
+        self.secondaryPhone:str = ""
