@@ -1,5 +1,5 @@
-from FactoryZoo.IZooClass import Zoo
-from FactoryZoo.AnimalFactoryClass import AnimalFactory
+from IZooClass import Zoo
+from AnimalFactoryClass import AnimalFactory
 
 class CalgaryZoo(Zoo):
     def __init__(self) -> None:

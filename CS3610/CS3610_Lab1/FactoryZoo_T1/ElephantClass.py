@@ -1,4 +1,4 @@
-from FactoryZoo.IAnimalClass import IAnimal
+from IAnimalClass import IAnimal
 
 class Elephant(IAnimal):  
     def __init__(self):

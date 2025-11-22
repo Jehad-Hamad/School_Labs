@@ -1,10 +1,10 @@
-from FactoryZoo.IAnimalClass import IAnimal
-from FactoryZoo.ElephantClass import Elephant
-from FactoryZoo.LionClass import Lion
-from FactoryZoo.MooseClass import Moose
-from FactoryZoo.PenguinClass import Penguin
-from FactoryZoo.WhiteBearClass import WhiteBear
-from FactoryZoo.GrizzlyBearClass import GrizzlyBear
+from IAnimalClass import IAnimal
+from ElephantClass import Elephant
+from LionClass import Lion
+from MooseClass import Moose
+from PenguinClass import Penguin
+from WhiteBearClass import WhiteBear
+from GrizzlyBearClass import GrizzlyBear
 
 
 class AnimalFactory:

@@ -1,5 +1,4 @@
-from FactoryZoo.IAnimalClass import IAnimal
-
+from IAnimalClass import IAnimal
 
 from typing import Type
 from abc import abstractmethod
