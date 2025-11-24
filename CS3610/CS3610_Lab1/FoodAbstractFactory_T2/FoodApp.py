@@ -26,7 +26,7 @@ class FoodApp:
                     products.append(factory.createNoodles(self, 8, 200, description + " Noodles"))
                 elif "cutlet" in product.lower():
                     products.append(factory.createCutlet(self, 12, 300, description + " Cutlet"))
-                else:io
+                else:
                     raise Exception(f"I can't make this food")
                 
             except Exception as _e:
