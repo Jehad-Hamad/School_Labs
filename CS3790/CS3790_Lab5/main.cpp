@@ -14,6 +14,14 @@ int main(int argc, char* argv[]) {
 
     dump(&n, &m, max, allocated, available, need);
 
+    string seq = "";
+    bool safe = safetyAlgorithim(seq, &n, available, allocated, need);
+    if (!safe) {
+        cout << "NOT SAFE STARTING TABLE" << endl;
+        exit(1);
+    }
+
+    cout << "Safe starting table with sequence: " << seq << endl << endl;
     requestAlgorithim(&n, &m, allocated, max, need, available);
     return 0;
 }
