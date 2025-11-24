@@ -35,6 +35,7 @@ class IBuilder(ABC):
     def build(self):
         pass
 
+
 class WebAppBuilder(IBuilder):
     def __init__(self):
         self.customer:Customer = Customer()
@@ -70,6 +71,7 @@ class WebAppBuilder(IBuilder):
     def build(self) -> Customer:
         return self.customer
 
+
 class MobileAppBuilder(IBuilder):
     def __init__(self):
         self.customer:Customer = Customer()
@@ -83,20 +85,23 @@ class MobileAppBuilder(IBuilder):
         return self
     
     def set_midName(self, midName:str):
+        self.customer.midName = midName
         return self
-
+    
     def set_primaryEmail(self, primaryEmail:str):
         self.customer.primaryEmail = primaryEmail
         return self
     
     def set_secondaryEmail(self, secondaryEmail:str):
+        self.customer.secondaryEmail = secondaryEmail
         return self
-
+    
     def set_primaryPhone(self, primaryPhone:str):
         self.customer.primaryPhone = primaryPhone
         return self
     
     def set_secondaryPhone(self, secondaryPhone:str):
+        self.customer.secondaryPhone = secondaryPhone
         return self
     
     def build(self) -> Customer:
