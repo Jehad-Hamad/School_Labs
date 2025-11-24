@@ -1,4 +1,4 @@
-from ICustomerBuilder import IBuilder
+from ICustomerBuilder import IBuilder, MobileAppBuilder, WebAppBuilder
 from Customer import Customer
 
 class CustomerDirector:
@@ -8,7 +8,8 @@ class CustomerDirector:
     def changeBuilder(self, builder: IBuilder) -> IBuilder:
         self.builder = builder
     
-    def construct(self, first:str, mid:str, last:str, primary_email:str, secondary_email:str, primary_phone:str, secondary_phone:str) -> Customer:
+    def constructWeb(self, first:str, mid:str, last:str, primary_email:str, secondary_email:str, primary_phone:str, secondary_phone:str) -> Customer:
+        if(isinstance(self.builder, WebAppBuilder)):
             return (
                 self.builder
                     .set_firstName(first)
@@ -18,7 +19,18 @@ class CustomerDirector:
                     .set_secondaryEmail(secondary_email)
                     .set_primaryPhone(primary_phone)
                     .set_secondaryPhone(secondary_phone)
-                    .build()        
+                    .build()
+                )
+
+    def constructMobile(self, first:str, last:str, primary_email:str, primary_phone:str) -> Customer:
+        if(isinstance(self.builder, MobileAppBuilder)):
+            return (
+                self.builder
+                    .set_firstName(first)
+                    .set_lastName(last)
+                    .set_primaryEmail(primary_email)
+                    .set_primaryPhone(primary_phone)
+                    .build()
                 )
 
     def printResult(self, obj: Customer) -> str:
