@@ -84,14 +84,14 @@ class MobileAppBuilder(IBuilder):
     
     def set_midName(self, midName:str):
         return self
-    
+
     def set_primaryEmail(self, primaryEmail:str):
         self.customer.primaryEmail = primaryEmail
         return self
     
     def set_secondaryEmail(self, secondaryEmail:str):
         return self
-    
+
     def set_primaryPhone(self, primaryPhone:str):
         self.customer.primaryPhone = primaryPhone
         return self
