@@ -44,7 +44,7 @@ var FSHADER_SOURCE = `
         gl_FragColor = v_Color;
     }`;
 
-let viewMatrix,
+var viewMatrix,
   modelMatrix,
   projMatrix,
   modelViewMatrix,
@@ -55,21 +55,24 @@ let viewMatrix,
   u_LightColor,
   u_AmbientLight;
 
-let near = 0.1;
-let fov = 75;
-let far = 750;
+var near = 0.1;
+var fov = 110;
+var far = 500;
 
-let horizontalAngle = 0;
-let verticalAngle = 0;
-let camRadius = 5.0;
+var horizontalAngle = 0;
 
-let eyeX = 0;
-eyeY = 15;
+var verticalAngle = 0;
+// var verticalAngle = 30;
+var camRadius = 3.0;
+
+var eyeX = 0;
+eyeY = 3;
+// eyeY = 80;
 eyeZ = 0;
-let atX = 0,
+var atX = 0,
   atY = 0,
   atZ = 0;
-let upX = 0,
+var upX = 0,
   upY = 1,
   upZ = 0;
 
@@ -94,16 +97,17 @@ function main() {
   // Set light color (white light)
   gl.uniform3f(u_LightColor, 1.0, 1.0, 1.0);
   // Set light diecrtion in world coords
-  gl.uniform3f(u_LightPosition, 0.0, 2.0, 1.0);
+  gl.uniform3f(u_LightPosition, 0.0, 15.0, 0.0);
   // Set the ambient light
-  gl.uniform3f(u_AmbientLight, 0.4, 0.4, 0.4);
+  gl.uniform3f(u_AmbientLight, 0.6, 0.6, 0.6);
 
   u_ModelViewMatrix = gl.getUniformLocation(gl.program, 'u_ModelViewMatrix');
   u_xformMatrix = gl.getUniformLocation(gl.program, 'u_xformMatrix');
   u_NormalMatrix = gl.getUniformLocation(gl.program, 'u_NormalMatrix');
 
   viewMatrix = new Matrix4();
-  eyeX = Math.cos(horizontalAngle) * camRadius;
+  eyeX = -200;
+  //eyeX = -170;
   eyeZ = Math.sin(horizontalAngle) * camRadius;
 
   atX = eyeX + Math.cos(horizontalAngle);
@@ -128,11 +132,16 @@ function main() {
   const left = createPlane(gl, 'wallLeft', [0.53, 0.81, 0]);
   const back = createPlane(gl, 'wallBack', [0.53, 0.81, 0.92]);
   const front = createPlane(gl, 'wallFront', [0.53, 0, 0]);
-
   const planes = [floor, right, left, back, front];
-
   drawPlanes(gl, planes);
 
+  const floorSheet = createSheet(gl, [1, 0, 0]);
+  drawPath(gl, [floorSheet]);
+
+  const wallP = createCube(gl, [0.78, 0.75, 0.7]);
+  const sheetWall = createSheet(gl, [0.5, 0, 0.8]);
+  const cubes = [wallP, sheetWall];
+  drawFence(gl, cubes);
   function keyDown(ev) {
     // Camera Rotation
     if (ev.keyCode === 39) {
@@ -159,6 +168,14 @@ function main() {
       // Move Backward
       eyeX -= Math.cos(horizontalAngle) * camRadius;
       eyeZ -= Math.sin(horizontalAngle) * camRadius;
+    } else if (ev.key.toLowerCase() === 'a') {
+      // Strafe Left
+      eyeX += Math.cos(horizontalAngle - Math.PI / 2) * camRadius;
+      eyeZ += Math.sin(horizontalAngle - Math.PI / 2) * camRadius;
+    } else if (ev.key.toLowerCase() === 'd') {
+      // Strafe Right
+      eyeX += Math.cos(horizontalAngle + Math.PI / 2) * camRadius;
+      eyeZ += Math.sin(horizontalAngle + Math.PI / 2) * camRadius;
     } else if (ev.key.toLowerCase() === 'q') {
       // Fly Up
       eyeY += 1.0;
@@ -166,7 +183,7 @@ function main() {
     } else if (ev.key.toLowerCase() === 'e') {
       // Fly Down
       eyeY -= 1.0;
-      eyeY = Math.max(1, eyeY);
+      eyeY = Math.max(3, eyeY);
     }
 
     // changes look at.
@@ -183,6 +200,8 @@ function main() {
 
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     drawPlanes(gl, planes);
+    drawPath(gl, [floorSheet]);
+    drawFence(gl, cubes);
   }
 
   document.onkeydown = function (ev) {
@@ -193,18 +212,18 @@ function main() {
 // Function to create my plane aka my wall i just just need to give it a type and color
 function createPlane(gl, wall, color) {
   const vertex = [
-    [-250.0, 0.0, -300.0], // v0
-    [250.0, 0.0, -300.0], // v1
-    [250.0, 30.0, -300.0], // v2
-    [-250.0, 30.0, -300.0], // v3
+    [-200.0, 0.0, -200.0], // v0
+    [200.0, 0.0, -200.0], // v1
+    [200.0, 30.0, -200.0], // v2
+    [-200.0, 30.0, -200.0], // v3
 
-    [-250.0, 0.0, 300.0], // v4
-    [250.0, 0.0, 300.0], // v5
-    [250.0, 30.0, 300.0], // v6
-    [-250.0, 30.0, 300.0], // v7
+    [-200.0, 0.0, 200.0], // v4
+    [200.0, 0.0, 200.0], // v5
+    [200.0, 30.0, 200.0], // v6
+    [-200.0, 30.0, 200.0], // v7
   ];
 
-  let vertices, normals;
+  var vertices, normals;
 
   // Switch statement for different types of planes
   switch (wall) {
@@ -291,12 +310,12 @@ function createSphere(gl, color) {
   const colors = [];
   const indices = [];
 
-  for (let i = 0; i <= latSteps; i++) {
+  for (var i = 0; i <= latSteps; i++) {
     const theta = (i * Math.PI) / latSteps; // latitude angle
     const sinT = Math.sin(theta);
     const cosT = Math.cos(theta);
 
-    for (let j = 0; j <= lonSteps; j++) {
+    for (var j = 0; j <= lonSteps; j++) {
       const phi = (j * 2 * Math.PI) / lonSteps; // longitude angle
       const sinP = Math.sin(phi);
       const cosP = Math.cos(phi);
@@ -312,8 +331,8 @@ function createSphere(gl, color) {
   }
 
   // build triangles
-  for (let i = 0; i < latSteps; i++) {
-    for (let j = 0; j < lonSteps; j++) {
+  for (var i = 0; i < latSteps; i++) {
+    for (var j = 0; j < lonSteps; j++) {
       const a = i * (lonSteps + 1) + j; // Current
       const b = a + lonSteps + 1; // next row
 
@@ -399,7 +418,67 @@ function createPyramid(gl, color) {
 
   // Unpack color
   const colors = [];
-  for (let i = 0; i < vertices.length / 3; i++) {
+  for (var i = 0; i < vertices.length / 3; i++) {
+    colors.push(...color);
+  }
+
+  return initBuffers(
+    gl,
+    new Float32Array(vertices),
+    new Float32Array(colors),
+    new Float32Array(normals),
+    new Uint16Array(indices)
+  );
+}
+
+function createCube(gl, color) {
+  // Vertices for all 8 corners of the cube
+  const vertices = [
+    1, 0, 1, 1, 0, -1, -1, 0, -1, -1, 0, 1,
+
+    1, 1, 1, 1, 1, -1, -1, 1, -1, -1, 1, 1,
+  ];
+
+  const normals = [
+    // Bottom
+    0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0,
+    // Top
+    0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0,
+    // Front
+    0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1,
+    // Back
+    0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1,
+    // Right
+    1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
+    // Left
+    -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0,
+  ];
+
+  // Indices defining triangles for all 6 faces
+  // Each face needs 2 triangles = 6 indices
+  const indices = [
+    // Bottom face
+    0, 1, 2, 0, 2, 3,
+
+    // Top face
+    4, 7, 6, 4, 6, 5,
+
+    // Front face
+    0, 4, 5, 0, 5, 1,
+
+    // Back face
+    3, 2, 6, 3, 6, 7,
+
+    // Right face
+    1, 5, 6, 1, 6, 2,
+
+    // Left face
+    0, 3, 7, 0, 7, 4,
+  ];
+
+  // Unpack color for each vertex
+  const colors = [];
+  for (var i = 0; i < vertices.length / 3; i++) {
     colors.push(...color);
   }
 
@@ -464,6 +543,30 @@ function createTriangle(gl, color, normal = [0, 0, 1]) {
   );
 }
 
+// Function to create Sheet (flat rectangular plane) give just color
+function createSheet(gl, color) {
+  const vertices = [
+    -0.5, -0.5, 0.0, 0.5, -0.5, 0.0, 0.5, 0.5, 0.0, -0.5, 0.5, 0.0,
+  ];
+
+  var normal = [0, 1, 0];
+  const normals = [...normal, ...normal, ...normal, ...normal];
+
+  // Push back color
+  const colors = [];
+  for (var i = 0; i < vertices.length / 3; i++) {
+    colors.push(...color);
+  }
+
+  return initBuffers(
+    gl,
+    new Float32Array(vertices),
+    new Float32Array(colors),
+    new Float32Array(normals),
+    null
+  );
+}
+
 // Function to create star give just color
 function createStar(gl, color) {
   // Points
@@ -474,13 +577,13 @@ function createStar(gl, color) {
   ];
 
   const normals = [];
-  for (let i = 0; i < vertices.length / 3; i++) {
+  for (var i = 0; i < vertices.length / 3; i++) {
     normals.push(0, 0, 1);
   }
 
   // Unpack Color
   const colors = [];
-  for (let i = 0; i < vertices.length / 3; i++) {
+  for (var i = 0; i < vertices.length / 3; i++) {
     colors.push(...color);
   }
 
@@ -500,7 +603,7 @@ function createLine(gl, color) {
 
   // Unpack Color
   const colors = [];
-  for (let i = 0; i < 2; i++) {
+  for (var i = 0; i < 2; i++) {
     colors.push(...color);
   }
 
@@ -697,6 +800,25 @@ function drawTriangle(gl, triangle, moving, scaling, rotating1, rotating2) {
   gl.drawArrays(gl.TRIANGLES, 0, triangle.vertexCount);
 }
 
+// Function to draw sheet and move it and scale it and rotate it
+function drawSheet(gl, sheet, moving, scaling, rotating1, rotating2) {
+  var xformMatrix = new Matrix4();
+  xformMatrix
+    .setTranslate(...moving)
+    .scale(...scaling)
+    .rotate(...rotating1)
+    .rotate(...rotating2);
+  gl.uniformMatrix4fv(u_xformMatrix, false, xformMatrix.elements);
+
+  var normalMatrix = new Matrix4();
+  normalMatrix.setInverseOf(xformMatrix);
+  normalMatrix.transpose();
+  gl.uniformMatrix4fv(u_NormalMatrix, false, normalMatrix.elements);
+
+  initObject(gl, sheet);
+  gl.drawArrays(gl.TRIANGLE_FAN, 0, sheet.vertexCount);
+}
+
 // Function to draw star and move it and scale it and rotate it
 function drawStar(gl, star, moving, scaling, rotating1) {
   var xformMatrix = new Matrix4();
@@ -732,9 +854,341 @@ function drawLine(gl, line, moving, scaling, rotating1) {
   gl.drawArrays(gl.LINES, 0, line.vertexCount);
 }
 
+function drawCube(gl, cube, moving, scaling, rotating1, rotating2) {
+  var xformMatrix = new Matrix4();
+  xformMatrix
+    .setTranslate(...moving)
+    .scale(...scaling)
+    .rotate(...rotating1)
+    .rotate(...rotating2);
+  gl.uniformMatrix4fv(u_xformMatrix, false, xformMatrix.elements);
+
+  var normalMatrix = new Matrix4();
+  normalMatrix.setInverseOf(xformMatrix);
+  normalMatrix.transpose();
+  gl.uniformMatrix4fv(u_NormalMatrix, false, normalMatrix.elements);
+
+  initObject(gl, cube);
+  gl.drawElements(gl.TRIANGLES, cube.indicesCount, gl.UNSIGNED_SHORT, 0);
+}
+
 // Function that draws walls all together
 function drawPlanes(gl, planes) {
   for (var i = 0; i < planes.length; i++) {
     drawPlane(gl, planes[i]);
   }
+}
+
+function drawPath(gl, sheets) {
+  // STARTING PATH
+  drawSheet(
+    gl,
+    sheets[0],
+    [-195, 0.01, 0],
+    [10, 0, 3.5],
+    [90, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+  drawSheet(
+    gl,
+    sheets[0],
+    [-185, 0.01, 0],
+    [10, 0, 3.5],
+    [90, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+  drawSheet(
+    gl,
+    sheets[0],
+    [-175, 0.01, 0],
+    [10, 0, 3.5],
+    [90, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+}
+
+function drawFence(gl, cubes) {
+  var wallP = cubes[0];
+  var sheetP = cubes[1];
+
+  // FRONT WALL (X = -170.5) - door opening at Z=0
+  // Back corner pillar
+  drawCube(
+    gl,
+    wallP,
+    [-170.5, 0.01, -190],
+    [0.3, 7, 0.5],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // pillar before door
+  drawCube(
+    gl,
+    wallP,
+    [-170.5, 0.01, -3],
+    [0.3, 7, 0.5],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // horizontal bar bottom
+  drawCube(
+    gl,
+    wallP,
+    [-170.5, 0.01, -96],
+    [0.3, 1, 93.5],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  /// sheet fill will be fences
+  drawSheet(
+    gl,
+    sheetP,
+    [-170.5, 3.5, -96],
+    [1, 5, 187],
+    [90, 0, 1, 0],
+    [0, 0, 1, 0]
+  );
+
+  // horizontal bar top
+  drawCube(
+    gl,
+    wallP,
+    [-170.5, 6, -96],
+    [0.3, 1, 93.5],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // pillar after door
+  drawCube(
+    gl,
+    wallP,
+    [-170.5, 0.01, 3],
+    [0.3, 7, 0.5],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // front corner pillar
+  drawCube(
+    gl,
+    wallP,
+    [-170.5, 0.01, 190],
+    [0.3, 7, 0.5],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // horizontal bar bottom
+  drawCube(
+    gl,
+    wallP,
+    [-170.5, 0.01, 96],
+    [0.3, 1, 93.5],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // sheet fill will be fences
+  drawSheet(
+    gl,
+    sheetP,
+    [-170.5, 3.5, 96],
+    [1, 5, 187],
+    [90, 0, 1, 0],
+    [0, 0, 1, 0]
+  );
+
+  // horizontal bar top
+  drawCube(
+    gl,
+    wallP,
+    [-170.5, 6, 96],
+    [0.3, 1, 93.5],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Enternce
+  // pillar in front of piller before door
+  drawCube(
+    gl,
+    wallP,
+    [-180.5, 0.01, -3],
+    [0.3, 7, 0.5],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // horizontal bar bottom
+  drawCube(
+    gl,
+    wallP,
+    [-175.5, 0.01, 3],
+    [4.7, 1, 0.5],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // sheet fill
+  drawSheet(
+    gl,
+    sheetP,
+    [-175.5, 3.5, 3],
+    [9.7, 5, 0.5],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // horizontal bar top
+  drawCube(
+    gl,
+    wallP,
+    [-175.5, 6, 3],
+    [4.7, 1, 0.5],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // pillar in front of piller after door
+  drawCube(
+    gl,
+    wallP,
+    [-180.5, 0.01, 3],
+    [0.3, 7, 0.5],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // horizontal bar bottom
+  drawCube(
+    gl,
+    wallP,
+    [-175.5, 0.01, -3],
+    [4.7, 1, 0.5],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // sheet fill
+  drawSheet(
+    gl,
+    sheetP,
+    [-175.5, 3.5, -3],
+    [9.7, 5, 0.5],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  /// horizontal bar top
+  drawCube(
+    gl,
+    wallP,
+    [-175.5, 6, -3],
+    [4.7, 1, 0.5],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // BACK WALL (X = 170.5) - solid
+  // back corner pillar
+  drawCube(
+    gl,
+    wallP,
+    [170.5, 0.01, -190],
+    [0.3, 7, 0.5],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // front corner pillar
+  drawCube(
+    gl,
+    wallP,
+    [170.5, 0.01, 190],
+    [0.3, 7, 0.5],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // horizontal bar bottom
+  drawCube(
+    gl,
+    wallP,
+    [170.5, 0.01, 0],
+    [0.3, 1, 190],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // sheet fill
+  drawSheet(
+    gl,
+    sheetP,
+    [170.5, 3.5, 0],
+    [1, 5, 380],
+    [90, 0, 1, 0],
+    [0, 0, 1, 0]
+  );
+
+  // horizontal bar top
+  drawCube(gl, wallP, [170.5, 6, 0], [0.3, 1, 190], [0, 1, 0, 0], [0, 1, 0, 0]);
+
+  // RIGHT WALL (Z = 190)
+  // horizontal bar bottom
+  drawCube(
+    gl,
+    wallP,
+    [0, 0.01, 190],
+    [170.5, 1, 0.3],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // sheet fill
+  drawSheet(
+    gl,
+    sheetP,
+    [0, 3.5, 190],
+    [341, 5, 0.3],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // horizontal bar top
+  drawCube(gl, wallP, [0, 6, 190], [170.5, 1, 0.3], [0, 1, 0, 0], [0, 1, 0, 0]);
+
+  // LEFT WALL (Z = -190)
+  // horizontal bar bottom
+  drawCube(
+    gl,
+    wallP,
+    [0, 0.01, -190],
+    [170.5, 1, 0.3],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // sheet fill
+  drawSheet(
+    gl,
+    sheetP,
+    [0, 3.5, -190],
+    [341.5, 5, 0.3],
+    [0, 0, 1, 0],
+    [0, 0, 1, 0]
+  );
+
+  // horizontal bar top
+  drawCube(
+    gl,
+    wallP,
+    [0, 6, -190],
+    [170.5, 1, 0.3],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
 }
