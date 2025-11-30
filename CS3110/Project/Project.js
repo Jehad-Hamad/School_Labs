@@ -55,9 +55,14 @@ var viewMatrix,
   u_LightColor,
   u_AmbientLight;
 
+const WALL_MIN_X = -125;
+const WALL_MAX_X = 125;
+const WALL_MIN_Z = -125;
+const WALL_MAX_Z = 125;
+
 var near = 0.1;
 var fov = 110;
-var far = 500;
+var far = (WALL_MAX_Z + 5) * 2;
 
 var horizontalAngle = 0;
 
@@ -106,7 +111,7 @@ function main() {
   u_NormalMatrix = gl.getUniformLocation(gl.program, 'u_NormalMatrix');
 
   viewMatrix = new Matrix4();
-  eyeX = -200;
+  eyeX = WALL_MIN_X;
   //eyeX = -170;
   eyeZ = Math.sin(horizontalAngle) * camRadius;
 
@@ -133,30 +138,35 @@ function main() {
   const back = createPlane(gl, 'wallBack', [0.53, 0.81, 0.92]);
   const front = createPlane(gl, 'wallFront', [0.53, 0, 0]);
   const planes = [floor, right, left, back, front];
-  drawPlanes(gl, planes);
 
   const floorSheet = createSheet(gl, [1, 0, 0]);
-  drawPath(gl, [floorSheet]);
 
   const wallP = createCube(gl, [0.78, 0.75, 0.7]);
   const sheetWall = createSheet(gl, [0.5, 0, 0.8]);
   const cubes = [wallP, sheetWall];
+
+  drawPlanes(gl, planes);
+
+  // Main area fenced
   drawFence(gl, cubes);
+  drawPath(gl, [floorSheet]);
+  drawTicketStand(gl, cubes);
+
   function keyDown(ev) {
     // Camera Rotation
     if (ev.keyCode === 39) {
       //Tturn Right
-      horizontalAngle += 0.07;
+      horizontalAngle += 0.1;
     } else if (ev.keyCode === 37) {
       // Turn Left
-      horizontalAngle -= 0.07;
+      horizontalAngle -= 0.1;
     } else if (ev.keyCode === 38) {
       // Look Up
-      verticalAngle += 0.07;
+      verticalAngle += 0.1;
       verticalAngle = Math.min(1.5, verticalAngle);
     } else if (ev.keyCode === 40) {
       // Look Down
-      verticalAngle -= 0.07;
+      verticalAngle -= 0.1;
       verticalAngle = Math.max(-1.5, verticalAngle);
     }
     // Camera Moving
@@ -199,9 +209,14 @@ function main() {
     gl.uniformMatrix4fv(u_ModelViewMatrix, false, modelViewMatrix.elements);
 
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+    // Always draw my planes
     drawPlanes(gl, planes);
     drawPath(gl, [floorSheet]);
     drawFence(gl, cubes);
+    if (eyeX < WALL_MIN_X + 40 && eyeZ > -5 && eyeZ < 25) {
+      drawTicketStand(gl, cubes);
+    }
   }
 
   document.onkeydown = function (ev) {
@@ -212,15 +227,15 @@ function main() {
 // Function to create my plane aka my wall i just just need to give it a type and color
 function createPlane(gl, wall, color) {
   const vertex = [
-    [-200.0, 0.0, -200.0], // v0
-    [200.0, 0.0, -200.0], // v1
-    [200.0, 30.0, -200.0], // v2
-    [-200.0, 30.0, -200.0], // v3
+    [WALL_MIN_X, 0.0, WALL_MIN_Z], // v0
+    [WALL_MAX_X, 0.0, WALL_MIN_Z], // v1
+    [WALL_MAX_X, 30.0, WALL_MIN_Z], // v2
+    [WALL_MIN_X, 30.0, WALL_MIN_Z], // v3
 
-    [-200.0, 0.0, 200.0], // v4
-    [200.0, 0.0, 200.0], // v5
-    [200.0, 30.0, 200.0], // v6
-    [-200.0, 30.0, 200.0], // v7
+    [WALL_MIN_X, 0.0, WALL_MAX_Z], // v4
+    [WALL_MAX_X, 0.0, WALL_MAX_Z], // v5
+    [WALL_MAX_X, 30.0, WALL_MAX_Z], // v6
+    [WALL_MIN_X, 30.0, WALL_MAX_Z], // v7
   ];
 
   var vertices, normals;
@@ -881,27 +896,12 @@ function drawPlanes(gl, planes) {
 
 function drawPath(gl, sheets) {
   // STARTING PATH
+  var pathX = WALL_MIN_X + 15;
   drawSheet(
     gl,
     sheets[0],
-    [-195, 0.01, 0],
-    [10, 0, 3.5],
-    [90, 1, 0, 0],
-    [0, 1, 0, 0]
-  );
-  drawSheet(
-    gl,
-    sheets[0],
-    [-185, 0.01, 0],
-    [10, 0, 3.5],
-    [90, 1, 0, 0],
-    [0, 1, 0, 0]
-  );
-  drawSheet(
-    gl,
-    sheets[0],
-    [-175, 0.01, 0],
-    [10, 0, 3.5],
+    [pathX, 0.01, 0],
+    [30, 0, 3.5],
     [90, 1, 0, 0],
     [0, 1, 0, 0]
   );
@@ -919,12 +919,30 @@ function drawFence(gl, cubes, moving = [0, 0, 0], scaling = [1, 1, 1]) {
   const scaleY = scaling[1];
   const scaleZ = scaling[2];
 
-  // FRONT WALL (X = -170.5) - door opening at Z=0
+  // Calculate fence positions based on wall boundaries
+  const FENCE_OFFSET = 29.5; // Distance from wall edge to fence (200 - 170.5)
+  const ENTRANCE_DEPTH = 10; // How far the entrance extends
+  const DOOR_WIDTH = 6; // Width of door opening (3 units on each side)
+
+  const frontFenceX = WALL_MIN_X + FENCE_OFFSET;
+  const backFenceX = WALL_MAX_X - FENCE_OFFSET;
+  const leftFenceZ = WALL_MIN_Z + FENCE_OFFSET;
+  const rightFenceZ = WALL_MAX_Z - FENCE_OFFSET;
+
+  const fenceLength = WALL_MAX_Z - WALL_MIN_Z - 2 * FENCE_OFFSET;
+  const fenceWidth = WALL_MAX_X - WALL_MIN_X - 2 * FENCE_OFFSET;
+  const halfFenceLength = (fenceLength - DOOR_WIDTH) / 2;
+
+  // FRONT WALL (X = frontFenceX) - door opening at Z=0
   // Back corner pillar
   drawCube(
     gl,
     wallP,
-    [baseX + -170.5 * scaleX, baseY + 0.01 * scaleY, baseZ + -190 * scaleZ],
+    [
+      baseX + frontFenceX * scaleX,
+      baseY + 0.01 * scaleY,
+      baseZ + leftFenceZ * scaleZ,
+    ],
     [0.3 * scaleX, 7 * scaleY, 0.5 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
@@ -934,38 +952,50 @@ function drawFence(gl, cubes, moving = [0, 0, 0], scaling = [1, 1, 1]) {
   drawCube(
     gl,
     wallP,
-    [baseX + -170.5 * scaleX, baseY + 0.01 * scaleY, baseZ + -3 * scaleZ],
+    [baseX + frontFenceX * scaleX, baseY + 0.01 * scaleY, baseZ + -3 * scaleZ],
     [0.3 * scaleX, 7 * scaleY, 0.5 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
 
-  // horizontal bar bottom
+  // horizontal bar bottom (left section)
   drawCube(
     gl,
     wallP,
-    [baseX + -170.5 * scaleX, baseY + 0.01 * scaleY, baseZ + -96 * scaleZ],
-    [0.3 * scaleX, 1 * scaleY, 93.5 * scaleZ],
+    [
+      baseX + frontFenceX * scaleX,
+      baseY + 0.01 * scaleY,
+      baseZ + (leftFenceZ + halfFenceLength / 2) * scaleZ,
+    ],
+    [0.3 * scaleX, 1 * scaleY, (halfFenceLength / 2 - 0.5) * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
 
-  /// sheet fill will be fences
+  // sheet fill (left section)
   drawSheet(
     gl,
     sheetP,
-    [baseX + -170.5 * scaleX, baseY + 3.5 * scaleY, baseZ + -96 * scaleZ],
-    [1 * scaleX, 5 * scaleY, 187 * scaleZ],
+    [
+      baseX + frontFenceX * scaleX,
+      baseY + 3.5 * scaleY,
+      baseZ + (leftFenceZ + halfFenceLength / 2) * scaleZ,
+    ],
+    [1 * scaleX, 5 * scaleY, (halfFenceLength - 1) * scaleZ],
     [90, 0, 1, 0],
     [0, 0, 1, 0]
   );
 
-  // horizontal bar top
+  // horizontal bar top (left section)
   drawCube(
     gl,
     wallP,
-    [baseX + -170.5 * scaleX, baseY + 6 * scaleY, baseZ + -96 * scaleZ],
-    [0.3 * scaleX, 1 * scaleY, 93.5 * scaleZ],
+    [
+      baseX + frontFenceX * scaleX,
+      baseY + 6 * scaleY,
+      baseZ + (leftFenceZ + halfFenceLength / 2) * scaleZ,
+    ],
+    [0.3 * scaleX, 1 * scaleY, (halfFenceLength / 2 - 0.5) * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
@@ -974,7 +1004,7 @@ function drawFence(gl, cubes, moving = [0, 0, 0], scaling = [1, 1, 1]) {
   drawCube(
     gl,
     wallP,
-    [baseX + -170.5 * scaleX, baseY + 0.01 * scaleY, baseZ + 3 * scaleZ],
+    [baseX + frontFenceX * scaleX, baseY + 0.01 * scaleY, baseZ + 3 * scaleZ],
     [0.3 * scaleX, 7 * scaleY, 0.5 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
@@ -984,48 +1014,66 @@ function drawFence(gl, cubes, moving = [0, 0, 0], scaling = [1, 1, 1]) {
   drawCube(
     gl,
     wallP,
-    [baseX + -170.5 * scaleX, baseY + 0.01 * scaleY, baseZ + 190 * scaleZ],
+    [
+      baseX + frontFenceX * scaleX,
+      baseY + 0.01 * scaleY,
+      baseZ + rightFenceZ * scaleZ,
+    ],
     [0.3 * scaleX, 7 * scaleY, 0.5 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
 
-  // horizontal bar bottom
+  // horizontal bar bottom (right section)
   drawCube(
     gl,
     wallP,
-    [baseX + -170.5 * scaleX, baseY + 0.01 * scaleY, baseZ + 96 * scaleZ],
-    [0.3 * scaleX, 1 * scaleY, 93.5 * scaleZ],
+    [
+      baseX + frontFenceX * scaleX,
+      baseY + 0.01 * scaleY,
+      baseZ + (rightFenceZ - halfFenceLength / 2) * scaleZ,
+    ],
+    [0.3 * scaleX, 1 * scaleY, (halfFenceLength / 2 - 0.5) * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
 
-  // sheet fill will be fences
+  // sheet fill (right section)
   drawSheet(
     gl,
     sheetP,
-    [baseX + -170.5 * scaleX, baseY + 3.5 * scaleY, baseZ + 96 * scaleZ],
-    [1 * scaleX, 5 * scaleY, 187 * scaleZ],
+    [
+      baseX + frontFenceX * scaleX,
+      baseY + 3.5 * scaleY,
+      baseZ + (rightFenceZ - halfFenceLength / 2) * scaleZ,
+    ],
+    [1 * scaleX, 5 * scaleY, (halfFenceLength - 1) * scaleZ],
     [90, 0, 1, 0],
     [0, 0, 1, 0]
   );
 
-  // horizontal bar top
+  // horizontal bar top (right section)
   drawCube(
     gl,
     wallP,
-    [baseX + -170.5 * scaleX, baseY + 6 * scaleY, baseZ + 96 * scaleZ],
-    [0.3 * scaleX, 1 * scaleY, 93.5 * scaleZ],
+    [
+      baseX + frontFenceX * scaleX,
+      baseY + 6 * scaleY,
+      baseZ + (rightFenceZ - halfFenceLength / 2) * scaleZ,
+    ],
+    [0.3 * scaleX, 1 * scaleY, (halfFenceLength / 2 - 0.5) * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
 
   // Entrance
+  const entranceX = frontFenceX - ENTRANCE_DEPTH;
+
   // pillar in front of pillar before door
   drawCube(
     gl,
     wallP,
-    [baseX + -180.5 * scaleX, baseY + 0.01 * scaleY, baseZ + -3 * scaleZ],
+    [baseX + entranceX * scaleX, baseY + 0.01 * scaleY, baseZ + -3 * scaleZ],
     [0.3 * scaleX, 7 * scaleY, 0.5 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
@@ -1035,8 +1083,12 @@ function drawFence(gl, cubes, moving = [0, 0, 0], scaling = [1, 1, 1]) {
   drawCube(
     gl,
     wallP,
-    [baseX + -175.5 * scaleX, baseY + 0.01 * scaleY, baseZ + 3 * scaleZ],
-    [4.7 * scaleX, 1 * scaleY, 0.5 * scaleZ],
+    [
+      baseX + (frontFenceX - ENTRANCE_DEPTH / 2) * scaleX,
+      baseY + 0.01 * scaleY,
+      baseZ + 3 * scaleZ,
+    ],
+    [(ENTRANCE_DEPTH / 2 - 0.3) * scaleX, 1 * scaleY, 0.5 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
@@ -1045,8 +1097,12 @@ function drawFence(gl, cubes, moving = [0, 0, 0], scaling = [1, 1, 1]) {
   drawSheet(
     gl,
     sheetP,
-    [baseX + -175.5 * scaleX, baseY + 3.5 * scaleY, baseZ + 3 * scaleZ],
-    [9.7 * scaleX, 5 * scaleY, 0.5 * scaleZ],
+    [
+      baseX + (frontFenceX - ENTRANCE_DEPTH / 2) * scaleX,
+      baseY + 3.5 * scaleY,
+      baseZ + 3 * scaleZ,
+    ],
+    [(ENTRANCE_DEPTH - 0.6) * scaleX, 5 * scaleY, 0.5 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
@@ -1055,8 +1111,12 @@ function drawFence(gl, cubes, moving = [0, 0, 0], scaling = [1, 1, 1]) {
   drawCube(
     gl,
     wallP,
-    [baseX + -175.5 * scaleX, baseY + 6 * scaleY, baseZ + 3 * scaleZ],
-    [4.7 * scaleX, 1 * scaleY, 0.5 * scaleZ],
+    [
+      baseX + (frontFenceX - ENTRANCE_DEPTH / 2) * scaleX,
+      baseY + 6 * scaleY,
+      baseZ + 3 * scaleZ,
+    ],
+    [(ENTRANCE_DEPTH / 2 - 0.3) * scaleX, 1 * scaleY, 0.5 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
@@ -1065,7 +1125,7 @@ function drawFence(gl, cubes, moving = [0, 0, 0], scaling = [1, 1, 1]) {
   drawCube(
     gl,
     wallP,
-    [baseX + -180.5 * scaleX, baseY + 0.01 * scaleY, baseZ + 3 * scaleZ],
+    [baseX + entranceX * scaleX, baseY + 0.01 * scaleY, baseZ + 3 * scaleZ],
     [0.3 * scaleX, 7 * scaleY, 0.5 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
@@ -1075,8 +1135,12 @@ function drawFence(gl, cubes, moving = [0, 0, 0], scaling = [1, 1, 1]) {
   drawCube(
     gl,
     wallP,
-    [baseX + -175.5 * scaleX, baseY + 0.01 * scaleY, baseZ + -3 * scaleZ],
-    [4.7 * scaleX, 1 * scaleY, 0.5 * scaleZ],
+    [
+      baseX + (frontFenceX - ENTRANCE_DEPTH / 2) * scaleX,
+      baseY + 0.01 * scaleY,
+      baseZ + -3 * scaleZ,
+    ],
+    [(ENTRANCE_DEPTH / 2 - 0.3) * scaleX, 1 * scaleY, 0.5 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
@@ -1085,28 +1149,40 @@ function drawFence(gl, cubes, moving = [0, 0, 0], scaling = [1, 1, 1]) {
   drawSheet(
     gl,
     sheetP,
-    [baseX + -175.5 * scaleX, baseY + 3.5 * scaleY, baseZ + -3 * scaleZ],
-    [9.7 * scaleX, 5 * scaleY, 0.5 * scaleZ],
+    [
+      baseX + (frontFenceX - ENTRANCE_DEPTH / 2) * scaleX,
+      baseY + 3.5 * scaleY,
+      baseZ + -3 * scaleZ,
+    ],
+    [(ENTRANCE_DEPTH - 0.6) * scaleX, 5 * scaleY, 0.5 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
 
-  /// horizontal bar top
+  // horizontal bar top
   drawCube(
     gl,
     wallP,
-    [baseX + -175.5 * scaleX, baseY + 6 * scaleY, baseZ + -3 * scaleZ],
-    [4.7 * scaleX, 1 * scaleY, 0.5 * scaleZ],
+    [
+      baseX + (frontFenceX - ENTRANCE_DEPTH / 2) * scaleX,
+      baseY + 6 * scaleY,
+      baseZ + -3 * scaleZ,
+    ],
+    [(ENTRANCE_DEPTH / 2 - 0.3) * scaleX, 1 * scaleY, 0.5 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
 
-  // BACK WALL (X = 170.5) - solid
+  // BACK WALL (X = backFenceX) - solid
   // back corner pillar
   drawCube(
     gl,
     wallP,
-    [baseX + 170.5 * scaleX, baseY + 0.01 * scaleY, baseZ + -190 * scaleZ],
+    [
+      baseX + backFenceX * scaleX,
+      baseY + 0.01 * scaleY,
+      baseZ + leftFenceZ * scaleZ,
+    ],
     [0.3 * scaleX, 7 * scaleY, 0.5 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
@@ -1116,7 +1192,11 @@ function drawFence(gl, cubes, moving = [0, 0, 0], scaling = [1, 1, 1]) {
   drawCube(
     gl,
     wallP,
-    [baseX + 170.5 * scaleX, baseY + 0.01 * scaleY, baseZ + 190 * scaleZ],
+    [
+      baseX + backFenceX * scaleX,
+      baseY + 0.01 * scaleY,
+      baseZ + rightFenceZ * scaleZ,
+    ],
     [0.3 * scaleX, 7 * scaleY, 0.5 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
@@ -1126,8 +1206,8 @@ function drawFence(gl, cubes, moving = [0, 0, 0], scaling = [1, 1, 1]) {
   drawCube(
     gl,
     wallP,
-    [baseX + 170.5 * scaleX, baseY + 0.01 * scaleY, baseZ + 0 * scaleZ],
-    [0.3 * scaleX, 1 * scaleY, 190 * scaleZ],
+    [baseX + backFenceX * scaleX, baseY + 0.01 * scaleY, baseZ + 0 * scaleZ],
+    [0.3 * scaleX, 1 * scaleY, (fenceLength / 2) * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
@@ -1136,8 +1216,8 @@ function drawFence(gl, cubes, moving = [0, 0, 0], scaling = [1, 1, 1]) {
   drawSheet(
     gl,
     sheetP,
-    [baseX + 170.5 * scaleX, baseY + 3.5 * scaleY, baseZ + 0 * scaleZ],
-    [1 * scaleX, 5 * scaleY, 380 * scaleZ],
+    [baseX + backFenceX * scaleX, baseY + 3.5 * scaleY, baseZ + 0 * scaleZ],
+    [1 * scaleX, 5 * scaleY, fenceLength * scaleZ],
     [90, 0, 1, 0],
     [0, 0, 1, 0]
   );
@@ -1146,19 +1226,19 @@ function drawFence(gl, cubes, moving = [0, 0, 0], scaling = [1, 1, 1]) {
   drawCube(
     gl,
     wallP,
-    [baseX + 170.5 * scaleX, baseY + 6 * scaleY, baseZ + 0 * scaleZ],
-    [0.3 * scaleX, 1 * scaleY, 190 * scaleZ],
+    [baseX + backFenceX * scaleX, baseY + 6 * scaleY, baseZ + 0 * scaleZ],
+    [0.3 * scaleX, 1 * scaleY, (fenceLength / 2) * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
 
-  // RIGHT WALL (Z = 190)
+  // RIGHT WALL (Z = rightFenceZ)
   // horizontal bar bottom
   drawCube(
     gl,
     wallP,
-    [baseX + 0 * scaleX, baseY + 0.01 * scaleY, baseZ + 190 * scaleZ],
-    [170.5 * scaleX, 1 * scaleY, 0.3 * scaleZ],
+    [baseX + 0 * scaleX, baseY + 0.01 * scaleY, baseZ + rightFenceZ * scaleZ],
+    [(fenceWidth / 2) * scaleX, 1 * scaleY, 0.3 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
@@ -1167,8 +1247,8 @@ function drawFence(gl, cubes, moving = [0, 0, 0], scaling = [1, 1, 1]) {
   drawSheet(
     gl,
     sheetP,
-    [baseX + 0 * scaleX, baseY + 3.5 * scaleY, baseZ + 190 * scaleZ],
-    [341 * scaleX, 5 * scaleY, 0.3 * scaleZ],
+    [baseX + 0 * scaleX, baseY + 3.5 * scaleY, baseZ + rightFenceZ * scaleZ],
+    [fenceWidth * scaleX, 5 * scaleY, 0.3 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
@@ -1177,19 +1257,19 @@ function drawFence(gl, cubes, moving = [0, 0, 0], scaling = [1, 1, 1]) {
   drawCube(
     gl,
     wallP,
-    [baseX + 0 * scaleX, baseY + 6 * scaleY, baseZ + 190 * scaleZ],
-    [170.5 * scaleX, 1 * scaleY, 0.3 * scaleZ],
+    [baseX + 0 * scaleX, baseY + 6 * scaleY, baseZ + rightFenceZ * scaleZ],
+    [(fenceWidth / 2) * scaleX, 1 * scaleY, 0.3 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
 
-  // LEFT WALL (Z = -190)
+  // LEFT WALL (Z = leftFenceZ)
   // horizontal bar bottom
   drawCube(
     gl,
     wallP,
-    [baseX + 0 * scaleX, baseY + 0.01 * scaleY, baseZ + -190 * scaleZ],
-    [170.5 * scaleX, 1 * scaleY, 0.3 * scaleZ],
+    [baseX + 0 * scaleX, baseY + 0.01 * scaleY, baseZ + leftFenceZ * scaleZ],
+    [(fenceWidth / 2) * scaleX, 1 * scaleY, 0.3 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
@@ -1198,8 +1278,8 @@ function drawFence(gl, cubes, moving = [0, 0, 0], scaling = [1, 1, 1]) {
   drawSheet(
     gl,
     sheetP,
-    [baseX + 0 * scaleX, baseY + 3.5 * scaleY, baseZ + -190 * scaleZ],
-    [341.5 * scaleX, 5 * scaleY, 0.3 * scaleZ],
+    [baseX + 0 * scaleX, baseY + 3.5 * scaleY, baseZ + leftFenceZ * scaleZ],
+    [fenceWidth * scaleX, 5 * scaleY, 0.3 * scaleZ],
     [0, 0, 1, 0],
     [0, 0, 1, 0]
   );
@@ -1208,8 +1288,161 @@ function drawFence(gl, cubes, moving = [0, 0, 0], scaling = [1, 1, 1]) {
   drawCube(
     gl,
     wallP,
-    [baseX + 0 * scaleX, baseY + 6 * scaleY, baseZ + -190 * scaleZ],
-    [170.5 * scaleX, 1 * scaleY, 0.3 * scaleZ],
+    [baseX + 0 * scaleX, baseY + 6 * scaleY, baseZ + leftFenceZ * scaleZ],
+    [(fenceWidth / 2) * scaleX, 1 * scaleY, 0.3 * scaleZ],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+}
+
+function drawTicketStand(gl, cubes) {
+  var wallP = cubes[0];
+  var sheetP = cubes[1];
+
+  // Position outside the fence entrance
+  const FENCE_OFFSET = 29.5;
+  const ENTRANCE_DEPTH = 10;
+  const frontFenceX = WALL_MIN_X + FENCE_OFFSET;
+  const entranceX = frontFenceX - ENTRANCE_DEPTH;
+
+  const standX = entranceX - 8;
+  const standZ = 8; // Centered with entrance
+  const boxSize = 5.5; // Size of the square
+
+  mangrovePillers = createCube(gl, [0.53, 0.29, 0.15]);
+  cherryRoof = createCube(gl, [0.89, 0.5, 0.62]);
+  cherry = createSheet(gl, [0.89, 0.5, 0.62]);
+  glassColor = createSheet(gl, [0.7, 0.85, 0.9]);
+
+  //PILLERS
+  // Front left pillar
+  drawCube(
+    gl,
+    mangrovePillers,
+    [standX - boxSize / 2 + 0.5, 0, standZ - boxSize / 2],
+    [0.25, 6, 0.15],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Front right pillar
+  drawCube(
+    gl,
+    mangrovePillers,
+    [standX - boxSize / 2 + 0.5, 0, standZ + boxSize / 2],
+    [0.25, 6, 0.15],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Back left pillar
+  drawCube(
+    gl,
+    mangrovePillers,
+    [standX + boxSize / 2 - 0.5, 0, standZ - boxSize / 2],
+    [0.25, 6, 0.15],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Back right pillar
+  drawCube(
+    gl,
+    mangrovePillers,
+    [standX + boxSize / 2 - 0.5, 0, standZ + boxSize / 2],
+    [0.25, 6, 0.15],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // PLANKS
+  // Front plank
+  drawSheet(
+    gl,
+    cherry,
+    [standX - boxSize / 2 + 0.5, 0.15, standZ],
+    [0.05, 3, boxSize],
+    [90, 0, 1, 0],
+    [0, 0, 1, 0]
+  );
+
+  // Back plank
+  drawSheet(
+    gl,
+    cherry,
+    [standX + boxSize / 2 - 0.5, 0.15, standZ],
+    [0.05, 3, boxSize],
+    [90, 0, 1, 0],
+    [0, 0, 1, 0]
+  );
+
+  // Left plank
+  drawSheet(
+    gl,
+    cherry,
+    [standX, 0.15, standZ - boxSize / 2],
+    [boxSize - 1, 3, 0.05],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Left plank
+  drawSheet(
+    gl,
+    cherry,
+    [standX, 0.15, standZ + boxSize / 2],
+    [boxSize - 1, 3, 0.05],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // GLASS
+  // Front glass
+  drawSheet(
+    gl,
+    glassColor,
+    [standX - boxSize / 2 + 0.5, 4.25, standZ],
+    [0.05, 2.5, boxSize],
+    [90, 0, 1, 0],
+    [0, 0, 1, 0]
+  );
+
+  // Back glass
+  drawSheet(
+    gl,
+    glassColor,
+    [standX + boxSize / 2 - 0.5, 4.25, standZ],
+    [0.05, 2.5, boxSize],
+    [90, 0, 1, 0],
+    [0, 0, 1, 0]
+  );
+
+  // Left glass
+  drawSheet(
+    gl,
+    glassColor,
+    [standX, 4.25, standZ - boxSize / 2],
+    [boxSize - 1, 2.5, 0.05],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Right glass
+  drawSheet(
+    gl,
+    glassColor,
+    [standX, 4.25, standZ + boxSize / 2],
+    [boxSize - 1, 2.5, 0.05],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Roof
+  drawCube(
+    gl,
+    cherryRoof,
+    [standX, 6, standZ],
+    [boxSize / 2 + 0.5, 1, boxSize / 2 + 0.5],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
