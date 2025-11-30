@@ -907,17 +907,25 @@ function drawPath(gl, sheets) {
   );
 }
 
-function drawFence(gl, cubes) {
+function drawFence(gl, cubes, moving = [0, 0, 0], scaling = [1, 1, 1]) {
   var wallP = cubes[0];
   var sheetP = cubes[1];
+
+  // Apply base transformation to all fence components
+  const baseX = moving[0];
+  const baseY = moving[1];
+  const baseZ = moving[2];
+  const scaleX = scaling[0];
+  const scaleY = scaling[1];
+  const scaleZ = scaling[2];
 
   // FRONT WALL (X = -170.5) - door opening at Z=0
   // Back corner pillar
   drawCube(
     gl,
     wallP,
-    [-170.5, 0.01, -190],
-    [0.3, 7, 0.5],
+    [baseX + -170.5 * scaleX, baseY + 0.01 * scaleY, baseZ + -190 * scaleZ],
+    [0.3 * scaleX, 7 * scaleY, 0.5 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
@@ -926,8 +934,8 @@ function drawFence(gl, cubes) {
   drawCube(
     gl,
     wallP,
-    [-170.5, 0.01, -3],
-    [0.3, 7, 0.5],
+    [baseX + -170.5 * scaleX, baseY + 0.01 * scaleY, baseZ + -3 * scaleZ],
+    [0.3 * scaleX, 7 * scaleY, 0.5 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
@@ -936,8 +944,8 @@ function drawFence(gl, cubes) {
   drawCube(
     gl,
     wallP,
-    [-170.5, 0.01, -96],
-    [0.3, 1, 93.5],
+    [baseX + -170.5 * scaleX, baseY + 0.01 * scaleY, baseZ + -96 * scaleZ],
+    [0.3 * scaleX, 1 * scaleY, 93.5 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
@@ -946,8 +954,8 @@ function drawFence(gl, cubes) {
   drawSheet(
     gl,
     sheetP,
-    [-170.5, 3.5, -96],
-    [1, 5, 187],
+    [baseX + -170.5 * scaleX, baseY + 3.5 * scaleY, baseZ + -96 * scaleZ],
+    [1 * scaleX, 5 * scaleY, 187 * scaleZ],
     [90, 0, 1, 0],
     [0, 0, 1, 0]
   );
@@ -956,8 +964,8 @@ function drawFence(gl, cubes) {
   drawCube(
     gl,
     wallP,
-    [-170.5, 6, -96],
-    [0.3, 1, 93.5],
+    [baseX + -170.5 * scaleX, baseY + 6 * scaleY, baseZ + -96 * scaleZ],
+    [0.3 * scaleX, 1 * scaleY, 93.5 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
@@ -966,8 +974,8 @@ function drawFence(gl, cubes) {
   drawCube(
     gl,
     wallP,
-    [-170.5, 0.01, 3],
-    [0.3, 7, 0.5],
+    [baseX + -170.5 * scaleX, baseY + 0.01 * scaleY, baseZ + 3 * scaleZ],
+    [0.3 * scaleX, 7 * scaleY, 0.5 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
@@ -976,8 +984,8 @@ function drawFence(gl, cubes) {
   drawCube(
     gl,
     wallP,
-    [-170.5, 0.01, 190],
-    [0.3, 7, 0.5],
+    [baseX + -170.5 * scaleX, baseY + 0.01 * scaleY, baseZ + 190 * scaleZ],
+    [0.3 * scaleX, 7 * scaleY, 0.5 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
@@ -986,8 +994,8 @@ function drawFence(gl, cubes) {
   drawCube(
     gl,
     wallP,
-    [-170.5, 0.01, 96],
-    [0.3, 1, 93.5],
+    [baseX + -170.5 * scaleX, baseY + 0.01 * scaleY, baseZ + 96 * scaleZ],
+    [0.3 * scaleX, 1 * scaleY, 93.5 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
@@ -996,8 +1004,8 @@ function drawFence(gl, cubes) {
   drawSheet(
     gl,
     sheetP,
-    [-170.5, 3.5, 96],
-    [1, 5, 187],
+    [baseX + -170.5 * scaleX, baseY + 3.5 * scaleY, baseZ + 96 * scaleZ],
+    [1 * scaleX, 5 * scaleY, 187 * scaleZ],
     [90, 0, 1, 0],
     [0, 0, 1, 0]
   );
@@ -1006,19 +1014,19 @@ function drawFence(gl, cubes) {
   drawCube(
     gl,
     wallP,
-    [-170.5, 6, 96],
-    [0.3, 1, 93.5],
+    [baseX + -170.5 * scaleX, baseY + 6 * scaleY, baseZ + 96 * scaleZ],
+    [0.3 * scaleX, 1 * scaleY, 93.5 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
 
-  // Enternce
-  // pillar in front of piller before door
+  // Entrance
+  // pillar in front of pillar before door
   drawCube(
     gl,
     wallP,
-    [-180.5, 0.01, -3],
-    [0.3, 7, 0.5],
+    [baseX + -180.5 * scaleX, baseY + 0.01 * scaleY, baseZ + -3 * scaleZ],
+    [0.3 * scaleX, 7 * scaleY, 0.5 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
@@ -1027,8 +1035,8 @@ function drawFence(gl, cubes) {
   drawCube(
     gl,
     wallP,
-    [-175.5, 0.01, 3],
-    [4.7, 1, 0.5],
+    [baseX + -175.5 * scaleX, baseY + 0.01 * scaleY, baseZ + 3 * scaleZ],
+    [4.7 * scaleX, 1 * scaleY, 0.5 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
@@ -1037,8 +1045,8 @@ function drawFence(gl, cubes) {
   drawSheet(
     gl,
     sheetP,
-    [-175.5, 3.5, 3],
-    [9.7, 5, 0.5],
+    [baseX + -175.5 * scaleX, baseY + 3.5 * scaleY, baseZ + 3 * scaleZ],
+    [9.7 * scaleX, 5 * scaleY, 0.5 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
@@ -1047,18 +1055,18 @@ function drawFence(gl, cubes) {
   drawCube(
     gl,
     wallP,
-    [-175.5, 6, 3],
-    [4.7, 1, 0.5],
+    [baseX + -175.5 * scaleX, baseY + 6 * scaleY, baseZ + 3 * scaleZ],
+    [4.7 * scaleX, 1 * scaleY, 0.5 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
 
-  // pillar in front of piller after door
+  // pillar in front of pillar after door
   drawCube(
     gl,
     wallP,
-    [-180.5, 0.01, 3],
-    [0.3, 7, 0.5],
+    [baseX + -180.5 * scaleX, baseY + 0.01 * scaleY, baseZ + 3 * scaleZ],
+    [0.3 * scaleX, 7 * scaleY, 0.5 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
@@ -1067,8 +1075,8 @@ function drawFence(gl, cubes) {
   drawCube(
     gl,
     wallP,
-    [-175.5, 0.01, -3],
-    [4.7, 1, 0.5],
+    [baseX + -175.5 * scaleX, baseY + 0.01 * scaleY, baseZ + -3 * scaleZ],
+    [4.7 * scaleX, 1 * scaleY, 0.5 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
@@ -1077,8 +1085,8 @@ function drawFence(gl, cubes) {
   drawSheet(
     gl,
     sheetP,
-    [-175.5, 3.5, -3],
-    [9.7, 5, 0.5],
+    [baseX + -175.5 * scaleX, baseY + 3.5 * scaleY, baseZ + -3 * scaleZ],
+    [9.7 * scaleX, 5 * scaleY, 0.5 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
@@ -1087,8 +1095,8 @@ function drawFence(gl, cubes) {
   drawCube(
     gl,
     wallP,
-    [-175.5, 6, -3],
-    [4.7, 1, 0.5],
+    [baseX + -175.5 * scaleX, baseY + 6 * scaleY, baseZ + -3 * scaleZ],
+    [4.7 * scaleX, 1 * scaleY, 0.5 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
@@ -1098,8 +1106,8 @@ function drawFence(gl, cubes) {
   drawCube(
     gl,
     wallP,
-    [170.5, 0.01, -190],
-    [0.3, 7, 0.5],
+    [baseX + 170.5 * scaleX, baseY + 0.01 * scaleY, baseZ + -190 * scaleZ],
+    [0.3 * scaleX, 7 * scaleY, 0.5 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
@@ -1108,8 +1116,8 @@ function drawFence(gl, cubes) {
   drawCube(
     gl,
     wallP,
-    [170.5, 0.01, 190],
-    [0.3, 7, 0.5],
+    [baseX + 170.5 * scaleX, baseY + 0.01 * scaleY, baseZ + 190 * scaleZ],
+    [0.3 * scaleX, 7 * scaleY, 0.5 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
@@ -1118,8 +1126,8 @@ function drawFence(gl, cubes) {
   drawCube(
     gl,
     wallP,
-    [170.5, 0.01, 0],
-    [0.3, 1, 190],
+    [baseX + 170.5 * scaleX, baseY + 0.01 * scaleY, baseZ + 0 * scaleZ],
+    [0.3 * scaleX, 1 * scaleY, 190 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
@@ -1128,22 +1136,29 @@ function drawFence(gl, cubes) {
   drawSheet(
     gl,
     sheetP,
-    [170.5, 3.5, 0],
-    [1, 5, 380],
+    [baseX + 170.5 * scaleX, baseY + 3.5 * scaleY, baseZ + 0 * scaleZ],
+    [1 * scaleX, 5 * scaleY, 380 * scaleZ],
     [90, 0, 1, 0],
     [0, 0, 1, 0]
   );
 
   // horizontal bar top
-  drawCube(gl, wallP, [170.5, 6, 0], [0.3, 1, 190], [0, 1, 0, 0], [0, 1, 0, 0]);
+  drawCube(
+    gl,
+    wallP,
+    [baseX + 170.5 * scaleX, baseY + 6 * scaleY, baseZ + 0 * scaleZ],
+    [0.3 * scaleX, 1 * scaleY, 190 * scaleZ],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
 
   // RIGHT WALL (Z = 190)
   // horizontal bar bottom
   drawCube(
     gl,
     wallP,
-    [0, 0.01, 190],
-    [170.5, 1, 0.3],
+    [baseX + 0 * scaleX, baseY + 0.01 * scaleY, baseZ + 190 * scaleZ],
+    [170.5 * scaleX, 1 * scaleY, 0.3 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
@@ -1152,22 +1167,29 @@ function drawFence(gl, cubes) {
   drawSheet(
     gl,
     sheetP,
-    [0, 3.5, 190],
-    [341, 5, 0.3],
+    [baseX + 0 * scaleX, baseY + 3.5 * scaleY, baseZ + 190 * scaleZ],
+    [341 * scaleX, 5 * scaleY, 0.3 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
 
   // horizontal bar top
-  drawCube(gl, wallP, [0, 6, 190], [170.5, 1, 0.3], [0, 1, 0, 0], [0, 1, 0, 0]);
+  drawCube(
+    gl,
+    wallP,
+    [baseX + 0 * scaleX, baseY + 6 * scaleY, baseZ + 190 * scaleZ],
+    [170.5 * scaleX, 1 * scaleY, 0.3 * scaleZ],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
 
   // LEFT WALL (Z = -190)
   // horizontal bar bottom
   drawCube(
     gl,
     wallP,
-    [0, 0.01, -190],
-    [170.5, 1, 0.3],
+    [baseX + 0 * scaleX, baseY + 0.01 * scaleY, baseZ + -190 * scaleZ],
+    [170.5 * scaleX, 1 * scaleY, 0.3 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
@@ -1176,8 +1198,8 @@ function drawFence(gl, cubes) {
   drawSheet(
     gl,
     sheetP,
-    [0, 3.5, -190],
-    [341.5, 5, 0.3],
+    [baseX + 0 * scaleX, baseY + 3.5 * scaleY, baseZ + -190 * scaleZ],
+    [341.5 * scaleX, 5 * scaleY, 0.3 * scaleZ],
     [0, 0, 1, 0],
     [0, 0, 1, 0]
   );
@@ -1186,8 +1208,8 @@ function drawFence(gl, cubes) {
   drawCube(
     gl,
     wallP,
-    [0, 6, -190],
-    [170.5, 1, 0.3],
+    [baseX + 0 * scaleX, baseY + 6 * scaleY, baseZ + -190 * scaleZ],
+    [170.5 * scaleX, 1 * scaleY, 0.3 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
