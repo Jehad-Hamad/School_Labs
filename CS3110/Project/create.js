@@ -421,6 +421,13 @@ function createObject(gl, objText, color) {
     objData.indices
   );
 }
+
+function createLamp(gl, color) {
+  const lampBlock = createCube(gl, [color[0], color[1], color[2]]);
+  const lampPane = createSheet(gl, [1.0, 1.0, 1.0]);
+
+  return [lampBlock, lampPane];
+}
 // Function to initialize buffers for the first time
 function initBuffers(gl, vertices, colors, normals, indices) {
   // Create Buffers

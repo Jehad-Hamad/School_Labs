@@ -195,8 +195,91 @@ function drawPlanes(gl, planes) {
   }
 }
 
-function drawPath(gl, sheet, benchs) {
-  // STARTING PATH Leading to big encloure
+function drawLamp(gl, lamp, moving, scaling, rotating1, rotating2) {
+  //base
+  drawCube(
+    gl,
+    lamp[0],
+    [moving[0], moving[1], moving[2]],
+    [scaling[0], scaling[1], scaling[2]],
+    [rotating1[0], rotating1[1], rotating1[2], rotating1[3]],
+    [rotating2[0], rotating2[1], rotating2[2], rotating2[3]]
+  );
+
+  //post
+  drawCube(
+    gl,
+    lamp[0],
+    [moving[0], moving[1], moving[2]],
+    [scaling[0] * 0.5, scaling[1] * 6, scaling[2] * 0.5],
+    [rotating1[0], rotating1[1], rotating1[2], rotating1[3]],
+    [rotating2[0], rotating2[1], rotating2[2], rotating2[3]]
+  );
+
+  //baselight
+  drawCube(
+    gl,
+    lamp[0],
+    [moving[0], moving[1] + scaling[1] * 6, moving[2]],
+    [scaling[0], scaling[1], scaling[2]],
+    [rotating1[0], rotating1[1], rotating1[2], rotating1[3]],
+    [rotating2[0], rotating2[1], rotating2[2], rotating2[3]]
+  );
+
+  // panes
+  //front
+  drawSheet(
+    gl,
+    lamp[1],
+    [moving[0] + scaling[0] * -1, moving[1] + scaling[1] * 7.5, moving[2]],
+    [scaling[0], scaling[1], scaling[2] * 2],
+    [90, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  //back
+  drawSheet(
+    gl,
+    lamp[1],
+    [moving[0] + scaling[0] * 1, moving[1] + scaling[1] * 7.5, moving[2]],
+    [scaling[0], scaling[1], scaling[2] * 2],
+    [90, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  //right
+  drawSheet(
+    gl,
+    lamp[1],
+    [moving[0], moving[1] + scaling[1] * 7.5, moving[2] + scaling[2] * 1],
+    [scaling[0] * 2, scaling[1], scaling[2]],
+    [90, 0, 0, 1],
+    [0, 1, 0, 0]
+  );
+
+  //left
+  drawSheet(
+    gl,
+    lamp[1],
+    [moving[0], moving[1] + scaling[1] * 7.5, moving[2] + scaling[2] * -1],
+    [scaling[0] * 2, scaling[1], scaling[2]],
+    [90, 0, 0, 1],
+    [0, 1, 0, 0]
+  );
+
+  //roof
+  drawCube(
+    gl,
+    lamp[0],
+    [moving[0], moving[1] + scaling[1] * 8, moving[2]],
+    [scaling[0], scaling[1] * 0.5, scaling[2]],
+    [rotating1[0], rotating1[1], rotating1[2], rotating1[3]],
+    [rotating2[0], rotating2[1], rotating2[2], rotating2[3]]
+  );
+}
+
+function drawPath(gl, sheet, benchs, lamp) {
+  // STARTING PATH Leading to big enclosure
   var pathX = WALL_MIN_X + 15;
 
   if (eyeX < WALL_MIN_X + 40 && eyeZ > -5 && eyeZ < 25) {
@@ -215,6 +298,25 @@ function drawPath(gl, sheet, benchs) {
       [pathX - 10, 0, -3],
       [0.05, 0.05, 0.05],
       [-90, 0, 1, 0],
+      [0, 1, 0, 0]
+    );
+
+    drawLamp(
+      gl,
+      lamp,
+      [pathX - 10, 0.0, 4.0],
+      [0.5, 1.0, 0.7],
+      [0, 1, 0, 0],
+      [0, 1, 0, 0]
+    );
+
+    // Additional lamp on starting path
+    drawLamp(
+      gl,
+      lamp,
+      [pathX, 0.0, -4.0],
+      [0.5, 1.0, 0.7],
+      [0, 1, 0, 0],
       [0, 1, 0, 0]
     );
   }
@@ -239,12 +341,30 @@ function drawPath(gl, sheet, benchs) {
       [0, 1, 0, 0]
     );
 
+    drawLamp(
+      gl,
+      lamp,
+      [pathX + 30, 0.0, 3.0],
+      [0.5, 1.0, 0.7],
+      [0, 1, 0, 0],
+      [0, 1, 0, 0]
+    );
+
     drawObject(
       gl,
       benchs[2],
-      [pathX + 40, 0, 3],
+      [pathX + 40, 0, 3.0],
       [0.05, 0.05, 0.05],
       [90, 0, 1, 0],
+      [0, 1, 0, 0]
+    );
+
+    drawLamp(
+      gl,
+      lamp,
+      [pathX + 50, 0.0, -3.0],
+      [0.5, 1.0, 0.7],
+      [0, 1, 0, 0],
       [0, 1, 0, 0]
     );
   }
@@ -267,6 +387,16 @@ function drawPath(gl, sheet, benchs) {
       [-90, 0, 1, 0],
       [0, 1, 0, 0]
     );
+
+    // Lamp near second bench
+    drawLamp(
+      gl,
+      lamp,
+      [pathX + 95, 0.0, 3.5],
+      [0.5, 1.0, 0.7],
+      [0, 1, 0, 0],
+      [0, 1, 0, 0]
+    );
   }
 
   // horizontal line
@@ -286,7 +416,17 @@ function drawPath(gl, sheet, benchs) {
         benchs[0],
         [3, 0, pathX + 40],
         [0.05, 0.05, 0.05],
-        [180, 0, 1, 0], // Facing the path from other side
+        [180, 0, 1, 0],
+        [0, 1, 0, 0]
+      );
+
+      // Lamp on horizontal path
+      drawLamp(
+        gl,
+        lamp,
+        [-4.0, 0.0, pathX + 35],
+        [0.5, 1.0, 0.7],
+        [0, 1, 0, 0],
         [0, 1, 0, 0]
       );
 
@@ -295,6 +435,16 @@ function drawPath(gl, sheet, benchs) {
         benchs[2],
         [-3, 0, pathX + 60],
         [0.05, 0.05, 0.05],
+        [0, 1, 0, 0],
+        [0, 1, 0, 0]
+      );
+
+      // Another lamp
+      drawLamp(
+        gl,
+        lamp,
+        [4.0, 0.0, pathX + 55],
+        [0.5, 1.0, 0.7],
         [0, 1, 0, 0],
         [0, 1, 0, 0]
       );
@@ -310,12 +460,32 @@ function drawPath(gl, sheet, benchs) {
         [0, 1, 0, 0]
       );
 
+      // Lamp near entrance
+      drawLamp(
+        gl,
+        lamp,
+        [-4.0, 0.0, 10],
+        [0.5, 1.0, 0.7],
+        [0, 1, 0, 0],
+        [0, 1, 0, 0]
+      );
+
       drawObject(
         gl,
         benchs[0],
         [-3, 0, 30],
         [0.05, 0.05, 0.05],
         [0, 0, 1, 0],
+        [0, 1, 0, 0]
+      );
+
+      // Lamp in middle area
+      drawLamp(
+        gl,
+        lamp,
+        [4.0, 0.0, 25],
+        [0.5, 1.0, 0.7],
+        [0, 1, 0, 0],
         [0, 1, 0, 0]
       );
     }

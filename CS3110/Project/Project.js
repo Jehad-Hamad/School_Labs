@@ -150,12 +150,14 @@ function main() {
   const benchBamBoo = createObject(gl, benchObj, [0.85, 0.82, 0.42]);
   const benchSpruce = createObject(gl, benchObj, [0.44, 0.28, 0.15]);
   const benchs = [benchOak, benchBamBoo, benchSpruce];
+
+  const lamp = createLamp(gl, [0.3, 0.3, 0.3]);
+
   drawPlanes(gl, planes);
   // Main area fenced
   drawFence(gl, fenceShapes);
-  drawPath(gl, floorSheet, benchs);
+  drawPath(gl, floorSheet, benchs, lamp);
   drawTicketStand(gl, fenceShapes);
-
   function keyDown(ev) {
     // Camera Rotation
     if (ev.keyCode === 39) {
@@ -217,7 +219,7 @@ function main() {
 
     // Always draw my planes
     drawPlanes(gl, planes);
-    drawPath(gl, floorSheet, benchs);
+    drawPath(gl, floorSheet, benchs, lamp);
     drawFence(gl, fenceShapes);
 
     if (eyeX < WALL_MIN_X + 40 && eyeZ > -5 && eyeZ < 25) {
