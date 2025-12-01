@@ -491,7 +491,13 @@ function drawPath(gl, sheet, benchs, lamp) {
     }
   }
 }
-function drawFence(gl, fenceShapes, moving = [0, 0, 0], scaling = [1, 1, 1]) {
+function drawFence(
+  gl,
+  fenceShapes,
+  moving = [0, 0, 0],
+  scaling = [1, 1, 1],
+  door = true
+) {
   var wallPiller = fenceShapes[0];
   var sheetPiller = fenceShapes[1];
 
@@ -650,113 +656,114 @@ function drawFence(gl, fenceShapes, moving = [0, 0, 0], scaling = [1, 1, 1]) {
     [0, 1, 0, 0]
   );
 
-  // Entrance
-  const entranceX = frontFenceX - ENTRANCE_DEPTH;
+  if (door == true) {
+    // Entrance
+    const entranceX = frontFenceX - ENTRANCE_DEPTH;
 
-  // pillar in front of pillar before door
-  drawCube(
-    gl,
-    wallPiller,
-    [baseX + entranceX * scaleX, baseY + 0.01 * scaleY, baseZ + -3 * scaleZ],
-    [0.3 * scaleX, 7 * scaleY, 0.5 * scaleZ],
-    [0, 1, 0, 0],
-    [0, 1, 0, 0]
-  );
+    // pillar in front of pillar before door
+    drawCube(
+      gl,
+      wallPiller,
+      [baseX + entranceX * scaleX, baseY + 0.01 * scaleY, baseZ + -3 * scaleZ],
+      [0.3 * scaleX, 7 * scaleY, 0.5 * scaleZ],
+      [0, 1, 0, 0],
+      [0, 1, 0, 0]
+    );
 
-  // horizontal bar bottom
-  drawCube(
-    gl,
-    wallPiller,
-    [
-      baseX + (frontFenceX - ENTRANCE_DEPTH / 2) * scaleX,
-      baseY + 0.01 * scaleY,
-      baseZ + 3 * scaleZ,
-    ],
-    [(ENTRANCE_DEPTH / 2 - 0.3) * scaleX, 1 * scaleY, 0.5 * scaleZ],
-    [0, 1, 0, 0],
-    [0, 1, 0, 0]
-  );
+    // horizontal bar bottom
+    drawCube(
+      gl,
+      wallPiller,
+      [
+        baseX + (frontFenceX - ENTRANCE_DEPTH / 2) * scaleX,
+        baseY + 0.01 * scaleY,
+        baseZ + 3 * scaleZ,
+      ],
+      [(ENTRANCE_DEPTH / 2 - 0.3) * scaleX, 1 * scaleY, 0.5 * scaleZ],
+      [0, 1, 0, 0],
+      [0, 1, 0, 0]
+    );
 
-  // sheet fill
-  drawSheet(
-    gl,
-    sheetPiller,
-    [
-      baseX + (frontFenceX - ENTRANCE_DEPTH / 2) * scaleX,
-      baseY + 3.5 * scaleY,
-      baseZ + 3 * scaleZ,
-    ],
-    [(ENTRANCE_DEPTH - 0.6) * scaleX, 5 * scaleY, 0.5 * scaleZ],
-    [0, 1, 0, 0],
-    [0, 1, 0, 0]
-  );
+    // sheet fill
+    drawSheet(
+      gl,
+      sheetPiller,
+      [
+        baseX + (frontFenceX - ENTRANCE_DEPTH / 2) * scaleX,
+        baseY + 3.5 * scaleY,
+        baseZ + 3 * scaleZ,
+      ],
+      [(ENTRANCE_DEPTH - 0.6) * scaleX, 5 * scaleY, 0.5 * scaleZ],
+      [0, 1, 0, 0],
+      [0, 1, 0, 0]
+    );
 
-  // horizontal bar top
-  drawCube(
-    gl,
-    wallPiller,
-    [
-      baseX + (frontFenceX - ENTRANCE_DEPTH / 2) * scaleX,
-      baseY + 6 * scaleY,
-      baseZ + 3 * scaleZ,
-    ],
-    [(ENTRANCE_DEPTH / 2 - 0.3) * scaleX, 1 * scaleY, 0.5 * scaleZ],
-    [0, 1, 0, 0],
-    [0, 1, 0, 0]
-  );
+    // horizontal bar top
+    drawCube(
+      gl,
+      wallPiller,
+      [
+        baseX + (frontFenceX - ENTRANCE_DEPTH / 2) * scaleX,
+        baseY + 6 * scaleY,
+        baseZ + 3 * scaleZ,
+      ],
+      [(ENTRANCE_DEPTH / 2 - 0.3) * scaleX, 1 * scaleY, 0.5 * scaleZ],
+      [0, 1, 0, 0],
+      [0, 1, 0, 0]
+    );
 
-  // pillar in front of pillar after door
-  drawCube(
-    gl,
-    wallPiller,
-    [baseX + entranceX * scaleX, baseY + 0.01 * scaleY, baseZ + 3 * scaleZ],
-    [0.3 * scaleX, 7 * scaleY, 0.5 * scaleZ],
-    [0, 1, 0, 0],
-    [0, 1, 0, 0]
-  );
+    // pillar in front of pillar after door
+    drawCube(
+      gl,
+      wallPiller,
+      [baseX + entranceX * scaleX, baseY + 0.01 * scaleY, baseZ + 3 * scaleZ],
+      [0.3 * scaleX, 7 * scaleY, 0.5 * scaleZ],
+      [0, 1, 0, 0],
+      [0, 1, 0, 0]
+    );
 
-  // horizontal bar bottom
-  drawCube(
-    gl,
-    wallPiller,
-    [
-      baseX + (frontFenceX - ENTRANCE_DEPTH / 2) * scaleX,
-      baseY + 0.01 * scaleY,
-      baseZ + -3 * scaleZ,
-    ],
-    [(ENTRANCE_DEPTH / 2 - 0.3) * scaleX, 1 * scaleY, 0.5 * scaleZ],
-    [0, 1, 0, 0],
-    [0, 1, 0, 0]
-  );
+    // horizontal bar bottom
+    drawCube(
+      gl,
+      wallPiller,
+      [
+        baseX + (frontFenceX - ENTRANCE_DEPTH / 2) * scaleX,
+        baseY + 0.01 * scaleY,
+        baseZ + -3 * scaleZ,
+      ],
+      [(ENTRANCE_DEPTH / 2 - 0.3) * scaleX, 1 * scaleY, 0.5 * scaleZ],
+      [0, 1, 0, 0],
+      [0, 1, 0, 0]
+    );
 
-  // sheet fill
-  drawSheet(
-    gl,
-    sheetPiller,
-    [
-      baseX + (frontFenceX - ENTRANCE_DEPTH / 2) * scaleX,
-      baseY + 3.5 * scaleY,
-      baseZ + -3 * scaleZ,
-    ],
-    [(ENTRANCE_DEPTH - 0.6) * scaleX, 5 * scaleY, 0.5 * scaleZ],
-    [0, 1, 0, 0],
-    [0, 1, 0, 0]
-  );
+    // sheet fill
+    drawSheet(
+      gl,
+      sheetPiller,
+      [
+        baseX + (frontFenceX - ENTRANCE_DEPTH / 2) * scaleX,
+        baseY + 3.5 * scaleY,
+        baseZ + -3 * scaleZ,
+      ],
+      [(ENTRANCE_DEPTH - 0.6) * scaleX, 5 * scaleY, 0.5 * scaleZ],
+      [0, 1, 0, 0],
+      [0, 1, 0, 0]
+    );
 
-  // horizontal bar top
-  drawCube(
-    gl,
-    wallPiller,
-    [
-      baseX + (frontFenceX - ENTRANCE_DEPTH / 2) * scaleX,
-      baseY + 6 * scaleY,
-      baseZ + -3 * scaleZ,
-    ],
-    [(ENTRANCE_DEPTH / 2 - 0.3) * scaleX, 1 * scaleY, 0.5 * scaleZ],
-    [0, 1, 0, 0],
-    [0, 1, 0, 0]
-  );
-
+    // horizontal bar top
+    drawCube(
+      gl,
+      wallPiller,
+      [
+        baseX + (frontFenceX - ENTRANCE_DEPTH / 2) * scaleX,
+        baseY + 6 * scaleY,
+        baseZ + -3 * scaleZ,
+      ],
+      [(ENTRANCE_DEPTH / 2 - 0.3) * scaleX, 1 * scaleY, 0.5 * scaleZ],
+      [0, 1, 0, 0],
+      [0, 1, 0, 0]
+    );
+  }
   // BACK WALL (X = backFenceX) - solid
   // back corner pillar
   drawCube(
@@ -1029,5 +1036,421 @@ function drawTicketStand(gl, cubes) {
     [boxSize / 2 + 0.5, 1, boxSize / 2 + 0.5],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
+  );
+}
+
+function drawPolarBear(gl, moving, scaling, rotating1, rotating2) {
+  const polarbear = createObject(gl, polarbearkObj, [0.91, 0.85, 0.66]);
+  drawObject(
+    gl,
+    polarbear,
+    [WALL_MAX_X - 65, 0, WALL_MAX_Z - 65],
+    [1.0, 1.0, 1.0],
+    [180, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+  const blackSphere = createSphere(gl, [0.0, 0.0, 0.0]);
+  //left eye
+  drawSphere(
+    gl,
+    blackSphere,
+    [WALL_MAX_X - 67.2, 2.6, WALL_MAX_Z - 64.9],
+    [0.05, 0.05, 0.05],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+  //right eye
+  drawSphere(
+    gl,
+    blackSphere,
+    [WALL_MAX_X - 67.2, 2.6, WALL_MAX_Z - 65.1],
+    [0.05, 0.05, 0.05],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+  //nose
+  drawSphere(
+    gl,
+    blackSphere,
+    [WALL_MAX_X - 67.4, 2.2, WALL_MAX_Z - 65],
+    [0.12, 0.12, 0.12],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+}
+
+function drawPenguin(gl, x, z, scale) {
+  const greenSphere = createSphere(gl, [0.54, 0.9, 0.36]);
+  const blueBodySphere = createSphere(gl, [0.0, 0.4, 0.8]);
+  const redSphere = createSphere(gl, [1.0, 0.0, 0.0]);
+  const yellowSphere = createSphere(gl, [1.0, 1.0, 0.1]);
+  const whiteSphere = createSphere(gl, [1.0, 1.0, 1.0]);
+  const blackSphere = createSphere(gl, [0.0, 0.0, 0.0]);
+  const natchoSphere = createSphere(gl, [1.0, 0.65, 0.17]);
+  const spheres = [
+    greenSphere,
+    blueBodySphere,
+    redSphere,
+    yellowSphere,
+    whiteSphere,
+    blackSphere,
+    natchoSphere,
+  ];
+
+  const armCylinder = createCylinder(gl, [1.0, 0.0, 0.0]);
+  const mallotCylinder = createCylinder(gl, [0.55, 0.27, 0.07]);
+  const whiteCylinder = createCylinder(gl, [1.0, 1.0, 1.0]);
+  const cylinders = [armCylinder, mallotCylinder, whiteCylinder];
+
+  const mallotCircle = createCircle(gl, [1.0, 0.0, 0.0]);
+  const circles = [mallotCircle];
+
+  const yellowTriangle = createTriangle(gl, [1.0, 1.0, 0.0], [0, 0, -1]);
+  const redTriangle = createTriangle(gl, [1.0, 0.0, 0.0]);
+  const triangles = [yellowTriangle, redTriangle];
+
+  const star = createStar(gl, [1.0, 1.0, 0.0]);
+  const stars = [star];
+
+  const pyramid = createPyramid(gl, [1.0, 1.0, 0.0]);
+  const pyramids = [pyramid];
+
+  // PENGUIN
+  // Body
+  drawSphere(
+    gl,
+    spheres[1],
+    [0 + x, 0.63 * scale, 0.2 + z],
+    [0.4 * scale, 0.4 * scale, 0.4 * scale],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // White scarf and coat
+  drawSphere(
+    gl,
+    spheres[2],
+    [0.0 + x, 0.6 * scale, 0.0 + z],
+    [0.5 * scale, 0.5 * scale, 0.5 * scale],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+  drawSphere(
+    gl,
+    spheres[4],
+    [0.15 * scale + x, 0.6 * scale, 0.09 * scale + z],
+    [0.13 * scale, 0.5 * scale, 0.4 * scale],
+    [0, 0, 0, 1],
+    [40, 0, 1, 0]
+  );
+  drawSphere(
+    gl,
+    spheres[4],
+    [-0.15 * scale + x, 0.6 * scale, 0.09 * scale + z],
+    [0.13 * scale, 0.5 * scale, 0.4 * scale],
+    [0, 0, 0, 1],
+    [-40, 0, 1, 0]
+  );
+  drawSphere(
+    gl,
+    spheres[4],
+    [-0.011 * scale + x, 1.0 * scale, 0.04 * scale + z],
+    [0.2 * scale, 0.17 * scale, 0.35 * scale],
+    [0, 0, 0, 1],
+    [90, 0, 1, 0]
+  );
+
+  // Head
+  drawSphere(
+    gl,
+    spheres[1],
+    [0 + x, 1.2 * scale, 0.2 + z],
+    [0.3 * scale, 0.3 * scale, 0.3 * scale],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Beak
+  drawPyramid(
+    gl,
+    pyramids[0],
+    [0.0 + x, 1.07 * scale, 0.5 * scale + z],
+    [0.15 * scale, 0.06 * scale, 0.23 * scale],
+    [0, 1, 0, 0],
+    [0, 0, 1, 0]
+  ); // Top beak
+  drawPyramid(
+    gl,
+    pyramids[0],
+    [0.0 + x, 1.07 * scale, 0.5 * scale + z],
+    [0.15 * scale, 0.1 * scale, 0.23 * scale],
+    [0, 1, 0, 0],
+    [180, 0, 0, 1]
+  ); // Bottom beak
+
+  // Eyes
+  drawSphere(
+    gl,
+    spheres[4],
+    [-0.15 * scale + x, 1.2 * scale, 0.4 * scale + z],
+    [0.05 * scale, 0.1 * scale, 0.1 * scale],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  ); // Left sclara
+  drawSphere(
+    gl,
+    spheres[4],
+    [0.15 * scale + x, 1.2 * scale, 0.4 * scale + z],
+    [0.05 * scale, 0.1 * scale, 0.1 * scale],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  ); // Right sclara
+  drawSphere(
+    gl,
+    spheres[5],
+    [-0.15 * scale + x, 1.2 * scale, 0.403 * scale + z],
+    [0.05 * scale, 0.09 * scale, 0.1 * scale],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  ); // Left pupil
+  drawSphere(
+    gl,
+    spheres[5],
+    [0.15 * scale + x, 1.2 * scale, 0.403 * scale + z],
+    [0.05 * scale, 0.09 * scale, 0.1 * scale],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  ); // Right pupil
+  drawSphere(
+    gl,
+    spheres[4],
+    [-0.15 * scale + x, 1.2 * scale, 0.476 * scale + z],
+    [0.03 * scale, 0.03 * scale, 0.03 * scale],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  ); // Left iris
+  drawSphere(
+    gl,
+    spheres[4],
+    [0.15 * scale + x, 1.2 * scale, 0.476 * scale + z],
+    [0.03 * scale, 0.03 * scale, 0.03 * scale],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  ); // right iris
+
+  // Hat
+  drawSphere(
+    gl,
+    spheres[2],
+    [0 + x, 1.4 * scale, 0.2 + z],
+    [0.2 * scale, 0.2 * scale, 0.2 * scale],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+  drawSphere(
+    gl,
+    spheres[3],
+    [0 + x, 1.35 * scale, 0.2 + z],
+    [0.3 * scale, 0.1 * scale, 0.3 * scale],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+  drawSphere(
+    gl,
+    spheres[3],
+    [0.0 + x, 1.35 * scale, 0.45 * scale + z],
+    [0.1 * scale, 0.1 * scale, 0.1 * scale],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+  drawSphere(
+    gl,
+    spheres[4],
+    [0 + x, 1.6 * scale, 0.1 * scale + z],
+    [0.1 * scale, 0.1 * scale, 0.1 * scale],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Arms
+  drawCylinder(
+    gl,
+    cylinders[0],
+    [-0.23 * scale + x, 0.9 * scale, -0.2 * scale + z],
+    [0.1 * scale, 0.1 * scale, 0.1 * scale],
+    [100, 1, 0, 0],
+    [20, 0, 0, 1]
+  ); // Left arm coat
+  drawCylinder(
+    gl,
+    cylinders[0],
+    [0.23 * scale + x, 0.9 * scale, -0.2 * scale + z],
+    [0.1 * scale, 0.1 * scale, 0.1 * scale],
+    [100, 1, 0, 0],
+    [-20, 0, 0, 1]
+  ); // Right arm coat
+
+  // Hand
+  drawSphere(
+    gl,
+    spheres[4],
+    [-0.6 * scale + x, 0.725 * scale, 0.8 * scale + z],
+    [0.11 * scale, 0.11 * scale, 0.11 * scale],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  ); // Left Puff coat
+  drawSphere(
+    gl,
+    spheres[4],
+    [0.6 * scale + x, 0.725 * scale, 0.8 * scale + z],
+    [0.11 * scale, 0.11 * scale, 0.11 * scale],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  ); // Right Puff coat
+  drawSphere(
+    gl,
+    spheres[6],
+    [-0.62 * scale + x, 0.71 * scale, 0.85 * scale + z],
+    [0.12 * scale, 0.12 * scale, 0.12 * scale],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  ); // Left hand
+  drawSphere(
+    gl,
+    spheres[6],
+    [0.62 * scale + x, 0.71 * scale, 0.85 * scale + z],
+    [0.12 * scale, 0.12 * scale, 0.12 * scale],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  ); // Right hand
+
+  // Mallot
+  drawCylinder(
+    gl,
+    cylinders[1],
+    [-0.75 * scale + x, 0.4 * scale, 0.95 * scale + z],
+    [0.1 * scale, 0.1 * scale, 0.1 * scale],
+    [0, 1, 0, 0],
+    [0, 0, 0, 1]
+  ); // Handle
+  drawCylinder(
+    gl,
+    cylinders[1],
+    [-0.77 * scale + x, 1.36 * scale, 0.55 * scale + z],
+    [0.2 * scale, 0.2 * scale, 0.07 * scale],
+    [90, 1, 0, 0],
+    [0, 0, 0, 1]
+  ); // Hammer
+  drawCylinder(
+    gl,
+    cylinders[2],
+    [-0.77 * scale + x, 1.36 * scale, 1.3 * scale + z],
+    [0.2 * scale, 0.2 * scale, 0.01 * scale],
+    [90, 1, 0, 0],
+    [0, 0, 0, 1]
+  ); // White front circle
+  drawCylinder(
+    gl,
+    cylinders[2],
+    [-0.77 * scale + x, 1.36 * scale, 0.45 * scale + z],
+    [0.2 * scale, 0.2 * scale, 0.01 * scale],
+    [90, 1, 0, 0],
+    [0, 0, 0, 1]
+  ); // White back circle
+  drawCircle(
+    gl,
+    circles[0],
+    [-0.77 * scale + x, 1.36 * scale, 1.42 * scale + z],
+    [0.2 * scale, 0.2 * scale, 0.1 * scale],
+    [0, 1, 0, 0]
+  ); // Mallot front circle
+  drawCircle(
+    gl,
+    circles[0],
+    [-0.77 * scale + x, 1.36 * scale, 0.44 * scale + z],
+    [0.2 * scale, 0.2 * scale, 0.1 * scale],
+    [0, 1, 0, 0]
+  ); // Mallot back circle
+  drawStar(
+    gl,
+    stars[0],
+    [-0.77 * scale + x, 1.37 * scale, 1.43 * scale + z],
+    [0.2 * scale, 0.2 * scale, 0.1 * scale],
+    [0, 1, 0, 0]
+  ); // Front star
+  drawStar(
+    gl,
+    stars[0],
+    [-0.77 * scale + x, 1.37 * scale, 0.43 * scale + z],
+    [0.2 * scale, 0.2 * scale, 0.1 * scale],
+    [0, 1, 0, 0]
+  ); // Back star
+
+  // Feet
+  drawSphere(
+    gl,
+    spheres[6],
+    [-0.2 * scale + x, 0.2 * scale, 0.25 * scale + z],
+    [0.2 * scale, 0.2 * scale, 0.2 * scale],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  ); // Left foot
+  drawSphere(
+    gl,
+    spheres[6],
+    [0.2 * scale + x, 0.2 * scale, 0.25 * scale + z],
+    [0.2 * scale, 0.2 * scale, 0.2 * scale],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  ); // Right foot
+
+  // Belt
+  drawTriangle(
+    gl,
+    triangles[1],
+    [-0.31 * scale + x, 0.48 * scale, 0.4 * scale + z],
+    [0.15 * scale, 0.15 * scale, 1],
+    [14, 1, 0, 0],
+    [-14, 0, 1, 0]
+  );
+  drawTriangle(
+    gl,
+    triangles[0],
+    [-0.24 * scale + x, 0.58 * scale, 0.52 * scale + z],
+    [0.25 * scale, 0.2 * scale, 1],
+    [180, 1, 0, 0],
+    [15, 0, 1, 0]
+  );
+  drawTriangle(
+    gl,
+    triangles[1],
+    [-0.1 * scale + x, 0.46 * scale, 0.57 * scale + z],
+    [0.25 * scale, 0.2 * scale, 1],
+    [0, 1, 0, 0],
+    [-4, 0, 1, 0]
+  );
+  drawTriangle(
+    gl,
+    triangles[0],
+    [0.04 * scale + x, 0.58 * scale, 0.6 * scale + z],
+    [0.25 * scale, 0.2 * scale, 1],
+    [180, 1, 0, 0],
+    [-2, 0, 1, 0]
+  );
+  drawTriangle(
+    gl,
+    triangles[1],
+    [0.18 * scale + x, 0.46 * scale, 0.55 * scale + z],
+    [0.25 * scale, 0.2 * scale, 1],
+    [0, 1, 0, 0],
+    [7.5, 0, 1, 0]
+  );
+  drawTriangle(
+    gl,
+    triangles[0],
+    [0.27 * scale + x, 0.58 * scale, 0.5 * scale + z],
+    [0.15 * scale, 0.2 * scale, 1],
+    [180, 1, 0, 0],
+    [-6, 0, 1, 0]
   );
 }
