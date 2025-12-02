@@ -1,8 +1,9 @@
-// Vertex shader
+// Vertex shader with texture support
 var VSHADER_SOURCE = `
     attribute vec4 a_Position;
     attribute vec4 a_Color;
-    attribute vec4 a_Normal;         // Normal
+    attribute vec4 a_Normal;
+    attribute vec2 a_TexCoord;
 
     uniform mat4 u_ModelViewMatrix;  // Model view matrix
     uniform mat4 u_xformMatrix;      // Transform matrix
@@ -13,6 +14,8 @@ var VSHADER_SOURCE = `
     uniform vec3 u_AmbientLight;      // Ambient light color
 
     varying vec4 v_Color;
+    varying vec2 v_TexCoord;
+    
     void main() {
         gl_Position = u_ModelViewMatrix * u_xformMatrix * a_Position;
 
@@ -28,20 +31,32 @@ var VSHADER_SOURCE = `
         // Calculate diffuse lighting
         float nDotL = max(dot(lightDirection, normal), 0.0);
 
-        // Use light color in calculation
-        vec3 diffuse = u_LightColor * a_Color.rgb * nDotL;  // Calculate the color due to diffuse reflection
-        vec3 ambient = u_AmbientLight * a_Color.rgb;        // Calculate the color due to ambient reflection
-        v_Color = vec4(diffuse + ambient, a_Color.a);       // Add the surface colors due to diffuse reflection and ambient reflection
+        vec3 diffuse = u_LightColor * a_Color.rgb * nDotL;
+        vec3 ambient = u_AmbientLight * a_Color.rgb;
+        v_Color = vec4(diffuse + ambient, a_Color.a);
+        
+        v_TexCoord = a_TexCoord;
     }`;
 
-// Fragment shader
+// Fragment shader with texture support
 var FSHADER_SOURCE = `
     #ifdef GL_ES
     precision mediump float;
     #endif
+    
+    uniform sampler2D u_Sampler;
+    uniform bool u_UseTexture;
+    
     varying vec4 v_Color;
+    varying vec2 v_TexCoord;
+    
     void main() {
-        gl_FragColor = v_Color;
+        if (u_UseTexture) {
+            vec4 texColor = texture2D(u_Sampler, v_TexCoord);
+            gl_FragColor = texColor * v_Color;
+        } else {
+            gl_FragColor = v_Color;
+        }
     }`;
 
 var viewMatrix,
@@ -53,7 +68,9 @@ var viewMatrix,
   u_NormalMatrix,
   u_LightPosition,
   u_LightColor,
-  u_AmbientLight;
+  u_AmbientLight,
+  u_UseTexture,
+  u_Sampler;
 
 const WALL_MIN_X = -90;
 const WALL_MAX_X = 90;
@@ -65,14 +82,11 @@ var fov = 110;
 var far = (WALL_MAX_Z + 5) * 2;
 
 var horizontalAngle = 0;
-
 var verticalAngle = 0;
-// var verticalAngle = 30;
 var camRadius = 3.0;
 
 var eyeX = 0;
 eyeY = 3;
-// eyeY = 80;
 eyeZ = 0;
 var atX = 0,
   atY = 0,
@@ -98,6 +112,8 @@ function main() {
   u_LightPosition = gl.getUniformLocation(gl.program, 'u_LightPosition');
   u_LightColor = gl.getUniformLocation(gl.program, 'u_LightColor');
   u_AmbientLight = gl.getUniformLocation(gl.program, 'u_AmbientLight');
+  u_UseTexture = gl.getUniformLocation(gl.program, 'u_UseTexture');
+  u_Sampler = gl.getUniformLocation(gl.program, 'u_Sampler');
 
   // Set light color (white light)
   gl.uniform3f(u_LightColor, 1.0, 1.0, 1.0);
@@ -112,7 +128,6 @@ function main() {
 
   viewMatrix = new Matrix4();
   eyeX = WALL_MIN_X;
-  //eyeX = -170;
   eyeZ = Math.sin(horizontalAngle) * camRadius;
 
   atX = eyeX + Math.cos(horizontalAngle);
@@ -132,14 +147,15 @@ function main() {
   gl.uniformMatrix4fv(u_ModelViewMatrix, false, modelViewMatrix.elements);
 
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
   const floor = createPlane(gl, 'floor', [0, 0.6, 0.36]);
   const right = createPlane(gl, 'wallRight', [0.565, 0.835, 1.0]);
   const left = createPlane(gl, 'wallLeft', [0.565, 0.835, 1.0]);
   const back = createPlane(gl, 'wallBack', [0.565, 0.835, 1.0]);
   const front = createPlane(gl, 'wallFront', [0.565, 0.835, 1.0]);
 
-  const floorSheet = createSheet(gl, [1, 0, 0]);
-  const wallSheet = createSheet(gl, [0.5, 0, 0.8]);
+  const floorSheet = createSheet(gl, [1, 0, 0], 'pictures/bricks.jpg');
+  const wallSheet = createSheet(gl, [1, 1, 1], 'pictures/fence.jpg');
 
   const wallPiller = createCube(gl, [0.78, 0.75, 0.7]);
 
@@ -158,10 +174,11 @@ function main() {
   drawFence(gl, fenceShapes);
   drawPath(gl, floorSheet, benchs, lamp);
   drawTicketStand(gl, fenceShapes);
+
   function keyDown(ev) {
     // Camera Rotation
     if (ev.keyCode === 39) {
-      //Tturn Right
+      //Turn Right
       horizontalAngle += 0.1;
     } else if (ev.keyCode === 37) {
       // Turn Left

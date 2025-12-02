@@ -1,4 +1,4 @@
-function createPlane(gl, wall, color) {
+function createPlane(gl, wall, color, textureUrl = null) {
   const vertex = [
     [WALL_MIN_X, 0.0, WALL_MIN_Z], // v0
     [WALL_MAX_X, 0.0, WALL_MIN_Z], // v1
@@ -11,7 +11,7 @@ function createPlane(gl, wall, color) {
     [WALL_MIN_X, 30.0, WALL_MAX_Z], // v7
   ];
 
-  var vertices, normals;
+  var vertices, normals, texCoords;
 
   // Switch statement for different types of planes
   switch (wall) {
@@ -25,6 +25,7 @@ function createPlane(gl, wall, color) {
 
       // Normal Goes up
       normals = new Float32Array([0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0]);
+      texCoords = new Float32Array([0, 0, 0, 10, 10, 10, 10, 0]);
       break;
 
     case 'wallRight':
@@ -37,6 +38,7 @@ function createPlane(gl, wall, color) {
 
       // Normal Goes to the left
       normals = new Float32Array([-1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0]);
+      texCoords = new Float32Array([0, 0, 10, 0, 10, 1, 0, 1]);
       break;
 
     case 'wallLeft':
@@ -49,6 +51,7 @@ function createPlane(gl, wall, color) {
 
       // Normal Goes to the right
       normals = new Float32Array([1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0]);
+      texCoords = new Float32Array([0, 0, 10, 0, 10, 1, 0, 1]);
       break;
 
     case 'wallBack':
@@ -61,6 +64,7 @@ function createPlane(gl, wall, color) {
 
       // Normal Goes to the forward
       normals = new Float32Array([0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1]);
+      texCoords = new Float32Array([0, 0, 10, 0, 10, 1, 0, 1]);
       break;
 
     case 'wallFront':
@@ -72,30 +76,40 @@ function createPlane(gl, wall, color) {
       ]);
       // Normal Goes to the backward
       normals = new Float32Array([0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1]);
-
+      texCoords = new Float32Array([0, 0, 10, 0, 10, 1, 0, 1]);
       break;
 
     default:
       console.log(wall + ' ISSUE');
       vertices = new Float32Array([]);
       normals = new Float32Array([]);
+      texCoords = new Float32Array([]);
   }
 
   // Unpack the color for the vertice's
   const colors = new Float32Array([...color, ...color, ...color, ...color]);
 
   // Bind and Buffer data
-  return initBuffers(gl, vertices, colors, normals, null);
+  return initBuffers(
+    gl,
+    vertices,
+    colors,
+    normals,
+    null,
+    texCoords,
+    textureUrl
+  );
 }
 
 // Function to create Sphere just give color
-function createSphere(gl, color) {
+function createSphere(gl, color, textureUrl = null) {
   const latSteps = 21; // vertical divisions
   const lonSteps = 21; // horizontal divisions
 
   const vertices = [];
   const normals = [];
   const colors = [];
+  const texCoords = [];
   const indices = [];
 
   for (var i = 0; i <= latSteps; i++) {
@@ -115,6 +129,7 @@ function createSphere(gl, color) {
       vertices.push(x, y, z);
       normals.push(x, y, z);
       colors.push(...color); // same color per vertex
+      texCoords.push(j / lonSteps, i / latSteps);
     }
   }
 
@@ -134,15 +149,18 @@ function createSphere(gl, color) {
     new Float32Array(vertices),
     new Float32Array(colors),
     new Float32Array(normals),
-    new Uint16Array(indices)
+    new Uint16Array(indices),
+    new Float32Array(texCoords),
+    textureUrl
   );
 }
 
 // Function to create Cylinder give just color
-function createCylinder(gl, color) {
+function createCylinder(gl, color, textureUrl = null) {
   const vertices = [];
   const normals = [];
   const colors = [];
+  const texCoords = [];
   const indices = [];
 
   var height = 11;
@@ -153,16 +171,19 @@ function createCylinder(gl, color) {
 
     var x = Math.cos(angle);
     var z = Math.sin(angle);
+    const u = i / steps;
 
     // bottom ring
     vertices.push(x, 0, z);
     normals.push(x, 0, z);
     colors.push(...color);
+    texCoords.push(u, 0);
 
     // top ring
     vertices.push(x, height, z);
     normals.push(x, 0, z);
     colors.push(...color);
+    texCoords.push(u, 1);
   }
 
   // connect side faces
@@ -181,12 +202,14 @@ function createCylinder(gl, color) {
     new Float32Array(vertices),
     new Float32Array(colors),
     new Float32Array(normals),
-    new Uint16Array(indices)
+    new Uint16Array(indices),
+    new Float32Array(texCoords),
+    textureUrl
   );
 }
 
 // Function to create Pyramid give just color
-function createPyramid(gl, color) {
+function createPyramid(gl, color, textureUrl = null) {
   // Points
   const vertices = [
     // Base
@@ -197,6 +220,8 @@ function createPyramid(gl, color) {
   ];
 
   const normals = [0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1];
+
+  const texCoords = [0, 0, 1, 0, 0.5, 1, 0.5, 0.5];
 
   // Indices
   const indices = [
@@ -215,11 +240,13 @@ function createPyramid(gl, color) {
     new Float32Array(vertices),
     new Float32Array(colors),
     new Float32Array(normals),
-    new Uint16Array(indices)
+    new Uint16Array(indices),
+    new Float32Array(texCoords),
+    textureUrl
   );
 }
 
-function createCube(gl, color) {
+function createCube(gl, color, textureUrl = null) {
   // Vertices for all 8 corners of the cube
   const vertices = [
     1, 0, 1, 1, 0, -1, -1, 0, -1, -1, 0, 1,
@@ -240,6 +267,21 @@ function createCube(gl, color) {
     1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
     // Left
     -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0,
+  ];
+
+  const texCoords = [
+    // Bottom face
+    0, 0, 1, 0, 1, 1, 0, 1,
+    // Top face
+    0, 0, 1, 0, 1, 1, 0, 1,
+    // Front face
+    0, 0, 1, 0, 1, 1, 0, 1,
+    // Back face
+    0, 0, 1, 0, 1, 1, 0, 1,
+    // Right face
+    0, 0, 1, 0, 1, 1, 0, 1,
+    // Left face
+    0, 0, 1, 0, 1, 1, 0, 1,
   ];
 
   // Indices defining triangles for all 6 faces
@@ -275,15 +317,18 @@ function createCube(gl, color) {
     new Float32Array(vertices),
     new Float32Array(colors),
     new Float32Array(normals),
-    new Uint16Array(indices)
+    new Uint16Array(indices),
+    new Float32Array(texCoords),
+    textureUrl
   );
 }
 
 // Function to create Circle give just color
-function createCircle(gl, color) {
+function createCircle(gl, color, textureUrl = null) {
   const vertices = [];
   const colors = [];
   const normals = [];
+  const texCoords = [];
 
   const centerX = 0;
   const centerY = 0;
@@ -299,22 +344,31 @@ function createCircle(gl, color) {
 
     normals.push(0, 0, 1);
     colors.push(...color);
+
+    // Radial texture coordinates
+    const u = 0.5 + 0.5 * Math.cos(angle);
+    const v = 0.5 + 0.5 * Math.sin(angle);
+    texCoords.push(u, v);
   }
   return initBuffers(
     gl,
     new Float32Array(vertices),
     new Float32Array(colors),
     new Float32Array(normals),
-    null
+    null,
+    new Float32Array(texCoords),
+    textureUrl
   );
 }
 
 // Function to create Triangle give just color
-function createTriangle(gl, color, normal = [0, 0, 1]) {
+function createTriangle(gl, color, normal = [0, 0, 1], textureUrl = null) {
   // Points
   const vertices = [-0.5, 0.0, 0.0, 0.0, 0.5, 0.0, 0.5, 0.0, 0.0];
 
   const normals = [...normal, ...normal, ...normal];
+
+  const texCoords = [0, 0, 0.5, 1, 1, 0];
 
   // Push back color
   const colors = [];
@@ -327,18 +381,22 @@ function createTriangle(gl, color, normal = [0, 0, 1]) {
     new Float32Array(vertices),
     new Float32Array(colors),
     new Float32Array(normals),
-    null
+    null,
+    new Float32Array(texCoords),
+    textureUrl
   );
 }
 
 // Function to create Sheet (flat rectangular plane) give just color
-function createSheet(gl, color) {
+function createSheet(gl, color, textureUrl = null) {
   const vertices = [
     -0.5, -0.5, 0.0, 0.5, -0.5, 0.0, 0.5, 0.5, 0.0, -0.5, 0.5, 0.0,
   ];
 
   var normal = [0, 1, 0];
   const normals = [...normal, ...normal, ...normal, ...normal];
+
+  const texCoords = [0, 0, 1, 0, 1, 1, 0, 1];
 
   // Push back color
   const colors = [];
@@ -351,12 +409,14 @@ function createSheet(gl, color) {
     new Float32Array(vertices),
     new Float32Array(colors),
     new Float32Array(normals),
-    null
+    null,
+    new Float32Array(texCoords),
+    textureUrl
   );
 }
 
 // Function to create star give just color
-function createStar(gl, color) {
+function createStar(gl, color, textureUrl = null) {
   // Points
   const vertices = [
     0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.22, 0.31, 0.0, 0.95, 0.31, 0.0, 0.36, -0.12,
@@ -365,8 +425,13 @@ function createStar(gl, color) {
   ];
 
   const normals = [];
+  const texCoords = [];
   for (var i = 0; i < vertices.length / 3; i++) {
     normals.push(0, 0, 1);
+    texCoords.push(
+      vertices[i * 3] * 0.5 + 0.5,
+      vertices[i * 3 + 1] * 0.5 + 0.5
+    );
   }
 
   // Unpack Color
@@ -380,14 +445,18 @@ function createStar(gl, color) {
     new Float32Array(vertices),
     new Float32Array(colors),
     new Float32Array(normals),
-    null
+    null,
+    new Float32Array(texCoords),
+    textureUrl
   );
 }
 
-function createLine(gl, color) {
+function createLine(gl, color, textureUrl = null) {
   const vertices = [2.0, 0.5, 2, -2.0, 0.5, 2];
 
   const normals = [0, 1, 0, 0, 1, 0];
+
+  const texCoords = [0, 0, 1, 1];
 
   // Unpack Color
   const colors = [];
@@ -400,11 +469,14 @@ function createLine(gl, color) {
     new Float32Array(vertices),
     new Float32Array(colors),
     new Float32Array(normals),
-    null
+    null,
+    new Float32Array(texCoords),
+    textureUrl
   );
 }
+
 // Function to create tree from OBJ data
-function createObject(gl, objText, color) {
+function createObject(gl, objText, color, textureUrl = null) {
   const objData = parseOBJ(objText);
 
   // Create colors array (same color for all vertices)
@@ -413,12 +485,23 @@ function createObject(gl, objText, color) {
     colors.push(...color);
   }
 
+  let texCoords = objData.texCoords;
+  if (!texCoords || texCoords.length === 0) {
+    texCoords = new Float32Array((objData.vertices.length / 3) * 2);
+    for (let i = 0; i < texCoords.length; i += 2) {
+      texCoords[i] = 0;
+      texCoords[i + 1] = 0;
+    }
+  }
+
   return initBuffers(
     gl,
     objData.vertices,
     new Float32Array(colors),
     objData.normals,
-    objData.indices
+    objData.indices,
+    texCoords,
+    textureUrl
   );
 }
 
@@ -428,13 +511,23 @@ function createLamp(gl, color) {
 
   return [lampBlock, lampPane];
 }
+
 // Function to initialize buffers for the first time
-function initBuffers(gl, vertices, colors, normals, indices) {
+function initBuffers(
+  gl,
+  vertices,
+  colors,
+  normals,
+  indices,
+  texCoords,
+  textureUrl
+) {
   // Create Buffers
   const vertexBuffer = gl.createBuffer();
   const colorBuffer = gl.createBuffer();
   const normalBuffer = gl.createBuffer();
   const indicesBuffer = gl.createBuffer();
+  const texCoordBuffer = gl.createBuffer();
 
   // Bind and buffer the vertices array to the vertex buffer
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
@@ -456,6 +549,15 @@ function initBuffers(gl, vertices, colors, normals, indices) {
   gl.vertexAttribPointer(a_Normal, 3, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(a_Normal);
 
+  // Bind and buffer texture coordinates
+  const a_TexCoord = gl.getAttribLocation(gl.program, 'a_TexCoord');
+  if (texCoords) {
+    gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, texCoords, gl.STATIC_DRAW);
+    gl.vertexAttribPointer(a_TexCoord, 2, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(a_TexCoord);
+  }
+
   // Vertex count and indices count
   var vertexCount = vertices.length / 3;
   var indicesCount = 0;
@@ -468,16 +570,26 @@ function initBuffers(gl, vertices, colors, normals, indices) {
     indicesCount = indices.length;
   }
 
+  // Load texture if provided
+  let texture = null;
+  if (textureUrl) {
+    texture = loadTexture(gl, textureUrl);
+  }
+
   return {
     vertexBuffer,
     colorBuffer,
     normalBuffer,
     indicesBuffer,
+    texCoordBuffer,
     vertexCount,
     indicesCount,
     a_Position,
     a_Color,
     a_Normal,
+    a_TexCoord,
+    texture,
+    useTexture: textureUrl !== null,
   };
 }
 
@@ -497,10 +609,54 @@ function initObject(gl, object) {
   gl.vertexAttribPointer(object.a_Normal, 3, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(object.a_Normal);
 
+  // Bind texture coordinates
+  if (object.texCoordBuffer) {
+    gl.bindBuffer(gl.ARRAY_BUFFER, object.texCoordBuffer);
+    gl.vertexAttribPointer(object.a_TexCoord, 2, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(object.a_TexCoord);
+  }
+
+  // Set texture if available
+  if (object.texture && object.useTexture) {
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, object.texture);
+    gl.uniform1i(u_Sampler, 0);
+    gl.uniform1i(u_UseTexture, 1);
+  } else {
+
+    gl.uniform1i(u_UseTexture, 0);
+  }
+
   // Bind the objects indicesBuffer to the webgl buffer
   if (object.indicesBuffer) {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, object.indicesBuffer);
   }
+}
+
+function loadTexture(gl, url) {
+  const texture = gl.createTexture();
+  const image = new Image();
+
+  image.onload = function () {
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
+
+    if (isPowerOf2(image.width) && isPowerOf2(image.height)) {
+      gl.generateMipmap(gl.TEXTURE_2D);
+    } else {
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    }
+  };
+
+  image.src = url;
+  return texture;
+}
+
+function isPowerOf2(value) {
+  return (value & (value - 1)) === 0;
 }
 
 // Function to parse OBJ file
@@ -545,6 +701,7 @@ function parseOBJ(objText) {
   const finalVertices = [];
   const finalNormals = [];
   const finalColors = [];
+  const finalTexCoords = [];
   const indices = [];
 
   let vertexIndex = 0;
@@ -575,6 +732,13 @@ function parseOBJ(objText) {
         finalNormals.push(0, 1, 0); // Default normal
       }
 
+      // Add texture coordinate
+      if (vtIdx >= 0) {
+        finalTexCoords.push(texCoords[vtIdx * 2], texCoords[vtIdx * 2 + 1]);
+      } else {
+        finalTexCoords.push(0, 0);
+      }
+
       indices.push(vertexIndex++);
     }
   }
@@ -582,6 +746,7 @@ function parseOBJ(objText) {
   return {
     vertices: new Float32Array(finalVertices),
     normals: new Float32Array(finalNormals),
+    texCoords: new Float32Array(finalTexCoords),
     indices: new Uint16Array(indices),
   };
 }
