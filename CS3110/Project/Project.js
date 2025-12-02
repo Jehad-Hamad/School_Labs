@@ -156,6 +156,7 @@ function main() {
 
   const floorSheet = createSheet(gl, [1, 0, 0], 'pictures/bricks.jpg');
   const wallSheet = createSheet(gl, [1, 1, 1], 'pictures/fence.jpg');
+  var sandFloor = createSheet(gl, [1, 1, 1], 'pictures/sandFloor.jpg');
 
   const wallPiller = createCube(gl, [0.78, 0.75, 0.7]);
 
@@ -268,7 +269,7 @@ function main() {
     // Desert front right
     if (eyeX > WALL_MIN_X && eyeX < 0 && eyeZ > 0 && eyeZ < WALL_MAX_Z) {
       if (eyeX > WALL_MIN_X && eyeX < 0 && eyeZ > 0 && eyeZ < WALL_MAX_Z) {
-        createDesert(gl, fenceShapes);
+        createDesert(gl, fenceShapes, sandFloor);
       }
     }
 

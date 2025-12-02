@@ -1752,7 +1752,7 @@ function createJungle(gl, fenceShapes) {
   );
 }
 
-function createDesert(gl, fenceShapes) {
+function createDesert(gl, fenceShapes, sandfloor) {
   drawFence(
     gl,
     fenceShapes,
@@ -1762,12 +1762,11 @@ function createDesert(gl, fenceShapes) {
     true
   );
 
-  var sand = createSheet(gl, [0.93, 0.82, 0.6]);
-
+  var sandSheet = createSheet(gl, [0.93, 0.82, 0.6]);
   //right sheet
   drawSheet(
     gl,
-    sand,
+    sandSheet,
     [WALL_MIN_X + 60, 3.5, WALL_MAX_Z - 45],
     [30.0, 7.0, 1.0],
     [0, 1, 0, 0],
@@ -1777,7 +1776,7 @@ function createDesert(gl, fenceShapes) {
   // left sheet
   drawSheet(
     gl,
-    sand,
+    sandSheet,
     [WALL_MIN_X + 60, 3.5, WALL_MAX_Z - 75],
     [30.0, 7.0, 1.0],
     [0, 1, 0, 0],
@@ -1787,7 +1786,7 @@ function createDesert(gl, fenceShapes) {
   // back sheet
   drawSheet(
     gl,
-    sand,
+    sandSheet,
     [WALL_MIN_X + 45, 3.5, WALL_MAX_Z - 60],
     [1.0, 7.0, 30.0],
     [90, 0, 1, 0],
@@ -1797,7 +1796,7 @@ function createDesert(gl, fenceShapes) {
   // front 1 left
   drawSheet(
     gl,
-    sand,
+    sandSheet,
     [WALL_MIN_X + 75, 3.5, WALL_MAX_Z - 69],
     [1.0, 7.0, 11.5],
     [90, 0, 1, 0],
@@ -1807,7 +1806,7 @@ function createDesert(gl, fenceShapes) {
   // front 2 right
   drawSheet(
     gl,
-    sand,
+    sandSheet,
     [WALL_MIN_X + 75, 3.5, WALL_MAX_Z - 51],
     [1.0, 7.0, 11.5],
     [90, 0, 1, 0],
@@ -1817,14 +1816,14 @@ function createDesert(gl, fenceShapes) {
   //floor
   drawSheet(
     gl,
-    sand,
+    sandfloor,
     [WALL_MIN_X + 60, 0.02, WALL_MAX_Z - 60],
     [30.0, 1, 30.0],
     [90, 1, 0, 0],
     [0, 1, 0, 0]
   );
 
-  camel = createObject(gl, camelObj, [0.757, 0.604, 0.42]);
+  camel = createObject(gl, camelObj, [0.651, 0.478, 0.239]);
   drawObject(
     gl,
     camel,
@@ -1857,15 +1856,6 @@ function createDesert(gl, fenceShapes) {
   drawCactus(
     gl,
     cactus,
-    [WALL_MIN_X + 70, 0, WALL_MAX_Z - 52],
-    [1.0, 1.0, 1.0],
-    [0, 1, 0, 0],
-    [0, 1, 0, 0]
-  );
-
-  drawCactus(
-    gl,
-    cactus,
     [WALL_MIN_X + 60, 0, WALL_MAX_Z - 52],
     [1.0, 1.0, 1.0],
     [0, 1, 0, 0],
@@ -1876,9 +1866,136 @@ function createDesert(gl, fenceShapes) {
   drawPyramid(
     gl,
     pyramid,
-    [WALL_MIN_X + 55, 1, WALL_MAX_Z - 65],
+    [WALL_MIN_X + 55, 0, WALL_MAX_Z - 65],
     [9.0, 8.0, 9.0],
     [10, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  urn = createObject(gl, urnObj, [0.227, 0.184, 0.157]);
+  urn1 = createObject(gl, urnObj, [0.545, 0.306, 0.196]);
+  urn2 = createObject(gl, urnObj, [0.353, 0.243, 0.169]);
+
+  drawObject(
+    gl,
+    urn2,
+    [WALL_MIN_X + 57, 0.65, WALL_MAX_Z - 70],
+    [1.0, 1.0, 1.0],
+    [0, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+  drawObject(
+    gl,
+    urn1,
+    [WALL_MIN_X + 57.5, 0.65, WALL_MAX_Z - 71],
+    [1.0, 1.0, 1.0],
+    [0, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+  drawObject(
+    gl,
+    urn,
+    [WALL_MIN_X + 58, 0.65, WALL_MAX_Z - 70],
+    [1.0, 1.0, 1.0],
+    [0, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawObject(
+    gl,
+    urn1,
+    [WALL_MIN_X + 54, 0.65, WALL_MAX_Z - 62],
+    [1.0, 1.0, 1.0],
+    [0, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+  drawObject(
+    gl,
+    urn2,
+    [WALL_MIN_X + 55, 0.65, WALL_MAX_Z - 60.5],
+    [1.0, 1.0, 1.0],
+    [0, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+  drawObject(
+    gl,
+    urn,
+    [WALL_MIN_X + 56.5, 0.65, WALL_MAX_Z - 62],
+    [1.0, 1.0, 1.0],
+    [0, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  sandSheet = createObject(gl, sandobj, [0.757, 0.604, 0.42]);
+  drawObject(
+    gl,
+    sandSheet,
+    [WALL_MIN_X + 70, 1, WALL_MAX_Z - 70],
+    [7.0, 7.0, 7.0],
+    [0, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+  drawObject(
+    gl,
+    sandSheet,
+    [WALL_MIN_X + 50, 1, WALL_MAX_Z - 57],
+    [7.0, 7.0, 7.0],
+    [0, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+  drawObject(
+    gl,
+    sandSheet,
+    [WALL_MIN_X + 70, 1, WALL_MAX_Z - 50],
+    [7.0, 7.0, 7.0],
+    [30, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  deadBush = createObject(gl, deadBushObj, [0.604, 0.482, 0.29]);
+  deadBush1 = createObject(gl, deadBushObj, [0.353, 0.271, 0.157]);
+
+  drawObject(
+    gl,
+    deadBush,
+    [WALL_MIN_X + 70, 0, WALL_MAX_Z - 70],
+    [1.0, 1.0, 1.0],
+    [0, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawObject(
+    gl,
+    deadBush,
+    [WALL_MIN_X + 60, 0, WALL_MAX_Z - 60],
+    [1.0, 1.0, 1.0],
+    [0, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawObject(
+    gl,
+    deadBush1,
+    [WALL_MIN_X + 60, 0, WALL_MAX_Z - 57],
+    [1.0, 1.0, 1.0],
+    [0, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawObject(
+    gl,
+    deadBush1,
+    [WALL_MIN_X + 66, 0, WALL_MAX_Z - 50],
+    [1.0, 1.0, 1.0],
+    [0, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+  drawObject(
+    gl,
+    deadBush1,
+    [WALL_MIN_X + 73, 0, WALL_MAX_Z - 50],
+    [1.0, 1.0, 1.0],
+    [0, 0, 1, 0],
     [0, 1, 0, 0]
   );
 }
