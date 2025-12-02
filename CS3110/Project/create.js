@@ -103,8 +103,8 @@ function createPlane(gl, wall, color, textureUrl = null) {
 
 // Function to create Sphere just give color
 function createSphere(gl, color, textureUrl = null) {
-  const latSteps = 21; // vertical divisions
-  const lonSteps = 21; // horizontal divisions
+  const latSteps = 9; // vertical divisions
+  const lonSteps = 9; // horizontal divisions
 
   const vertices = [];
   const normals = [];
@@ -748,4 +748,11 @@ function parseOBJ(objText) {
     texCoords: new Float32Array(finalTexCoords),
     indices: new Uint16Array(indices),
   };
+}
+
+function createCactus(gl) {
+  const cactusGreen = createCylinder(gl, [0.2, 0.6, 0.2]);
+  const darkGreen = createSphere(gl, [0.3, 0.5, 0.15]);
+
+  return [cactusGreen, darkGreen];
 }

@@ -1823,6 +1823,237 @@ function createDesert(gl, fenceShapes) {
     [90, 1, 0, 0],
     [0, 1, 0, 0]
   );
+
+  camel = createObject(gl, camelObj, [0.757, 0.604, 0.42]);
+  drawObject(
+    gl,
+    camel,
+    [WALL_MIN_X + 55, 0.02, WALL_MAX_Z - 50],
+    [0.004, 0.004, 0.004],
+    [270, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawObject(
+    gl,
+    camel,
+    [WALL_MIN_X + 65, 0.02, WALL_MAX_Z - 50],
+    [0.004, 0.004, 0.004],
+    [320, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  const cactus = createCactus(gl);
+
+  drawCactus(
+    gl,
+    cactus,
+    [WALL_MIN_X + 65, 0, WALL_MAX_Z - 65],
+    [1.0, 1.0, 1.0],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawCactus(
+    gl,
+    cactus,
+    [WALL_MIN_X + 70, 0, WALL_MAX_Z - 52],
+    [1.0, 1.0, 1.0],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawCactus(
+    gl,
+    cactus,
+    [WALL_MIN_X + 60, 0, WALL_MAX_Z - 52],
+    [1.0, 1.0, 1.0],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  pyramid = createPyramid(gl, [0.757, 0.604, 0.42]);
+  drawPyramid(
+    gl,
+    pyramid,
+    [WALL_MIN_X + 55, 1, WALL_MAX_Z - 65],
+    [9.0, 8.0, 9.0],
+    [10, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+}
+
+function drawCactus(gl, cactus, moving, scaling, rotating1, rotating2) {
+  const cactusGreen = cactus[0];
+  const darkGreen = cactus[1];
+
+  // Main trunk
+  drawCylinder(
+    gl,
+    cactusGreen,
+    [moving[0], moving[1], moving[2]],
+    [scaling[0] * 0.5, scaling[1] * 0.3, scaling[2] * 0.5],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Main trunk cap
+  drawSphere(
+    gl,
+    darkGreen,
+    [moving[0], moving[1] + 3.3, moving[2]],
+    [scaling[0] * 0.52, scaling[1] * 0.52, scaling[2] * 0.52],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Spikes on main trunk - front
+  for (let i = 0; i < 3; i++) {
+    drawSphere(
+      gl,
+      darkGreen,
+      [moving[0] + scaling[0] * 0.5, moving[1] + 0.8 + i * 0.6, moving[2]],
+      [scaling[0] * 0.15, scaling[1] * 0.15, scaling[2] * 0.15],
+      [0, 1, 0, 0],
+      [0, 1, 0, 0]
+    );
+  }
+
+  // Spikes on main trunk - back
+  for (let i = 0; i < 3; i++) {
+    drawSphere(
+      gl,
+      darkGreen,
+      [moving[0] - scaling[0] * 0.5, moving[1] + 0.8 + i * 0.6, moving[2]],
+      [scaling[0] * 0.15, scaling[1] * 0.15, scaling[2] * 0.15],
+      [0, 1, 0, 0],
+      [0, 1, 0, 0]
+    );
+  }
+
+  // Left arm
+  drawCylinder(
+    gl,
+    cactusGreen,
+    [moving[0], moving[1] + 1, moving[2]],
+    [scaling[0] * 0.3, scaling[1] * 0.3, scaling[2] * 0.2],
+    [90, 1, 0, 0],
+    [0, 0, 1, 0]
+  );
+
+  // Left trunk cap
+  drawSphere(
+    gl,
+    darkGreen,
+    [moving[0], moving[1] + 1, moving[2] + 2],
+    [scaling[0] * 0.42, scaling[1] * 0.42, scaling[2] * 0.42],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Spikes on left trunk top
+  for (let i = 0; i < 3; i++) {
+    drawSphere(
+      gl,
+      darkGreen,
+      [moving[0], moving[1] + 1.2, moving[2] + i - 0.5],
+      [scaling[0] * 0.15, scaling[1] * 0.15, scaling[2] * 0.15],
+      [0, 1, 0, 0],
+      [0, 1, 0, 0]
+    );
+  }
+
+  // Spikes on left trunk back
+  for (let i = 0; i < 2; i++) {
+    drawSphere(
+      gl,
+      darkGreen,
+      [moving[0] - 0.2, moving[1] + 1, moving[2] + i + 0.5],
+      [scaling[0] * 0.15, scaling[1] * 0.15, scaling[2] * 0.15],
+      [0, 1, 0, 0],
+      [0, 1, 0, 0]
+    );
+  }
+
+  // Spikes on left trunk front
+  for (let i = 0; i < 3; i++) {
+    drawSphere(
+      gl,
+      darkGreen,
+      [moving[0] + 0.2, moving[1] + 1.2, moving[2] + i],
+      [scaling[0] * 0.15, scaling[1] * 0.15, scaling[2] * 0.15],
+      [0, 1, 0, 0],
+      [0, 1, 0, 0]
+    );
+  }
+
+  // Right arm
+  drawCylinder(
+    gl,
+    cactusGreen,
+    [moving[0], moving[1] + 1.7, moving[2]],
+    [scaling[0] * 0.3, scaling[1] * 0.3, scaling[2] * 0.2],
+    [270, 1, 0, 0],
+    [0, 0, 1, 0]
+  );
+
+  // Right trunk cap
+  drawSphere(
+    gl,
+    darkGreen,
+    [moving[0], moving[1] + 1.7, moving[2] - 2],
+    [scaling[0] * 0.42, scaling[1] * 0.42, scaling[2] * 0.42],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Spikes on right trunk top
+  for (let i = 0; i < 3; i++) {
+    drawSphere(
+      gl,
+      darkGreen,
+      [moving[0], moving[1] + 2, moving[2] - i + 0.5],
+      [scaling[0] * 0.15, scaling[1] * 0.15, scaling[2] * 0.15],
+      [0, 1, 0, 0],
+      [0, 1, 0, 0]
+    );
+  }
+
+  // Spikes on right trunk bottom
+  for (let i = 0; i < 3; i++) {
+    drawSphere(
+      gl,
+      darkGreen,
+      [moving[0], moving[1] + 1.4, moving[2] - i],
+      [scaling[0] * 0.15, scaling[1] * 0.15, scaling[2] * 0.15],
+      [0, 1, 0, 0],
+      [0, 1, 0, 0]
+    );
+  }
+
+  // Spikes on right trunk back
+  for (let i = 0; i < 3; i++) {
+    drawSphere(
+      gl,
+      darkGreen,
+      [moving[0] - 0.3, moving[1] + 1.7, moving[2] - i],
+      [scaling[0] * 0.15, scaling[1] * 0.15, scaling[2] * 0.15],
+      [0, 1, 0, 0],
+      [0, 1, 0, 0]
+    );
+  }
+
+  // Spikes on right trunk front
+  for (let i = 0; i < 3; i++) {
+    drawSphere(
+      gl,
+      darkGreen,
+      [moving[0] + 0.3, moving[1] + 1.7, moving[2] - i],
+      [scaling[0] * 0.15, scaling[1] * 0.15, scaling[2] * 0.15],
+      [0, 1, 0, 0],
+      [0, 1, 0, 0]
+    );
+  }
 }
 
 function createWater(gl, fenceShapes) {

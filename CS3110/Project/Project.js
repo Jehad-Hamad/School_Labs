@@ -81,7 +81,7 @@ var near = 0.1;
 var fov = 110;
 var far = (WALL_MAX_Z + 5) * 2;
 
-var horizontalAngle = 0;
+var horizontalAngle = 180;
 var verticalAngle = 0;
 var camRadius = 3.0;
 
@@ -222,8 +222,9 @@ function main() {
       eyeZ = -30;
     } else if (ev.key.toLowerCase() === '2') {
       // TP to the desert
-      eyeX = -35;
+      eyeX = -25;
       eyeZ = 30;
+      eyeY = 10;
     } else if (ev.key.toLowerCase() === '3') {
       // TP to the water
       eyeX = 35;
