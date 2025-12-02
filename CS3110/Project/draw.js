@@ -283,14 +283,17 @@ function drawPath(gl, sheet, benchs, lamp) {
   var pathX = WALL_MIN_X + 15;
 
   if (eyeX < WALL_MIN_X + 40 && eyeZ > -5 && eyeZ < 25) {
-    drawSheet(
-      gl,
-      sheet,
-      [pathX, 0.01, 0],
-      [30, 0, 3.5],
-      [90, 1, 0, 0],
-      [0, 1, 0, 0]
-    );
+    // Break starting path into segments (30 units total, 10 per segment)
+    for (let i = 0; i < 3; i++) {
+      drawSheet(
+        gl,
+        sheet,
+        [pathX + i * 10, 0.01, 0],
+        [10, 0, 3.5],
+        [90, 1, 0, 0],
+        [0, 1, 0, 0]
+      );
+    }
 
     drawObject(
       gl,
@@ -310,7 +313,6 @@ function drawPath(gl, sheet, benchs, lamp) {
       [0, 1, 0, 0]
     );
 
-    // Additional lamp on starting path
     drawLamp(
       gl,
       lamp,
@@ -321,17 +323,27 @@ function drawPath(gl, sheet, benchs, lamp) {
     );
   }
 
-  // vertical line
-  drawSheet(
-    gl,
-    sheet,
-    [0, 0.01, 0],
-    [WALL_MAX_X + 40, 0, 3.5],
-    [90, 1, 0, 0],
-    [0, 1, 0, 0]
-  );
+  // vertical line - break into segments
+  // Only render when not in a room (when eyeZ is between -5 and 5)
+  if (eyeZ > -5 && eyeZ < 5) {
+    var verticalLength = WALL_MAX_X + 40;
+    var numVerticalSegments = Math.ceil(verticalLength / 10);
 
-  if (eyeX <= -15) {
+    for (let i = 0; i < numVerticalSegments; i++) {
+      var segmentLength = Math.min(10, verticalLength - i * 10);
+      drawSheet(
+        gl,
+        sheet,
+        [-(WALL_MAX_X + 40) / 2 + i * 10, 0.01, 0],
+        [segmentLength, 0, 3.5],
+        [90, 1, 0, 0],
+        [0, 1, 0, 0]
+      );
+    }
+  }
+
+  // Only render these benches/lamps when in the left area and not in rooms
+  if (eyeX <= -15 && eyeZ > -5 && eyeZ < 5) {
     drawObject(
       gl,
       benchs[1],
@@ -369,7 +381,8 @@ function drawPath(gl, sheet, benchs, lamp) {
     );
   }
 
-  if (eyeX >= -15) {
+  // Only render these benches/lamps when in the right area and not in rooms
+  if (eyeX >= -15 && eyeZ > -5 && eyeZ < 5) {
     drawObject(
       gl,
       benchs[0],
@@ -399,104 +412,115 @@ function drawPath(gl, sheet, benchs, lamp) {
     );
   }
 
-  // horizontal line
-  if (eyeX >= -20) {
-    drawSheet(
-      gl,
-      sheet,
-      [0, 0.01, 0],
-      [3.5, 0, WALL_MAX_X + 40],
-      [90, 1, 0, 0],
-      [0, 1, 0, 0]
-    );
+  // horizontal line - break into segments
+  // Only render when not in starting area and not in rooms (when eyeX is between -5 and 5)
+  if (eyeX >= -20 && eyeX > -5 && eyeX < 5) {
+    var horizontalLength = WALL_MAX_X + 40;
+    var numHorizontalSegments = Math.ceil(horizontalLength / 10);
 
-    if (eyeZ <= -5) {
-      drawObject(
+    for (let i = 0; i < numHorizontalSegments; i++) {
+      var segmentLength = Math.min(10, horizontalLength - i * 10);
+      drawSheet(
         gl,
-        benchs[0],
-        [3, 0, pathX + 40],
-        [0.05, 0.05, 0.05],
-        [180, 0, 1, 0],
-        [0, 1, 0, 0]
-      );
-
-      // Lamp on horizontal path
-      drawLamp(
-        gl,
-        lamp,
-        [-4.0, 0.0, pathX + 35],
-        [0.5, 1.0, 0.7],
-        [0, 1, 0, 0],
-        [0, 1, 0, 0]
-      );
-
-      drawObject(
-        gl,
-        benchs[2],
-        [-3, 0, pathX + 60],
-        [0.05, 0.05, 0.05],
-        [0, 1, 0, 0],
-        [0, 1, 0, 0]
-      );
-
-      // Another lamp
-      drawLamp(
-        gl,
-        lamp,
-        [4.0, 0.0, pathX + 55],
-        [0.5, 1.0, 0.7],
-        [0, 1, 0, 0],
-        [0, 1, 0, 0]
-      );
-    }
-
-    if (eyeZ >= 5) {
-      drawObject(
-        gl,
-        benchs[1],
-        [3, 0, 15],
-        [0.05, 0.05, 0.05],
-        [180, 0, 1, 0],
-        [0, 1, 0, 0]
-      );
-
-      // Lamp near entrance
-      drawLamp(
-        gl,
-        lamp,
-        [-4.0, 0.0, 10],
-        [0.5, 1.0, 0.7],
-        [0, 1, 0, 0],
-        [0, 1, 0, 0]
-      );
-
-      drawObject(
-        gl,
-        benchs[0],
-        [-3, 0, 30],
-        [0.05, 0.05, 0.05],
-        [0, 0, 1, 0],
-        [0, 1, 0, 0]
-      );
-
-      // Lamp in middle area
-      drawLamp(
-        gl,
-        lamp,
-        [4.0, 0.0, 25],
-        [0.5, 1.0, 0.7],
-        [0, 1, 0, 0],
+        sheet,
+        [0, 0.01, -(WALL_MAX_X + 40) / 2 + i * 10],
+        [3.5, 0, segmentLength],
+        [90, 1, 0, 0],
         [0, 1, 0, 0]
       );
     }
   }
+
+  // Only render these benches/lamps when in the top area and not in rooms
+  if (eyeX >= -20 && eyeZ <= -5 && eyeX > -5 && eyeX < 5) {
+    drawObject(
+      gl,
+      benchs[0],
+      [3, 0, pathX + 40],
+      [0.05, 0.05, 0.05],
+      [180, 0, 1, 0],
+      [0, 1, 0, 0]
+    );
+
+    // Lamp on horizontal path
+    drawLamp(
+      gl,
+      lamp,
+      [-4.0, 0.0, pathX + 35],
+      [0.5, 1.0, 0.7],
+      [0, 1, 0, 0],
+      [0, 1, 0, 0]
+    );
+
+    drawObject(
+      gl,
+      benchs[2],
+      [-3, 0, pathX + 60],
+      [0.05, 0.05, 0.05],
+      [0, 1, 0, 0],
+      [0, 1, 0, 0]
+    );
+
+    // Another lamp
+    drawLamp(
+      gl,
+      lamp,
+      [4.0, 0.0, pathX + 55],
+      [0.5, 1.0, 0.7],
+      [0, 1, 0, 0],
+      [0, 1, 0, 0]
+    );
+  }
+
+  // Only render these benches/lamps when in the bottom area and not in rooms
+  if (eyeX >= -20 && eyeZ >= 5 && eyeX > -5 && eyeX < 5) {
+    drawObject(
+      gl,
+      benchs[1],
+      [3, 0, 15],
+      [0.05, 0.05, 0.05],
+      [180, 0, 1, 0],
+      [0, 1, 0, 0]
+    );
+
+    // Lamp near entrance
+    drawLamp(
+      gl,
+      lamp,
+      [-4.0, 0.0, 10],
+      [0.5, 1.0, 0.7],
+      [0, 1, 0, 0],
+      [0, 1, 0, 0]
+    );
+
+    drawObject(
+      gl,
+      benchs[0],
+      [-3, 0, 30],
+      [0.05, 0.05, 0.05],
+      [0, 0, 1, 0],
+      [0, 1, 0, 0]
+    );
+
+    // Lamp in middle area
+    drawLamp(
+      gl,
+      lamp,
+      [4.0, 0.0, 25],
+      [0.5, 1.0, 0.7],
+      [0, 1, 0, 0],
+      [0, 1, 0, 0]
+    );
+  }
 }
+
 function drawFence(
   gl,
   fenceShapes,
   moving = [0, 0, 0],
   scaling = [1, 1, 1],
-  door = true
+  door = true,
+  flipFrontBack = false
 ) {
   var wallPiller = fenceShapes[0];
   var sheetPiller = fenceShapes[1];
@@ -510,18 +534,26 @@ function drawFence(
   const scaleZ = scaling[2];
 
   // Calculate fence positions based on wall boundaries
-  const FENCE_OFFSET = 29.5; // Distance from wall edge to fence (200 - 170.5)
-  const ENTRANCE_DEPTH = 10; // How far the entrance extends
-  const DOOR_WIDTH = 6; // Width of door opening (3 units on each side)
+  const FENCE_OFFSET = 29.5;
+  const ENTRANCE_DEPTH = 10;
+  const DOOR_WIDTH = door ? 6 : 23; // Wider opening when no door entrance
 
-  const frontFenceX = WALL_MIN_X + FENCE_OFFSET;
-  const backFenceX = WALL_MAX_X - FENCE_OFFSET;
+  // Swap front and back if flag is set
+  const frontFenceX = flipFrontBack
+    ? WALL_MAX_X - FENCE_OFFSET
+    : WALL_MIN_X + FENCE_OFFSET;
+  const backFenceX = flipFrontBack
+    ? WALL_MIN_X + FENCE_OFFSET
+    : WALL_MAX_X - FENCE_OFFSET;
   const leftFenceZ = WALL_MIN_Z + FENCE_OFFSET;
   const rightFenceZ = WALL_MAX_Z - FENCE_OFFSET;
 
   const fenceLength = WALL_MAX_Z - WALL_MIN_Z - 2 * FENCE_OFFSET;
   const fenceWidth = WALL_MAX_X - WALL_MIN_X - 2 * FENCE_OFFSET;
   const halfFenceLength = (fenceLength - DOOR_WIDTH) / 2;
+
+  // Calculate door pillar positions based on door width
+  const doorPillarOffset = DOOR_WIDTH / 2;
 
   // FRONT WALL (X = frontFenceX) - door opening at Z=0
   // Back corner pillar
@@ -542,7 +574,11 @@ function drawFence(
   drawCube(
     gl,
     wallPiller,
-    [baseX + frontFenceX * scaleX, baseY + 0.01 * scaleY, baseZ + -3 * scaleZ],
+    [
+      baseX + frontFenceX * scaleX,
+      baseY + 0.01 * scaleY,
+      baseZ + -doorPillarOffset * scaleZ,
+    ],
     [0.3 * scaleX, 7 * scaleY, 0.5 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
@@ -594,7 +630,11 @@ function drawFence(
   drawCube(
     gl,
     wallPiller,
-    [baseX + frontFenceX * scaleX, baseY + 0.01 * scaleY, baseZ + 3 * scaleZ],
+    [
+      baseX + frontFenceX * scaleX,
+      baseY + 0.01 * scaleY,
+      baseZ + doorPillarOffset * scaleZ,
+    ],
     [0.3 * scaleX, 7 * scaleY, 0.5 * scaleZ],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
@@ -657,14 +697,20 @@ function drawFence(
   );
 
   if (door == true) {
-    // Entrance
-    const entranceX = frontFenceX - ENTRANCE_DEPTH;
+    // Entrance - adjust direction based on flip
+    const entranceX = flipFrontBack
+      ? frontFenceX + ENTRANCE_DEPTH
+      : frontFenceX - ENTRANCE_DEPTH;
 
     // pillar in front of pillar before door
     drawCube(
       gl,
       wallPiller,
-      [baseX + entranceX * scaleX, baseY + 0.01 * scaleY, baseZ + -3 * scaleZ],
+      [
+        baseX + entranceX * scaleX,
+        baseY + 0.01 * scaleY,
+        baseZ + -doorPillarOffset * scaleZ,
+      ],
       [0.3 * scaleX, 7 * scaleY, 0.5 * scaleZ],
       [0, 1, 0, 0],
       [0, 1, 0, 0]
@@ -675,9 +721,13 @@ function drawFence(
       gl,
       wallPiller,
       [
-        baseX + (frontFenceX - ENTRANCE_DEPTH / 2) * scaleX,
+        baseX +
+          (flipFrontBack
+            ? frontFenceX + ENTRANCE_DEPTH / 2
+            : frontFenceX - ENTRANCE_DEPTH / 2) *
+            scaleX,
         baseY + 0.01 * scaleY,
-        baseZ + 3 * scaleZ,
+        baseZ + doorPillarOffset * scaleZ,
       ],
       [(ENTRANCE_DEPTH / 2 - 0.3) * scaleX, 1 * scaleY, 0.5 * scaleZ],
       [0, 1, 0, 0],
@@ -689,9 +739,13 @@ function drawFence(
       gl,
       sheetPiller,
       [
-        baseX + (frontFenceX - ENTRANCE_DEPTH / 2) * scaleX,
+        baseX +
+          (flipFrontBack
+            ? frontFenceX + ENTRANCE_DEPTH / 2
+            : frontFenceX - ENTRANCE_DEPTH / 2) *
+            scaleX,
         baseY + 3.5 * scaleY,
-        baseZ + 3 * scaleZ,
+        baseZ + doorPillarOffset * scaleZ,
       ],
       [(ENTRANCE_DEPTH - 0.6) * scaleX, 5 * scaleY, 0.5 * scaleZ],
       [0, 1, 0, 0],
@@ -703,9 +757,13 @@ function drawFence(
       gl,
       wallPiller,
       [
-        baseX + (frontFenceX - ENTRANCE_DEPTH / 2) * scaleX,
+        baseX +
+          (flipFrontBack
+            ? frontFenceX + ENTRANCE_DEPTH / 2
+            : frontFenceX - ENTRANCE_DEPTH / 2) *
+            scaleX,
         baseY + 6 * scaleY,
-        baseZ + 3 * scaleZ,
+        baseZ + doorPillarOffset * scaleZ,
       ],
       [(ENTRANCE_DEPTH / 2 - 0.3) * scaleX, 1 * scaleY, 0.5 * scaleZ],
       [0, 1, 0, 0],
@@ -716,7 +774,11 @@ function drawFence(
     drawCube(
       gl,
       wallPiller,
-      [baseX + entranceX * scaleX, baseY + 0.01 * scaleY, baseZ + 3 * scaleZ],
+      [
+        baseX + entranceX * scaleX,
+        baseY + 0.01 * scaleY,
+        baseZ + doorPillarOffset * scaleZ,
+      ],
       [0.3 * scaleX, 7 * scaleY, 0.5 * scaleZ],
       [0, 1, 0, 0],
       [0, 1, 0, 0]
@@ -727,9 +789,13 @@ function drawFence(
       gl,
       wallPiller,
       [
-        baseX + (frontFenceX - ENTRANCE_DEPTH / 2) * scaleX,
+        baseX +
+          (flipFrontBack
+            ? frontFenceX + ENTRANCE_DEPTH / 2
+            : frontFenceX - ENTRANCE_DEPTH / 2) *
+            scaleX,
         baseY + 0.01 * scaleY,
-        baseZ + -3 * scaleZ,
+        baseZ + -doorPillarOffset * scaleZ,
       ],
       [(ENTRANCE_DEPTH / 2 - 0.3) * scaleX, 1 * scaleY, 0.5 * scaleZ],
       [0, 1, 0, 0],
@@ -741,9 +807,13 @@ function drawFence(
       gl,
       sheetPiller,
       [
-        baseX + (frontFenceX - ENTRANCE_DEPTH / 2) * scaleX,
+        baseX +
+          (flipFrontBack
+            ? frontFenceX + ENTRANCE_DEPTH / 2
+            : frontFenceX - ENTRANCE_DEPTH / 2) *
+            scaleX,
         baseY + 3.5 * scaleY,
-        baseZ + -3 * scaleZ,
+        baseZ + -doorPillarOffset * scaleZ,
       ],
       [(ENTRANCE_DEPTH - 0.6) * scaleX, 5 * scaleY, 0.5 * scaleZ],
       [0, 1, 0, 0],
@@ -755,15 +825,20 @@ function drawFence(
       gl,
       wallPiller,
       [
-        baseX + (frontFenceX - ENTRANCE_DEPTH / 2) * scaleX,
+        baseX +
+          (flipFrontBack
+            ? frontFenceX + ENTRANCE_DEPTH / 2
+            : frontFenceX - ENTRANCE_DEPTH / 2) *
+            scaleX,
         baseY + 6 * scaleY,
-        baseZ + -3 * scaleZ,
+        baseZ + -doorPillarOffset * scaleZ,
       ],
       [(ENTRANCE_DEPTH / 2 - 0.3) * scaleX, 1 * scaleY, 0.5 * scaleZ],
       [0, 1, 0, 0],
       [0, 1, 0, 0]
     );
   }
+
   // BACK WALL (X = backFenceX) - solid
   // back corner pillar
   drawCube(
@@ -1452,5 +1527,373 @@ function drawPenguin(gl, x, z, scale) {
     [0.15 * scale, 0.2 * scale, 1],
     [180, 1, 0, 0],
     [-6, 0, 1, 0]
+  );
+}
+
+function createArtic(gl, fenceShapes) {
+  drawFence(
+    gl,
+    fenceShapes,
+    [WALL_MAX_X - 60, 0, WALL_MAX_Z - 60],
+    [0.25, 1, 0.25],
+    false,
+    false
+  );
+
+  var snow = createSheet(gl, [1.0, 1.0, 1.0]);
+  //right sheet
+  drawSheet(
+    gl,
+    snow,
+    [WALL_MAX_X - 60, 3.5, WALL_MAX_Z - 45],
+    [30.0, 7.0, 1.0],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // left sheet
+  drawSheet(
+    gl,
+    snow,
+    [WALL_MAX_X - 60, 3.5, WALL_MAX_Z - 75],
+    [30.0, 7.0, 1.0],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // back sheet
+  drawSheet(
+    gl,
+    snow,
+    [WALL_MAX_X - 45, 3.5, WALL_MAX_Z - 60],
+    [1.0, 7.0, 30.0],
+    [90, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  // front 1 left
+  drawSheet(
+    gl,
+    snow,
+    [WALL_MAX_X - 75, 3.5, WALL_MAX_Z - 69],
+    [1.0, 7.0, 11.5],
+    [90, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+  // front 2 right
+  drawSheet(
+    gl,
+    snow,
+    [WALL_MAX_X - 75, 3.5, WALL_MAX_Z - 51],
+    [1.0, 7.0, 11.5],
+    [90, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  //floor
+  drawSheet(
+    gl,
+    snow,
+    [WALL_MAX_X - 60, 0.02, WALL_MAX_Z - 60],
+    [30.0, 1, 30.0],
+    [90, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawPolarBear(
+    gl,
+    [5.0, 0.0, 0.0],
+    [1.0, 1.0, 1.0],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawPenguin(gl, WALL_MAX_X - 60, WALL_MAX_Z - 55, 2);
+
+  igloo = createSphere(gl, [1.0, 1.0, 1.0]);
+  drawSphere(
+    gl,
+    igloo,
+    [WALL_MAX_X - 50, 2, WALL_MAX_Z - 51],
+    [5, 5, 5],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  iglooOpening = createCylinder(gl, [1.0, 1.0, 1.0]);
+  drawCylinder(
+    gl,
+    iglooOpening,
+    [WALL_MAX_X - 50, 1.4, WALL_MAX_Z - 51],
+    [0.5, 1.5, 2],
+    [90, 0, 0, 1],
+    [0, 1, 0, 0]
+  );
+
+  iglooDoor = createCircle(gl, [0, 0, 0]);
+  drawCircle(
+    gl,
+    iglooDoor,
+    [WALL_MAX_X - 55, 1.4, WALL_MAX_Z - 51],
+    [2.5, 1.5, 2],
+    [90, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  pond = createCircle(gl, [0, 0, 1]);
+  drawCircle(
+    gl,
+    pond,
+    [WALL_MAX_X - 65, 0.03, WALL_MAX_Z - 51],
+    [2.5, 1, 2.3],
+    [90, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  fish1 = createObject(gl, fishObj, [1.0, 0.0, 0.0]);
+  fish2 = createObject(gl, fishObj, [0.2, 0.0, 1.0]);
+
+  drawObject(
+    gl,
+    fish1,
+    [WALL_MAX_X - 65, 0.3, WALL_MAX_Z - 55],
+    [1, 1, 1],
+    [90, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+  drawObject(
+    gl,
+    fish2,
+    [WALL_MAX_X - 65.3, 0.3, WALL_MAX_Z - 55],
+    [1, 1, 1],
+    [90, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+  drawObject(
+    gl,
+    fish2,
+    [WALL_MAX_X - 64.3, 0.3, WALL_MAX_Z - 55],
+    [1, 1, 1],
+    [90, 1, 0, 0],
+    [50, 0, 0, 1]
+  );
+}
+
+function createJungle(gl, fenceShapes) {
+  drawFence(
+    gl,
+    fenceShapes,
+    [WALL_MIN_X + 60, 0, WALL_MIN_Z + 60],
+    [0.25, 1, 0.25],
+    false,
+    true
+  );
+
+  var greenGrass = createSheet(gl, [0.2, 0.8, 0.2]);
+
+  //right sheet
+  drawSheet(
+    gl,
+    greenGrass,
+    [WALL_MIN_X + 60, 3.5, WALL_MIN_Z + 45],
+    [30.0, 7.0, 1.0],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // left sheet
+  drawSheet(
+    gl,
+    greenGrass,
+    [WALL_MIN_X + 60, 3.5, WALL_MIN_Z + 75],
+    [30.0, 7.0, 1.0],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // back sheet
+  drawSheet(
+    gl,
+    greenGrass,
+    [WALL_MIN_X + 45, 3.5, WALL_MIN_Z + 60],
+    [1.0, 7.0, 30.0],
+    [90, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  // front 1 left
+  drawSheet(
+    gl,
+    greenGrass,
+    [WALL_MIN_X + 75, 3.5, WALL_MIN_Z + 69],
+    [1.0, 7.0, 11.5],
+    [90, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  // front 2 right
+  drawSheet(
+    gl,
+    greenGrass,
+    [WALL_MIN_X + 75, 3.5, WALL_MIN_Z + 51],
+    [1.0, 7.0, 11.5],
+    [90, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  //floor
+  drawSheet(
+    gl,
+    greenGrass,
+    [WALL_MIN_X + 60, 0.02, WALL_MIN_Z + 60],
+    [30.0, 1, 30.0],
+    [90, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+}
+
+function createDesert(gl, fenceShapes) {
+  drawFence(
+    gl,
+    fenceShapes,
+    [WALL_MIN_X + 60, 0, WALL_MAX_Z - 60],
+    [0.25, 1, 0.25],
+    false,
+    true
+  );
+
+  var sand = createSheet(gl, [0.93, 0.82, 0.6]);
+
+  //right sheet
+  drawSheet(
+    gl,
+    sand,
+    [WALL_MIN_X + 60, 3.5, WALL_MAX_Z - 45],
+    [30.0, 7.0, 1.0],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // left sheet
+  drawSheet(
+    gl,
+    sand,
+    [WALL_MIN_X + 60, 3.5, WALL_MAX_Z - 75],
+    [30.0, 7.0, 1.0],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // back sheet
+  drawSheet(
+    gl,
+    sand,
+    [WALL_MIN_X + 45, 3.5, WALL_MAX_Z - 60],
+    [1.0, 7.0, 30.0],
+    [90, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  // front 1 left
+  drawSheet(
+    gl,
+    sand,
+    [WALL_MIN_X + 75, 3.5, WALL_MAX_Z - 69],
+    [1.0, 7.0, 11.5],
+    [90, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  // front 2 right
+  drawSheet(
+    gl,
+    sand,
+    [WALL_MIN_X + 75, 3.5, WALL_MAX_Z - 51],
+    [1.0, 7.0, 11.5],
+    [90, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  //floor
+  drawSheet(
+    gl,
+    sand,
+    [WALL_MIN_X + 60, 0.02, WALL_MAX_Z - 60],
+    [30.0, 1, 30.0],
+    [90, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+}
+
+function createWater(gl, fenceShapes) {
+  drawFence(
+    gl,
+    fenceShapes,
+    [WALL_MAX_X - 60, 0, WALL_MIN_Z + 60],
+    [0.25, 1, 0.25],
+    false,
+    false
+  );
+
+  var waterBlue = createSheet(gl, [0.25, 0.55, 0.85]);
+
+  //right sheet
+  drawSheet(
+    gl,
+    waterBlue,
+    [WALL_MAX_X - 60, 3.5, WALL_MIN_Z + 45],
+    [30.0, 7.0, 1.0],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // left sheet
+  drawSheet(
+    gl,
+    waterBlue,
+    [WALL_MAX_X - 60, 3.5, WALL_MIN_Z + 75],
+    [30.0, 7.0, 1.0],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // back sheet
+  drawSheet(
+    gl,
+    waterBlue,
+    [WALL_MAX_X - 45, 3.5, WALL_MIN_Z + 60],
+    [1.0, 7.0, 30.0],
+    [90, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  // front 1 left
+  drawSheet(
+    gl,
+    waterBlue,
+    [WALL_MAX_X - 75, 3.5, WALL_MIN_Z + 69],
+    [1.0, 7.0, 11.5],
+    [90, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  // front 2 right
+  drawSheet(
+    gl,
+    waterBlue,
+    [WALL_MAX_X - 75, 3.5, WALL_MIN_Z + 51],
+    [1.0, 7.0, 11.5],
+    [90, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  //floor
+  drawSheet(
+    gl,
+    waterBlue,
+    [WALL_MAX_X - 60, 0.02, WALL_MIN_Z + 60],
+    [30.0, 1, 30.0],
+    [90, 1, 0, 0],
+    [0, 1, 0, 0]
   );
 }

@@ -170,7 +170,6 @@ function main() {
   const benchs = [benchOak, benchBamBoo, benchSpruce];
 
   drawPlanes(gl, planes);
-  // Main area fenced
   drawFence(gl, fenceShapes);
   drawPath(gl, floorSheet, benchs, lamp);
   drawTicketStand(gl, fenceShapes);
@@ -259,38 +258,26 @@ function main() {
     if (eyeX < WALL_MIN_X + 40 && eyeZ > -5 && eyeZ < 25) {
       drawTicketStand(gl, fenceShapes);
     }
-    // Jungle front left
-    if (eyeX > -77 && eyeX < -20 && eyeZ > -60 && eyeZ <= 0) {
-      drawFence(
-        gl,
-        fenceShapes,
-        [WALL_MIN_X + 60, 0, WALL_MIN_Z + 60],
-        [0.25, 1, 0.25]
-      );
+
+    // Jungle front left - PASS ROCKS HERE
+    if (eyeX > WALL_MIN_X && eyeX < 0 && eyeZ > WALL_MIN_Z && eyeZ < 0) {
+      createJungle(gl, fenceShapes);
     }
 
-    // desert front right
-    if (eyeX > -75 && eyeX < -20 && eyeZ >= 0 && eyeZ < 60) {
-      drawFence(
-        gl,
-        fenceShapes,
-        [WALL_MIN_X + 60, 0, WALL_MAX_Z - 60],
-        [0.25, 1, 0.25]
-      );
+    // Desert front right
+    if (eyeX > WALL_MIN_X && eyeX < 0 && eyeZ > 0 && eyeZ < WALL_MAX_Z) {
+      if (eyeX > WALL_MIN_X && eyeX < 0 && eyeZ > 0 && eyeZ < WALL_MAX_Z) {
+        createDesert(gl, fenceShapes);
+      }
     }
 
-    // water back left
-    if (eyeX > -20 && eyeX < 100 && eyeZ > -60 && eyeZ <= 0) {
-      drawFence(
-        gl,
-        fenceShapes,
-        [WALL_MAX_X - 60, 0, WALL_MIN_Z + 60],
-        [0.25, 1, 0.25]
-      );
+    // Water back left
+    if (eyeX > 0 && eyeX < WALL_MAX_X && eyeZ > WALL_MIN_Z && eyeZ < 0) {
+      createWater(gl, fenceShapes);
     }
 
-    // winter back right
-    if (eyeX > -20 && eyeX < 100 && eyeZ >= 0 && eyeZ < 60) {
+    // Winter back right
+    if (eyeX > 0 && eyeX < WALL_MAX_X && eyeZ > 0 && eyeZ < WALL_MAX_Z) {
       createArtic(gl, fenceShapes);
     }
   }
@@ -298,152 +285,4 @@ function main() {
   document.onkeydown = function (ev) {
     keyDown(ev);
   };
-}
-
-function createArtic(gl, fenceShapes) {
-  drawFence(
-    gl,
-    fenceShapes,
-    [WALL_MAX_X - 60, 0, WALL_MAX_Z - 60],
-    [0.25, 1, 0.25],
-    false
-  );
-
-  var snow = createSheet(gl, [1.0, 1.0, 1.0]);
-  //right sheet
-  drawSheet(
-    gl,
-    snow,
-    [WALL_MAX_X - 60, 3.5, WALL_MAX_Z - 45],
-    [30.0, 7.0, 1.0],
-    [0, 1, 0, 0],
-    [0, 1, 0, 0]
-  );
-
-  // left sheet
-  drawSheet(
-    gl,
-    snow,
-    [WALL_MAX_X - 60, 3.5, WALL_MAX_Z - 75],
-    [30.0, 7.0, 1.0],
-    [0, 1, 0, 0],
-    [0, 1, 0, 0]
-  );
-
-  // back sheet
-  drawSheet(
-    gl,
-    snow,
-    [WALL_MAX_X - 45, 3.5, WALL_MAX_Z - 60],
-    [1.0, 7.0, 30.0],
-    [90, 0, 1, 0],
-    [0, 1, 0, 0]
-  );
-
-  // front 1 left
-  drawSheet(
-    gl,
-    snow,
-    [WALL_MAX_X - 75, 3.5, WALL_MAX_Z - 68],
-    [1.0, 7.0, 14.5],
-    [90, 0, 1, 0],
-    [0, 1, 0, 0]
-  );
-  // front 2 right
-  drawSheet(
-    gl,
-    snow,
-    [WALL_MAX_X - 75, 3.5, WALL_MAX_Z - 52],
-    [1.0, 7.0, 14.5],
-    [90, 0, 1, 0],
-    [0, 1, 0, 0]
-  );
-
-  //floor
-  drawSheet(
-    gl,
-    snow,
-    [WALL_MAX_X - 60, 0.02, 30],
-    [30.0, 1, 30.0],
-    [90, 1, 0, 0],
-    [0, 1, 0, 0]
-  );
-
-  drawPolarBear(
-    gl,
-    [5.0, 0.0, 0.0],
-    [1.0, 1.0, 1.0],
-    [0, 1, 0, 0],
-    [0, 1, 0, 0]
-  );
-
-  drawPenguin(gl, WALL_MAX_X - 60, WALL_MAX_Z - 55, 2);
-
-  igloo = createSphere(gl, [1.0, 1.0, 1.0]);
-  drawSphere(
-    gl,
-    igloo,
-    [WALL_MAX_X - 50, 2, WALL_MAX_Z - 51],
-    [5, 5, 5],
-    [0, 1, 0, 0],
-    [0, 1, 0, 0]
-  );
-
-  iglooOpening = createCylinder(gl, [1.0, 1.0, 1.0]);
-  drawCylinder(
-    gl,
-    iglooOpening,
-    [WALL_MAX_X - 50, 1.4, WALL_MAX_Z - 51],
-    [0.5, 1.5, 2],
-    [90, 0, 0, 1],
-    [0, 1, 0, 0]
-  );
-
-  iglooDoor = createCircle(gl, [0, 0, 0]);
-  drawCircle(
-    gl,
-    iglooDoor,
-    [WALL_MAX_X - 55, 1.4, WALL_MAX_Z - 51],
-    [2.5, 1.5, 2],
-    [90, 0, 1, 0],
-    [0, 1, 0, 0]
-  );
-
-  pond = createCircle(gl, [0, 0, 1]);
-  drawCircle(
-    gl,
-    pond,
-    [WALL_MAX_X - 65, 0.03, WALL_MAX_Z - 51],
-    [2.5, 1, 2.3],
-    [90, 1, 0, 0],
-    [0, 1, 0, 0]
-  );
-
-  fish1 = createObject(gl, fishObj, [1.0, 0.0, 0.0]);
-  fish2 = createObject(gl, fishObj, [0.2, 0.0, 1.0]);
-
-  drawObject(
-    gl,
-    fish1,
-    [WALL_MAX_X - 65, 0.3, WALL_MAX_Z - 55],
-    [1, 1, 1],
-    [90, 1, 0, 0],
-    [0, 1, 0, 0]
-  );
-  drawObject(
-    gl,
-    fish2,
-    [WALL_MAX_X - 65.3, 0.3, WALL_MAX_Z - 55],
-    [1, 1, 1],
-    [90, 1, 0, 0],
-    [0, 1, 0, 0]
-  );
-  drawObject(
-    gl,
-    fish2,
-    [WALL_MAX_X - 64.3, 0.3, WALL_MAX_Z - 55],
-    [1, 1, 1],
-    [90, 1, 0, 0],
-    [50, 0, 0, 1]
-  );
 }

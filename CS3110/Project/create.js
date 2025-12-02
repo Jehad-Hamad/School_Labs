@@ -623,7 +623,6 @@ function initObject(gl, object) {
     gl.uniform1i(u_Sampler, 0);
     gl.uniform1i(u_UseTexture, 1);
   } else {
-
     gl.uniform1i(u_UseTexture, 0);
   }
 
