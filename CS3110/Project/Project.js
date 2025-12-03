@@ -243,6 +243,13 @@ function main() {
     cherryRoof: createCube(gl, [0.89, 0.5, 0.62]),
     cherrySheet: createSheet(gl, [0.89, 0.5, 0.62]),
     glassSheet: createSheet(gl, [0.7, 0.85, 0.9]),
+
+    // Sign
+    ticketSign: createSign(gl, [0.89, 0.5, 0.62], 'pictures/TICKETS.jpg'),
+    articSign: createSign(gl, [0.78, 0.75, 0.7], 'pictures/ARTIC.jpg'),
+    jungleSign: createSign(gl, [0.78, 0.75, 0.7], 'pictures/JUNGLE.jpg'),
+    desertSign: createSign(gl, [0.78, 0.75, 0.7], 'pictures/DESERT.jpg'),
+    waterSign: createSign(gl, [0.78, 0.75, 0.7], 'pictures/WATER.jpg'),
   };
 
   drawPlanes(gl, planes);

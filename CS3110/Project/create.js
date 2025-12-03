@@ -756,3 +756,11 @@ function createCactus(gl) {
 
   return [cactusGreen, darkGreen];
 }
+
+function createSign(gl, color, texture = null) {
+  const sign = {
+    backSheet: createCube(gl, color),
+    textureSheet: createSheet(gl, [1, 1, 1], texture),
+  };
+  return sign;
+}

@@ -1091,6 +1091,8 @@ function drawTicketStand(gl, shapes) {
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
+
+  drawSign(gl, shapes.ticketSign, [standX, 7, standZ], [1, 1, 1]);
 }
 
 function drawPenguin(gl, shapes, x, y, z, scale) {
@@ -1582,6 +1584,63 @@ function drawCactus(gl, shapes, moving, scaling, rotating1, rotating2) {
   }
 }
 
+function drawSign(
+  gl,
+  ticketSign,
+  moving,
+  scaling,
+  onSide = false,
+  back = false
+) {
+  if (onSide === false) {
+    drawCube(
+      gl,
+      ticketSign.backSheet,
+      [moving[0] - 0.2, moving[1], moving[2] - 3.2],
+      [scaling[0] * 2.5, scaling[1] * 3, scaling[2] * 0.1],
+      [0, 1, 0, 0],
+      [0, 1, 0, 0]
+    );
+
+    drawSheet(
+      gl,
+      ticketSign.textureSheet,
+      [moving[0] - 0.2, moving[1] + 1.3, moving[2] - 3.4],
+      [scaling[0] * 4, scaling[1] * 2, scaling[2] * 0.3],
+      [180, 0, 1, 0],
+      [0, 1, 0, 0]
+    );
+  } else {
+    drawCube(
+      gl,
+      ticketSign.backSheet,
+      [moving[0] - 0.2, moving[1], moving[2] - 3.2],
+      [scaling[0] * 0.1, scaling[1] * 3, scaling[2] * 2.8],
+      [0, 1, 0, 0],
+      [0, 1, 0, 0]
+    );
+    if (back == false) {
+      drawSheet(
+        gl,
+        ticketSign.textureSheet,
+        [moving[0] - 0.6, moving[1] + 1.3, moving[2] - 3.3],
+        [scaling[0] * 4, scaling[1] * 2, scaling[2] * 4],
+        [270, 0, 1, 0],
+        [0, 1, 0, 0]
+      );
+    } else {
+      drawSheet(
+        gl,
+        ticketSign.textureSheet,
+        [moving[0], moving[1] + 1.3, moving[2] - 3.3],
+        [scaling[0] * 4, scaling[1] * 2, scaling[2] * 4],
+        [90, 0, 1, 0],
+        [0, 1, 0, 0]
+      );
+    }
+  }
+}
+
 function createArtic(gl, fenceShapes, shapes) {
   drawFence(
     gl,
@@ -1590,6 +1649,15 @@ function createArtic(gl, fenceShapes, shapes) {
     [0.25, 1, 0.25],
     false,
     false
+  );
+
+  // Sign at entrance
+  drawSign(
+    gl,
+    shapes.articSign,
+    [WALL_MAX_X - 75, 7, WALL_MAX_Z - 56.8],
+    [1, 1, 1],
+    true
   );
 
   // Right sheet
@@ -1847,6 +1915,14 @@ function createJungle(gl, fenceShapes, shapes) {
     true
   );
 
+  drawSign(
+    gl,
+    shapes.jungleSign,
+    [WALL_MIN_X + 75, 7, WALL_MIN_Z + 63.3],
+    [1, 1, 1],
+    true,
+    true
+  );
   // Right sheet
   drawSheet(
     gl,
@@ -1918,6 +1994,14 @@ function createDesert(gl, fenceShapes, shapes) {
     true
   );
 
+  drawSign(
+    gl,
+    shapes.desertSign,
+    [WALL_MIN_X + 75, 7, WALL_MAX_Z - 56.8],
+    [1, 1, 1],
+    true,
+    true
+  );
   // Right sheet
   drawSheet(
     gl,
@@ -2210,6 +2294,14 @@ function createWater(gl, fenceShapes, shapes) {
     [0.25, 1, 0.25],
     false,
     false
+  );
+
+  drawSign(
+    gl,
+    shapes.waterSign,
+    [WALL_MAX_X - 75, 7, WALL_MIN_Z + 63.3],
+    [1, 1, 1],
+    true
   );
 
   // Right sheet
