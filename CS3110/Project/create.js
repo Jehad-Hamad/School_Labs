@@ -103,8 +103,8 @@ function createPlane(gl, wall, color, textureUrl = null) {
 
 // Function to create Sphere just give color
 function createSphere(gl, color, textureUrl = null) {
-  const latSteps = 9; // vertical divisions
-  const lonSteps = 9; // horizontal divisions
+  const latSteps = 13; // vertical divisions
+  const lonSteps = 13; // horizontal divisions
 
   const vertices = [];
   const normals = [];

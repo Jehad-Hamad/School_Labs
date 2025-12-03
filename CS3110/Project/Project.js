@@ -81,7 +81,7 @@ var near = 0.1;
 var fov = 110;
 var far = (WALL_MAX_Z + 5) * 2;
 
-var horizontalAngle = 180;
+var horizontalAngle = 0;
 var verticalAngle = 0;
 var camRadius = 3.0;
 
@@ -117,7 +117,7 @@ function main() {
 
   // Set light color (white light)
   gl.uniform3f(u_LightColor, 1.0, 1.0, 1.0);
-  // Set light diecrtion in world coords
+  // Set light direction in world coords
   gl.uniform3f(u_LightPosition, 0.0, 15.0, 0.0);
   // Set the ambient light
   gl.uniform3f(u_AmbientLight, 0.6, 0.6, 0.6);
@@ -148,32 +148,107 @@ function main() {
 
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
+  // Planes
   const floor = createPlane(gl, 'floor', [0, 0.6, 0.36]);
   const right = createPlane(gl, 'wallRight', [0.565, 0.835, 1.0]);
   const left = createPlane(gl, 'wallLeft', [0.565, 0.835, 1.0]);
   const back = createPlane(gl, 'wallBack', [0.565, 0.835, 1.0]);
   const front = createPlane(gl, 'wallFront', [0.565, 0.835, 1.0]);
+  const planes = [floor, right, left, back, front];
 
+  // Path and fence
   const floorSheet = createSheet(gl, [1, 0, 0], 'pictures/bricks.jpg');
   const wallSheet = createSheet(gl, [1, 1, 1], 'pictures/fence.jpg');
-  var sandFloor = createSheet(gl, [1, 1, 1], 'pictures/sandFloor.jpg');
-
   const wallPiller = createCube(gl, [0.78, 0.75, 0.7]);
+  const fenceShapes = [wallPiller, wallSheet];
 
+  // Benches
   const benchOak = createObject(gl, benchObj, [0.28, 0.17, 0.1]);
   const benchBamBoo = createObject(gl, benchObj, [0.85, 0.82, 0.42]);
   const benchSpruce = createObject(gl, benchObj, [0.44, 0.28, 0.15]);
+  const benchs = [benchOak, benchBamBoo, benchSpruce];
 
+  // Lamp
   const lamp = createLamp(gl, [0.3, 0.3, 0.3]);
 
-  const planes = [floor, right, left, back, front];
-  const fenceShapes = [wallPiller, wallSheet];
-  const benchs = [benchOak, benchBamBoo, benchSpruce];
+  // Shared shapes object
+  const shapes = {
+    // Basic spheres
+    whiteSphere: createSphere(gl, [1.0, 1.0, 1.0]),
+    blackSphere: createSphere(gl, [0.0, 0.0, 0.0]),
+    orangeSphere: createSphere(gl, [1.0, 0.65, 0.17]),
+
+    // Pyramids
+    orangePyramid: createPyramid(gl, [1.0, 0.65, 0.17]),
+    desertPyramid: createPyramid(gl, [0.757, 0.604, 0.42]),
+
+    // Polar bear
+    polarBear: createObject(gl, polarbearkObj, [0.91, 0.85, 0.66]),
+
+    // Cactus
+    cactusGreen: createCylinder(gl, [0.13, 0.55, 0.13]),
+    cactusDarkGreen: createSphere(gl, [0.0, 0.39, 0.0]),
+
+    // Igloo
+    iglooSphere: createSphere(gl, [1.0, 1.0, 1.0], 'pictures/bricks.jpg'),
+    iglooCylinder: createCylinder(gl, [1.0, 1.0, 1.0], 'pictures/bricks.jpg'),
+    iglooCircle: createCircle(gl, [0.0, 0.0, 0.0]),
+
+    // Pond
+    pondCircle: createCircle(gl, [1.0, 1.0, 1.0], 'pictures/ice.jpg'),
+
+    // Rocks
+    desertRock1: createObject(gl, rockObj, [0.76, 0.69, 0.57]), // Sandy tan
+    desertRock2: createObject(gl, rockObj, [0.65, 0.55, 0.45]), // Darker brown
+    desertRock3: createObject(gl, rockObj, [0.82, 0.75, 0.62]), // Light sandstone
+
+    snowRock1: createObject(gl, rockObj, [0.6, 0.6, 0.65]), // Blue-gray
+    snowRock2: createObject(gl, rockObj, [0.5, 0.5, 0.55]), // Darker gray
+    snowRock3: createObject(gl, rockObj, [0.7, 0.7, 0.75]), // Light gray
+
+    // Fish
+    fish1: createObject(gl, fishObj, [0.96, 0.51, 0.19]), // Orange clownfish
+    fish2: createObject(gl, fishObj, [0.0, 0.5, 0.7]), // Blue fish
+
+    // Pyramid
+    desertPyramid: createPyramid(gl, [1, 0.75, 0.55], 'pictures/bricks.jpg'), // Golden sandstone
+
+    // Camel
+    camel: createObject(gl, camelObj, [0.651, 0.478, 0.239]),
+
+    // Urns
+    urn: createObject(gl, urnObj, [0.227, 0.184, 0.157]),
+    urn1: createObject(gl, urnObj, [0.545, 0.306, 0.196]),
+    urn2: createObject(gl, urnObj, [0.353, 0.243, 0.169]),
+
+    // Sand dunes and files
+    sandDune: createObject(gl, sandobj, [0.757, 0.604, 0.42]),
+    snowPile: createObject(gl, sandobj, [1.0, 1.0, 1.0]),
+
+    // Dead bushes
+    deadBush: createObject(gl, deadBushObj, [0.604, 0.482, 0.29]),
+    deadBush1: createObject(gl, deadBushObj, [0.353, 0.271, 0.157]),
+
+    // Sheets for biomes
+    snowSheet: createSheet(gl, [1.0, 1.0, 1.0]),
+    greenSheet: createSheet(gl, [0.2, 0.8, 0.2]),
+    sandSheet: createSheet(gl, [0.93, 0.82, 0.6]),
+    waterSheet: createSheet(gl, [0.25, 0.55, 0.85]),
+
+    snowFloor: createSheet(gl, [1, 1, 1], 'pictures/snow.jpg'),
+    sandFloor: createSheet(gl, [1, 1, 1], 'pictures/sand.jpg'),
+
+    // Ticket stand
+    mangrovePillers: createCube(gl, [0.53, 0.29, 0.15]),
+    cherryRoof: createCube(gl, [0.89, 0.5, 0.62]),
+    cherrySheet: createSheet(gl, [0.89, 0.5, 0.62]),
+    glassSheet: createSheet(gl, [0.7, 0.85, 0.9]),
+  };
 
   drawPlanes(gl, planes);
   drawFence(gl, fenceShapes);
   drawPath(gl, floorSheet, benchs, lamp);
-  drawTicketStand(gl, fenceShapes);
+  drawTicketStand(gl, shapes);
 
   function keyDown(ev) {
     // Camera Rotation
@@ -222,8 +297,7 @@ function main() {
       eyeX = -35;
       eyeZ = -30;
     } else if (ev.key.toLowerCase() === '2') {
-      // TP to the desert
-      eyeX = -25;
+      eyeX = -35;
       eyeZ = 30;
       eyeY = 10;
     } else if (ev.key.toLowerCase() === '3') {
@@ -231,10 +305,8 @@ function main() {
       eyeX = 35;
       eyeZ = -30;
     } else if (ev.key.toLowerCase() === '4') {
-      // TP to the artic
-      eyeX = 33;
-      eyeZ = 25;
-      eyeY = 3;
+      eyeX = 24;
+      eyeZ = 34;
     }
     console.log(eyeX, eyeZ);
 
@@ -252,35 +324,28 @@ function main() {
 
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    // Always draw my planes
     drawPlanes(gl, planes);
     drawPath(gl, floorSheet, benchs, lamp);
     drawFence(gl, fenceShapes);
 
     if (eyeX < WALL_MIN_X + 40 && eyeZ > -5 && eyeZ < 25) {
-      drawTicketStand(gl, fenceShapes);
+      drawTicketStand(gl, shapes);
     }
 
-    // Jungle front left - PASS ROCKS HERE
     if (eyeX > WALL_MIN_X && eyeX < 0 && eyeZ > WALL_MIN_Z && eyeZ < 0) {
-      createJungle(gl, fenceShapes);
+      createJungle(gl, fenceShapes, shapes);
     }
 
-    // Desert front right
     if (eyeX > WALL_MIN_X && eyeX < 0 && eyeZ > 0 && eyeZ < WALL_MAX_Z) {
-      if (eyeX > WALL_MIN_X && eyeX < 0 && eyeZ > 0 && eyeZ < WALL_MAX_Z) {
-        createDesert(gl, fenceShapes, sandFloor);
-      }
+      createDesert(gl, fenceShapes, shapes);
     }
 
-    // Water back left
     if (eyeX > 0 && eyeX < WALL_MAX_X && eyeZ > WALL_MIN_Z && eyeZ < 0) {
-      createWater(gl, fenceShapes);
+      createWater(gl, fenceShapes, shapes);
     }
 
-    // Winter back right
     if (eyeX > 0 && eyeX < WALL_MAX_X && eyeZ > 0 && eyeZ < WALL_MAX_Z) {
-      createArtic(gl, fenceShapes);
+      createArtic(gl, fenceShapes, shapes);
     }
   }
 

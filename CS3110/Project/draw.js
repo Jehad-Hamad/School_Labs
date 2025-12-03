@@ -961,60 +961,47 @@ function drawFence(
   );
 }
 
-function drawTicketStand(gl, cubes) {
-  var wallP = cubes[0];
-  var sheetP = cubes[1];
-
-  // Position outside the fence entrance
+function drawTicketStand(gl, shapes) {
   const FENCE_OFFSET = 29.5;
   const ENTRANCE_DEPTH = 10;
   const frontFenceX = WALL_MIN_X + FENCE_OFFSET;
   const entranceX = frontFenceX - ENTRANCE_DEPTH;
 
   const standX = entranceX - 8;
-  const standZ = 8; // Centered with entrance
-  const boxSize = 5.5; // Size of the square
+  const standZ = 8;
+  const boxSize = 5.5;
 
-  mangrovePillers = createCube(gl, [0.53, 0.29, 0.15]);
-  cherryRoof = createCube(gl, [0.89, 0.5, 0.62]);
-  cherry = createSheet(gl, [0.89, 0.5, 0.62]);
-  glassColor = createSheet(gl, [0.7, 0.85, 0.9]);
-
-  //PILLERS
-  // Front left pillar
+  // PILLERS
   drawCube(
     gl,
-    mangrovePillers,
+    shapes.mangrovePillers,
     [standX - boxSize / 2 + 0.5, 0, standZ - boxSize / 2],
     [0.25, 6, 0.15],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
 
-  // Front right pillar
   drawCube(
     gl,
-    mangrovePillers,
+    shapes.mangrovePillers,
     [standX - boxSize / 2 + 0.5, 0, standZ + boxSize / 2],
     [0.25, 6, 0.15],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
 
-  // Back left pillar
   drawCube(
     gl,
-    mangrovePillers,
+    shapes.mangrovePillers,
     [standX + boxSize / 2 - 0.5, 0, standZ - boxSize / 2],
     [0.25, 6, 0.15],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
 
-  // Back right pillar
   drawCube(
     gl,
-    mangrovePillers,
+    shapes.mangrovePillers,
     [standX + boxSize / 2 - 0.5, 0, standZ + boxSize / 2],
     [0.25, 6, 0.15],
     [0, 1, 0, 0],
@@ -1022,40 +1009,36 @@ function drawTicketStand(gl, cubes) {
   );
 
   // PLANKS
-  // Front plank
   drawSheet(
     gl,
-    cherry,
+    shapes.cherrySheet,
     [standX - boxSize / 2 + 0.5, 0.15, standZ],
     [0.05, 3, boxSize],
     [90, 0, 1, 0],
     [0, 0, 1, 0]
   );
 
-  // Back plank
   drawSheet(
     gl,
-    cherry,
+    shapes.cherrySheet,
     [standX + boxSize / 2 - 0.5, 0.15, standZ],
     [0.05, 3, boxSize],
     [90, 0, 1, 0],
     [0, 0, 1, 0]
   );
 
-  // Left plank
   drawSheet(
     gl,
-    cherry,
+    shapes.cherrySheet,
     [standX, 0.15, standZ - boxSize / 2],
     [boxSize - 1, 3, 0.05],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
 
-  // Left plank
   drawSheet(
     gl,
-    cherry,
+    shapes.cherrySheet,
     [standX, 0.15, standZ + boxSize / 2],
     [boxSize - 1, 3, 0.05],
     [0, 1, 0, 0],
@@ -1063,40 +1046,36 @@ function drawTicketStand(gl, cubes) {
   );
 
   // GLASS
-  // Front glass
   drawSheet(
     gl,
-    glassColor,
+    shapes.glassSheet,
     [standX - boxSize / 2 + 0.5, 4.25, standZ],
     [0.05, 2.5, boxSize],
     [90, 0, 1, 0],
     [0, 0, 1, 0]
   );
 
-  // Back glass
   drawSheet(
     gl,
-    glassColor,
+    shapes.glassSheet,
     [standX + boxSize / 2 - 0.5, 4.25, standZ],
     [0.05, 2.5, boxSize],
     [90, 0, 1, 0],
     [0, 0, 1, 0]
   );
 
-  // Left glass
   drawSheet(
     gl,
-    glassColor,
+    shapes.glassSheet,
     [standX, 4.25, standZ - boxSize / 2],
     [boxSize - 1, 2.5, 0.05],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
 
-  // Right glass
   drawSheet(
     gl,
-    glassColor,
+    shapes.glassSheet,
     [standX, 4.25, standZ + boxSize / 2],
     [boxSize - 1, 2.5, 0.05],
     [0, 1, 0, 0],
@@ -1106,7 +1085,7 @@ function drawTicketStand(gl, cubes) {
   // Roof
   drawCube(
     gl,
-    cherryRoof,
+    shapes.cherryRoof,
     [standX, 6, standZ],
     [boxSize / 2 + 0.5, 1, boxSize / 2 + 0.5],
     [0, 1, 0, 0],
@@ -1114,900 +1093,330 @@ function drawTicketStand(gl, cubes) {
   );
 }
 
-function drawPolarBear(gl, moving, scaling, rotating1, rotating2) {
-  const polarbear = createObject(gl, polarbearkObj, [0.91, 0.85, 0.66]);
-  drawObject(
-    gl,
-    polarbear,
-    [WALL_MAX_X - 65, 0, WALL_MAX_Z - 65],
-    [1.0, 1.0, 1.0],
-    [180, 0, 1, 0],
-    [0, 1, 0, 0]
-  );
-  const blackSphere = createSphere(gl, [0.0, 0.0, 0.0]);
-  //left eye
+function drawPenguin(gl, shapes, x, y, z, scale) {
+  // Body - Black
   drawSphere(
     gl,
-    blackSphere,
-    [WALL_MAX_X - 67.2, 2.6, WALL_MAX_Z - 64.9],
-    [0.05, 0.05, 0.05],
-    [0, 1, 0, 0],
-    [0, 1, 0, 0]
-  );
-  //right eye
-  drawSphere(
-    gl,
-    blackSphere,
-    [WALL_MAX_X - 67.2, 2.6, WALL_MAX_Z - 65.1],
-    [0.05, 0.05, 0.05],
-    [0, 1, 0, 0],
-    [0, 1, 0, 0]
-  );
-  //nose
-  drawSphere(
-    gl,
-    blackSphere,
-    [WALL_MAX_X - 67.4, 2.2, WALL_MAX_Z - 65],
-    [0.12, 0.12, 0.12],
-    [0, 1, 0, 0],
-    [0, 1, 0, 0]
-  );
-}
-
-function drawPenguin(gl, x, z, scale) {
-  const greenSphere = createSphere(gl, [0.54, 0.9, 0.36]);
-  const blueBodySphere = createSphere(gl, [0.0, 0.4, 0.8]);
-  const redSphere = createSphere(gl, [1.0, 0.0, 0.0]);
-  const yellowSphere = createSphere(gl, [1.0, 1.0, 0.1]);
-  const whiteSphere = createSphere(gl, [1.0, 1.0, 1.0]);
-  const blackSphere = createSphere(gl, [0.0, 0.0, 0.0]);
-  const natchoSphere = createSphere(gl, [1.0, 0.65, 0.17]);
-  const spheres = [
-    greenSphere,
-    blueBodySphere,
-    redSphere,
-    yellowSphere,
-    whiteSphere,
-    blackSphere,
-    natchoSphere,
-  ];
-
-  const armCylinder = createCylinder(gl, [1.0, 0.0, 0.0]);
-  const mallotCylinder = createCylinder(gl, [0.55, 0.27, 0.07]);
-  const whiteCylinder = createCylinder(gl, [1.0, 1.0, 1.0]);
-  const cylinders = [armCylinder, mallotCylinder, whiteCylinder];
-
-  const mallotCircle = createCircle(gl, [1.0, 0.0, 0.0]);
-  const circles = [mallotCircle];
-
-  const yellowTriangle = createTriangle(gl, [1.0, 1.0, 0.0], [0, 0, -1]);
-  const redTriangle = createTriangle(gl, [1.0, 0.0, 0.0]);
-  const triangles = [yellowTriangle, redTriangle];
-
-  const star = createStar(gl, [1.0, 1.0, 0.0]);
-  const stars = [star];
-
-  const pyramid = createPyramid(gl, [1.0, 1.0, 0.0]);
-  const pyramids = [pyramid];
-
-  // PENGUIN
-  // Body
-  drawSphere(
-    gl,
-    spheres[1],
-    [0 + x, 0.63 * scale, 0.2 + z],
-    [0.4 * scale, 0.4 * scale, 0.4 * scale],
-    [0, 1, 0, 0],
-    [0, 1, 0, 0]
-  );
-
-  // White scarf and coat
-  drawSphere(
-    gl,
-    spheres[2],
-    [0.0 + x, 0.6 * scale, 0.0 + z],
-    [0.5 * scale, 0.5 * scale, 0.5 * scale],
-    [0, 1, 0, 0],
-    [0, 1, 0, 0]
-  );
-  drawSphere(
-    gl,
-    spheres[4],
-    [0.15 * scale + x, 0.6 * scale, 0.09 * scale + z],
-    [0.13 * scale, 0.5 * scale, 0.4 * scale],
-    [0, 0, 0, 1],
-    [40, 0, 1, 0]
-  );
-  drawSphere(
-    gl,
-    spheres[4],
-    [-0.15 * scale + x, 0.6 * scale, 0.09 * scale + z],
-    [0.13 * scale, 0.5 * scale, 0.4 * scale],
-    [0, 0, 0, 1],
-    [-40, 0, 1, 0]
-  );
-  drawSphere(
-    gl,
-    spheres[4],
-    [-0.011 * scale + x, 1.0 * scale, 0.04 * scale + z],
-    [0.2 * scale, 0.17 * scale, 0.35 * scale],
-    [0, 0, 0, 1],
-    [90, 0, 1, 0]
-  );
-
-  // Head
-  drawSphere(
-    gl,
-    spheres[1],
-    [0 + x, 1.2 * scale, 0.2 + z],
-    [0.3 * scale, 0.3 * scale, 0.3 * scale],
-    [0, 1, 0, 0],
-    [0, 1, 0, 0]
-  );
-
-  // Beak
-  drawPyramid(
-    gl,
-    pyramids[0],
-    [0.0 + x, 1.07 * scale, 0.5 * scale + z],
-    [0.15 * scale, 0.06 * scale, 0.23 * scale],
+    shapes.blackSphere,
+    [x, y + 0.63 * scale, z],
+    [0.25 * scale, 0.55 * scale, 0.45 * scale],
     [0, 1, 0, 0],
     [0, 0, 1, 0]
-  ); // Top beak
+  );
+
+  // Body - White belly
+  drawSphere(
+    gl,
+    shapes.whiteSphere,
+    [x - 0.17 * scale, y + 0.57 * scale, z],
+    [0.1 * scale, 0.4 * scale, 0.3 * scale],
+    [0, 1, 0, 0],
+    [0, 0, 1, 0]
+  );
+
+  // Head - Black
+  drawSphere(
+    gl,
+    shapes.blackSphere,
+    [x, y + 1.25 * scale, z],
+    [0.32 * scale, 0.32 * scale, 0.32 * scale],
+    [0, 1, 0, 0],
+    [0, 0, 1, 0]
+  );
+
+  // Left Eye - White part
+  drawSphere(
+    gl,
+    shapes.whiteSphere,
+    [x - 0.22 * scale, y + 1.3 * scale, z - 0.12 * scale],
+    [0.08 * scale, 0.08 * scale, 0.08 * scale],
+    [0, 1, 0, 0],
+    [0, 0, 1, 0]
+  );
+
+  // Left Eye - Black pupil
+  drawSphere(
+    gl,
+    shapes.blackSphere,
+    [x - 0.28 * scale, y + 1.3 * scale, z - 0.12 * scale],
+    [0.04 * scale, 0.04 * scale, 0.04 * scale],
+    [0, 1, 0, 0],
+    [0, 0, 1, 0]
+  );
+
+  // Right Eye - White part
+  drawSphere(
+    gl,
+    shapes.whiteSphere,
+    [x - 0.22 * scale, y + 1.3 * scale, z + 0.12 * scale],
+    [0.08 * scale, 0.08 * scale, 0.08 * scale],
+    [0, 1, 0, 0],
+    [0, 0, 1, 0]
+  );
+
+  // Right Eye - Black pupil
+  drawSphere(
+    gl,
+    shapes.blackSphere,
+    [x - 0.28 * scale, y + 1.3 * scale, z + 0.12 * scale],
+    [0.04 * scale, 0.04 * scale, 0.04 * scale],
+    [0, 1, 0, 0],
+    [0, 0, 1, 0]
+  );
+
+  // Beak - Orange
   drawPyramid(
     gl,
-    pyramids[0],
-    [0.0 + x, 1.07 * scale, 0.5 * scale + z],
-    [0.15 * scale, 0.1 * scale, 0.23 * scale],
-    [0, 1, 0, 0],
-    [180, 0, 0, 1]
-  ); // Bottom beak
+    shapes.orangePyramid,
+    [x - 0.28 * scale, y + 1.2 * scale, z],
+    [0.15 * scale, 0.06 * scale, 0.12 * scale],
+    [0, 0, 1, 0],
+    [180, 0, 1, 0]
+  );
 
-  // Eyes
+  // Left Wing - Black
   drawSphere(
     gl,
-    spheres[4],
-    [-0.15 * scale + x, 1.2 * scale, 0.4 * scale + z],
-    [0.05 * scale, 0.1 * scale, 0.1 * scale],
-    [0, 1, 0, 0],
-    [0, 1, 0, 0]
-  ); // Left sclara
-  drawSphere(
-    gl,
-    spheres[4],
-    [0.15 * scale + x, 1.2 * scale, 0.4 * scale + z],
-    [0.05 * scale, 0.1 * scale, 0.1 * scale],
-    [0, 1, 0, 0],
-    [0, 1, 0, 0]
-  ); // Right sclara
-  drawSphere(
-    gl,
-    spheres[5],
-    [-0.15 * scale + x, 1.2 * scale, 0.403 * scale + z],
-    [0.05 * scale, 0.09 * scale, 0.1 * scale],
-    [0, 1, 0, 0],
-    [0, 1, 0, 0]
-  ); // Left pupil
-  drawSphere(
-    gl,
-    spheres[5],
-    [0.15 * scale + x, 1.2 * scale, 0.403 * scale + z],
-    [0.05 * scale, 0.09 * scale, 0.1 * scale],
-    [0, 1, 0, 0],
-    [0, 1, 0, 0]
-  ); // Right pupil
-  drawSphere(
-    gl,
-    spheres[4],
-    [-0.15 * scale + x, 1.2 * scale, 0.476 * scale + z],
-    [0.03 * scale, 0.03 * scale, 0.03 * scale],
-    [0, 1, 0, 0],
-    [0, 1, 0, 0]
-  ); // Left iris
-  drawSphere(
-    gl,
-    spheres[4],
-    [0.15 * scale + x, 1.2 * scale, 0.476 * scale + z],
-    [0.03 * scale, 0.03 * scale, 0.03 * scale],
-    [0, 1, 0, 0],
-    [0, 1, 0, 0]
-  ); // right iris
-
-  // Hat
-  drawSphere(
-    gl,
-    spheres[2],
-    [0 + x, 1.4 * scale, 0.2 + z],
-    [0.2 * scale, 0.2 * scale, 0.2 * scale],
-    [0, 1, 0, 0],
-    [0, 1, 0, 0]
-  );
-  drawSphere(
-    gl,
-    spheres[3],
-    [0 + x, 1.35 * scale, 0.2 + z],
-    [0.3 * scale, 0.1 * scale, 0.3 * scale],
-    [0, 1, 0, 0],
-    [0, 1, 0, 0]
-  );
-  drawSphere(
-    gl,
-    spheres[3],
-    [0.0 + x, 1.35 * scale, 0.45 * scale + z],
-    [0.1 * scale, 0.1 * scale, 0.1 * scale],
-    [0, 1, 0, 0],
-    [0, 1, 0, 0]
-  );
-  drawSphere(
-    gl,
-    spheres[4],
-    [0 + x, 1.6 * scale, 0.1 * scale + z],
-    [0.1 * scale, 0.1 * scale, 0.1 * scale],
-    [0, 1, 0, 0],
+    shapes.blackSphere,
+    [x - 0.3 * scale, y + 0.3 + 0.6 * scale, z - 0.4 * scale],
+    [0.12 * scale, 0.4 * scale, 0.12 * scale],
+    [60, 0, 0, 1],
     [0, 1, 0, 0]
   );
 
-  // Arms
-  drawCylinder(
+  // Right Wing - Black
+  drawSphere(
     gl,
-    cylinders[0],
-    [-0.23 * scale + x, 0.9 * scale, -0.2 * scale + z],
-    [0.1 * scale, 0.1 * scale, 0.1 * scale],
-    [100, 1, 0, 0],
-    [20, 0, 0, 1]
-  ); // Left arm coat
-  drawCylinder(
-    gl,
-    cylinders[0],
-    [0.23 * scale + x, 0.9 * scale, -0.2 * scale + z],
-    [0.1 * scale, 0.1 * scale, 0.1 * scale],
-    [100, 1, 0, 0],
-    [-20, 0, 0, 1]
-  ); // Right arm coat
+    shapes.blackSphere,
+    [x - 0.3 * scale, y + 0.3 + 0.6 * scale, z + 0.4 * scale],
+    [0.12 * scale, 0.4 * scale, 0.12 * scale],
+    [60, 0, 0, 1],
+    [0, 1, 0, 0]
+  );
 
-  // Hand
+  // Left Foot - Orange
   drawSphere(
     gl,
-    spheres[4],
-    [-0.6 * scale + x, 0.725 * scale, 0.8 * scale + z],
-    [0.11 * scale, 0.11 * scale, 0.11 * scale],
+    shapes.orangeSphere,
+    [x - 0.15 * scale, y + 0.08 * scale, z - 0.15 * scale],
+    [0.25 * scale, 0.06 * scale, 0.14 * scale],
     [0, 1, 0, 0],
-    [0, 1, 0, 0]
-  ); // Left Puff coat
-  drawSphere(
-    gl,
-    spheres[4],
-    [0.6 * scale + x, 0.725 * scale, 0.8 * scale + z],
-    [0.11 * scale, 0.11 * scale, 0.11 * scale],
-    [0, 1, 0, 0],
-    [0, 1, 0, 0]
-  ); // Right Puff coat
-  drawSphere(
-    gl,
-    spheres[6],
-    [-0.62 * scale + x, 0.71 * scale, 0.85 * scale + z],
-    [0.12 * scale, 0.12 * scale, 0.12 * scale],
-    [0, 1, 0, 0],
-    [0, 1, 0, 0]
-  ); // Left hand
-  drawSphere(
-    gl,
-    spheres[6],
-    [0.62 * scale + x, 0.71 * scale, 0.85 * scale + z],
-    [0.12 * scale, 0.12 * scale, 0.12 * scale],
-    [0, 1, 0, 0],
-    [0, 1, 0, 0]
-  ); // Right hand
+    [0, 0, 1, 0]
+  );
 
-  // Mallot
-  drawCylinder(
-    gl,
-    cylinders[1],
-    [-0.75 * scale + x, 0.4 * scale, 0.95 * scale + z],
-    [0.1 * scale, 0.1 * scale, 0.1 * scale],
-    [0, 1, 0, 0],
-    [0, 0, 0, 1]
-  ); // Handle
-  drawCylinder(
-    gl,
-    cylinders[1],
-    [-0.77 * scale + x, 1.36 * scale, 0.55 * scale + z],
-    [0.2 * scale, 0.2 * scale, 0.07 * scale],
-    [90, 1, 0, 0],
-    [0, 0, 0, 1]
-  ); // Hammer
-  drawCylinder(
-    gl,
-    cylinders[2],
-    [-0.77 * scale + x, 1.36 * scale, 1.3 * scale + z],
-    [0.2 * scale, 0.2 * scale, 0.01 * scale],
-    [90, 1, 0, 0],
-    [0, 0, 0, 1]
-  ); // White front circle
-  drawCylinder(
-    gl,
-    cylinders[2],
-    [-0.77 * scale + x, 1.36 * scale, 0.45 * scale + z],
-    [0.2 * scale, 0.2 * scale, 0.01 * scale],
-    [90, 1, 0, 0],
-    [0, 0, 0, 1]
-  ); // White back circle
-  drawCircle(
-    gl,
-    circles[0],
-    [-0.77 * scale + x, 1.36 * scale, 1.42 * scale + z],
-    [0.2 * scale, 0.2 * scale, 0.1 * scale],
-    [0, 1, 0, 0]
-  ); // Mallot front circle
-  drawCircle(
-    gl,
-    circles[0],
-    [-0.77 * scale + x, 1.36 * scale, 0.44 * scale + z],
-    [0.2 * scale, 0.2 * scale, 0.1 * scale],
-    [0, 1, 0, 0]
-  ); // Mallot back circle
-  drawStar(
-    gl,
-    stars[0],
-    [-0.77 * scale + x, 1.37 * scale, 1.43 * scale + z],
-    [0.2 * scale, 0.2 * scale, 0.1 * scale],
-    [0, 1, 0, 0]
-  ); // Front star
-  drawStar(
-    gl,
-    stars[0],
-    [-0.77 * scale + x, 1.37 * scale, 0.43 * scale + z],
-    [0.2 * scale, 0.2 * scale, 0.1 * scale],
-    [0, 1, 0, 0]
-  ); // Back star
-
-  // Feet
+  // Right Foot - Orange
   drawSphere(
     gl,
-    spheres[6],
-    [-0.2 * scale + x, 0.2 * scale, 0.25 * scale + z],
-    [0.2 * scale, 0.2 * scale, 0.2 * scale],
+    shapes.orangeSphere,
+    [x - 0.15 * scale, y + 0.08 * scale, z + 0.15 * scale],
+    [0.25 * scale, 0.06 * scale, 0.14 * scale],
     [0, 1, 0, 0],
-    [0, 1, 0, 0]
-  ); // Left foot
-  drawSphere(
-    gl,
-    spheres[6],
-    [0.2 * scale + x, 0.2 * scale, 0.25 * scale + z],
-    [0.2 * scale, 0.2 * scale, 0.2 * scale],
-    [0, 1, 0, 0],
-    [0, 1, 0, 0]
-  ); // Right foot
-
-  // Belt
-  drawTriangle(
-    gl,
-    triangles[1],
-    [-0.31 * scale + x, 0.48 * scale, 0.4 * scale + z],
-    [0.15 * scale, 0.15 * scale, 1],
-    [14, 1, 0, 0],
-    [-14, 0, 1, 0]
-  );
-  drawTriangle(
-    gl,
-    triangles[0],
-    [-0.24 * scale + x, 0.58 * scale, 0.52 * scale + z],
-    [0.25 * scale, 0.2 * scale, 1],
-    [180, 1, 0, 0],
-    [15, 0, 1, 0]
-  );
-  drawTriangle(
-    gl,
-    triangles[1],
-    [-0.1 * scale + x, 0.46 * scale, 0.57 * scale + z],
-    [0.25 * scale, 0.2 * scale, 1],
-    [0, 1, 0, 0],
-    [-4, 0, 1, 0]
-  );
-  drawTriangle(
-    gl,
-    triangles[0],
-    [0.04 * scale + x, 0.58 * scale, 0.6 * scale + z],
-    [0.25 * scale, 0.2 * scale, 1],
-    [180, 1, 0, 0],
-    [-2, 0, 1, 0]
-  );
-  drawTriangle(
-    gl,
-    triangles[1],
-    [0.18 * scale + x, 0.46 * scale, 0.55 * scale + z],
-    [0.25 * scale, 0.2 * scale, 1],
-    [0, 1, 0, 0],
-    [7.5, 0, 1, 0]
-  );
-  drawTriangle(
-    gl,
-    triangles[0],
-    [0.27 * scale + x, 0.58 * scale, 0.5 * scale + z],
-    [0.15 * scale, 0.2 * scale, 1],
-    [180, 1, 0, 0],
-    [-6, 0, 1, 0]
+    [0, 0, 1, 0]
   );
 }
 
-function createArtic(gl, fenceShapes) {
-  drawFence(
-    gl,
-    fenceShapes,
-    [WALL_MAX_X - 60, 0, WALL_MAX_Z - 60],
-    [0.25, 1, 0.25],
-    false,
-    false
-  );
+function drawPolarBear(gl, shapes, moving, scaling, rotating1, rotating2) {
+  drawObject(gl, shapes.polarBear, moving, scaling, rotating1, rotating2);
 
-  var snow = createSheet(gl, [1.0, 1.0, 1.0]);
-  //right sheet
-  drawSheet(
-    gl,
-    snow,
-    [WALL_MAX_X - 60, 3.5, WALL_MAX_Z - 45],
-    [30.0, 7.0, 1.0],
-    [0, 1, 0, 0],
-    [0, 1, 0, 0]
-  );
-
-  // left sheet
-  drawSheet(
-    gl,
-    snow,
-    [WALL_MAX_X - 60, 3.5, WALL_MAX_Z - 75],
-    [30.0, 7.0, 1.0],
-    [0, 1, 0, 0],
-    [0, 1, 0, 0]
-  );
-
-  // back sheet
-  drawSheet(
-    gl,
-    snow,
-    [WALL_MAX_X - 45, 3.5, WALL_MAX_Z - 60],
-    [1.0, 7.0, 30.0],
-    [90, 0, 1, 0],
-    [0, 1, 0, 0]
-  );
-
-  // front 1 left
-  drawSheet(
-    gl,
-    snow,
-    [WALL_MAX_X - 75, 3.5, WALL_MAX_Z - 69],
-    [1.0, 7.0, 11.5],
-    [90, 0, 1, 0],
-    [0, 1, 0, 0]
-  );
-  // front 2 right
-  drawSheet(
-    gl,
-    snow,
-    [WALL_MAX_X - 75, 3.5, WALL_MAX_Z - 51],
-    [1.0, 7.0, 11.5],
-    [90, 0, 1, 0],
-    [0, 1, 0, 0]
-  );
-
-  //floor
-  drawSheet(
-    gl,
-    snow,
-    [WALL_MAX_X - 60, 0.02, WALL_MAX_Z - 60],
-    [30.0, 1, 30.0],
-    [90, 1, 0, 0],
-    [0, 1, 0, 0]
-  );
-
-  drawPolarBear(
-    gl,
-    [5.0, 0.0, 0.0],
-    [1.0, 1.0, 1.0],
-    [0, 1, 0, 0],
-    [0, 1, 0, 0]
-  );
-
-  drawPenguin(gl, WALL_MAX_X - 60, WALL_MAX_Z - 55, 2);
-
-  igloo = createSphere(gl, [1.0, 1.0, 1.0]);
+  // Left eye
   drawSphere(
     gl,
-    igloo,
-    [WALL_MAX_X - 50, 2, WALL_MAX_Z - 51],
-    [5, 5, 5],
+    shapes.blackSphere,
+    [
+      moving[0] - 2.2 * scaling[0],
+      moving[1] + 2.6 * scaling[1],
+      moving[2] + 0.1 * scaling[2],
+    ],
+    [0.05 * scaling[0], 0.05 * scaling[1], 0.05 * scaling[2]],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
 
-  iglooOpening = createCylinder(gl, [1.0, 1.0, 1.0]);
-  drawCylinder(
+  // Right eye
+  drawSphere(
     gl,
-    iglooOpening,
-    [WALL_MAX_X - 50, 1.4, WALL_MAX_Z - 51],
-    [0.5, 1.5, 2],
-    [90, 0, 0, 1],
-    [0, 1, 0, 0]
-  );
-
-  iglooDoor = createCircle(gl, [0, 0, 0]);
-  drawCircle(
-    gl,
-    iglooDoor,
-    [WALL_MAX_X - 55, 1.4, WALL_MAX_Z - 51],
-    [2.5, 1.5, 2],
-    [90, 0, 1, 0],
-    [0, 1, 0, 0]
-  );
-
-  pond = createCircle(gl, [0, 0, 1]);
-  drawCircle(
-    gl,
-    pond,
-    [WALL_MAX_X - 65, 0.03, WALL_MAX_Z - 51],
-    [2.5, 1, 2.3],
-    [90, 1, 0, 0],
-    [0, 1, 0, 0]
-  );
-
-  fish1 = createObject(gl, fishObj, [1.0, 0.0, 0.0]);
-  fish2 = createObject(gl, fishObj, [0.2, 0.0, 1.0]);
-
-  drawObject(
-    gl,
-    fish1,
-    [WALL_MAX_X - 65, 0.3, WALL_MAX_Z - 55],
-    [1, 1, 1],
-    [90, 1, 0, 0],
-    [0, 1, 0, 0]
-  );
-  drawObject(
-    gl,
-    fish2,
-    [WALL_MAX_X - 65.3, 0.3, WALL_MAX_Z - 55],
-    [1, 1, 1],
-    [90, 1, 0, 0],
-    [0, 1, 0, 0]
-  );
-  drawObject(
-    gl,
-    fish2,
-    [WALL_MAX_X - 64.3, 0.3, WALL_MAX_Z - 55],
-    [1, 1, 1],
-    [90, 1, 0, 0],
-    [50, 0, 0, 1]
-  );
-}
-
-function createJungle(gl, fenceShapes) {
-  drawFence(
-    gl,
-    fenceShapes,
-    [WALL_MIN_X + 60, 0, WALL_MIN_Z + 60],
-    [0.25, 1, 0.25],
-    false,
-    true
-  );
-
-  var greenGrass = createSheet(gl, [0.2, 0.8, 0.2]);
-
-  //right sheet
-  drawSheet(
-    gl,
-    greenGrass,
-    [WALL_MIN_X + 60, 3.5, WALL_MIN_Z + 45],
-    [30.0, 7.0, 1.0],
+    shapes.blackSphere,
+    [
+      moving[0] - 2.2 * scaling[0],
+      moving[1] + 2.6 * scaling[1],
+      moving[2] - 0.1 * scaling[2],
+    ],
+    [0.05 * scaling[0], 0.05 * scaling[1], 0.05 * scaling[2]],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
 
-  // left sheet
-  drawSheet(
+  // Nose
+  drawSphere(
     gl,
-    greenGrass,
-    [WALL_MIN_X + 60, 3.5, WALL_MIN_Z + 75],
-    [30.0, 7.0, 1.0],
+    shapes.blackSphere,
+    [moving[0] - 2.4 * scaling[0], moving[1] + 2.2 * scaling[1], moving[2]],
+    [0.12 * scaling[0], 0.12 * scaling[1], 0.12 * scaling[2]],
     [0, 1, 0, 0],
-    [0, 1, 0, 0]
-  );
-
-  // back sheet
-  drawSheet(
-    gl,
-    greenGrass,
-    [WALL_MIN_X + 45, 3.5, WALL_MIN_Z + 60],
-    [1.0, 7.0, 30.0],
-    [90, 0, 1, 0],
-    [0, 1, 0, 0]
-  );
-
-  // front 1 left
-  drawSheet(
-    gl,
-    greenGrass,
-    [WALL_MIN_X + 75, 3.5, WALL_MIN_Z + 69],
-    [1.0, 7.0, 11.5],
-    [90, 0, 1, 0],
-    [0, 1, 0, 0]
-  );
-
-  // front 2 right
-  drawSheet(
-    gl,
-    greenGrass,
-    [WALL_MIN_X + 75, 3.5, WALL_MIN_Z + 51],
-    [1.0, 7.0, 11.5],
-    [90, 0, 1, 0],
-    [0, 1, 0, 0]
-  );
-
-  //floor
-  drawSheet(
-    gl,
-    greenGrass,
-    [WALL_MIN_X + 60, 0.02, WALL_MIN_Z + 60],
-    [30.0, 1, 30.0],
-    [90, 1, 0, 0],
     [0, 1, 0, 0]
   );
 }
 
-function createDesert(gl, fenceShapes, sandfloor) {
-  drawFence(
+function drawSnowman(gl, shapes, x, y, z, scale) {
+  // Bottom sphere (largest)
+  drawSphere(
     gl,
-    fenceShapes,
-    [WALL_MIN_X + 60, 0, WALL_MAX_Z - 60],
-    [0.25, 1, 0.25],
-    false,
-    true
-  );
-
-  var sandSheet = createSheet(gl, [0.93, 0.82, 0.6]);
-  //right sheet
-  drawSheet(
-    gl,
-    sandSheet,
-    [WALL_MIN_X + 60, 3.5, WALL_MAX_Z - 45],
-    [30.0, 7.0, 1.0],
+    shapes.whiteSphere,
+    [x, y + 0.5 * scale, z],
+    [0.5 * scale, 0.5 * scale, 0.5 * scale],
     [0, 1, 0, 0],
-    [0, 1, 0, 0]
+    [0, 0, 1, 0]
   );
 
-  // left sheet
-  drawSheet(
+  // Middle sphere
+  drawSphere(
     gl,
-    sandSheet,
-    [WALL_MIN_X + 60, 3.5, WALL_MAX_Z - 75],
-    [30.0, 7.0, 1.0],
+    shapes.whiteSphere,
+    [x, y + 1.2 * scale, z],
+    [0.38 * scale, 0.38 * scale, 0.38 * scale],
     [0, 1, 0, 0],
-    [0, 1, 0, 0]
+    [0, 0, 1, 0]
   );
 
-  // back sheet
-  drawSheet(
+  // Top sphere (head)
+  drawSphere(
     gl,
-    sandSheet,
-    [WALL_MIN_X + 45, 3.5, WALL_MAX_Z - 60],
-    [1.0, 7.0, 30.0],
-    [90, 0, 1, 0],
-    [0, 1, 0, 0]
-  );
-
-  // front 1 left
-  drawSheet(
-    gl,
-    sandSheet,
-    [WALL_MIN_X + 75, 3.5, WALL_MAX_Z - 69],
-    [1.0, 7.0, 11.5],
-    [90, 0, 1, 0],
-    [0, 1, 0, 0]
-  );
-
-  // front 2 right
-  drawSheet(
-    gl,
-    sandSheet,
-    [WALL_MIN_X + 75, 3.5, WALL_MAX_Z - 51],
-    [1.0, 7.0, 11.5],
-    [90, 0, 1, 0],
-    [0, 1, 0, 0]
-  );
-
-  //floor
-  drawSheet(
-    gl,
-    sandfloor,
-    [WALL_MIN_X + 60, 0.02, WALL_MAX_Z - 60],
-    [30.0, 1, 30.0],
-    [90, 1, 0, 0],
-    [0, 1, 0, 0]
-  );
-
-  camel = createObject(gl, camelObj, [0.651, 0.478, 0.239]);
-  drawObject(
-    gl,
-    camel,
-    [WALL_MIN_X + 55, 0.02, WALL_MAX_Z - 50],
-    [0.004, 0.004, 0.004],
-    [270, 0, 1, 0],
-    [0, 1, 0, 0]
-  );
-
-  drawObject(
-    gl,
-    camel,
-    [WALL_MIN_X + 65, 0.02, WALL_MAX_Z - 50],
-    [0.004, 0.004, 0.004],
-    [320, 0, 1, 0],
-    [0, 1, 0, 0]
-  );
-
-  const cactus = createCactus(gl);
-
-  drawCactus(
-    gl,
-    cactus,
-    [WALL_MIN_X + 65, 0, WALL_MAX_Z - 65],
-    [1.0, 1.0, 1.0],
+    shapes.whiteSphere,
+    [x, y + 1.85 * scale, z],
+    [0.28 * scale, 0.28 * scale, 0.28 * scale],
     [0, 1, 0, 0],
-    [0, 1, 0, 0]
+    [0, 0, 1, 0]
   );
 
-  drawCactus(
+  // Left eye
+  drawSphere(
     gl,
-    cactus,
-    [WALL_MIN_X + 60, 0, WALL_MAX_Z - 52],
-    [1.0, 1.0, 1.0],
+    shapes.blackSphere,
+    [x - 0.22 * scale, y + 1.95 * scale, z - 0.1 * scale],
+    [0.04 * scale, 0.04 * scale, 0.04 * scale],
     [0, 1, 0, 0],
-    [0, 1, 0, 0]
+    [0, 0, 1, 0]
   );
 
-  pyramid = createPyramid(gl, [0.757, 0.604, 0.42]);
+  // Right eye
+  drawSphere(
+    gl,
+    shapes.blackSphere,
+    [x - 0.22 * scale, y + 1.95 * scale, z + 0.1 * scale],
+    [0.04 * scale, 0.04 * scale, 0.04 * scale],
+    [0, 1, 0, 0],
+    [0, 0, 1, 0]
+  );
+
+  // Nose (carrot) - orange
   drawPyramid(
     gl,
-    pyramid,
-    [WALL_MIN_X + 55, 0, WALL_MAX_Z - 65],
-    [9.0, 8.0, 9.0],
-    [10, 0, 1, 0],
-    [0, 1, 0, 0]
+    shapes.orangePyramid,
+    [x - 0.35 * scale, y + 1.85 * scale, z],
+    [0.15 * scale, 0.05 * scale, 0.05 * scale],
+    [0, 0, 1, 0],
+    [90, 0, 0, 1]
   );
 
-  urn = createObject(gl, urnObj, [0.227, 0.184, 0.157]);
-  urn1 = createObject(gl, urnObj, [0.545, 0.306, 0.196]);
-  urn2 = createObject(gl, urnObj, [0.353, 0.243, 0.169]);
-
-  drawObject(
+  // Mouth - 5 black dots in a smile
+  drawSphere(
     gl,
-    urn2,
-    [WALL_MIN_X + 57, 0.65, WALL_MAX_Z - 70],
-    [1.0, 1.0, 1.0],
-    [0, 0, 1, 0],
-    [0, 1, 0, 0]
-  );
-  drawObject(
-    gl,
-    urn1,
-    [WALL_MIN_X + 57.5, 0.65, WALL_MAX_Z - 71],
-    [1.0, 1.0, 1.0],
-    [0, 0, 1, 0],
-    [0, 1, 0, 0]
-  );
-  drawObject(
-    gl,
-    urn,
-    [WALL_MIN_X + 58, 0.65, WALL_MAX_Z - 70],
-    [1.0, 1.0, 1.0],
-    [0, 0, 1, 0],
-    [0, 1, 0, 0]
+    shapes.blackSphere,
+    [x - 0.22 * scale, y + 1.75 * scale, z - 0.12 * scale],
+    [0.025 * scale, 0.025 * scale, 0.025 * scale],
+    [0, 1, 0, 0],
+    [0, 0, 1, 0]
   );
 
-  drawObject(
+  drawSphere(
     gl,
-    urn1,
-    [WALL_MIN_X + 54, 0.65, WALL_MAX_Z - 62],
-    [1.0, 1.0, 1.0],
-    [0, 0, 1, 0],
-    [0, 1, 0, 0]
-  );
-  drawObject(
-    gl,
-    urn2,
-    [WALL_MIN_X + 55, 0.65, WALL_MAX_Z - 60.5],
-    [1.0, 1.0, 1.0],
-    [0, 0, 1, 0],
-    [0, 1, 0, 0]
-  );
-  drawObject(
-    gl,
-    urn,
-    [WALL_MIN_X + 56.5, 0.65, WALL_MAX_Z - 62],
-    [1.0, 1.0, 1.0],
-    [0, 0, 1, 0],
-    [0, 1, 0, 0]
+    shapes.blackSphere,
+    [x - 0.25 * scale, y + 1.72 * scale, z - 0.06 * scale],
+    [0.025 * scale, 0.025 * scale, 0.025 * scale],
+    [0, 1, 0, 0],
+    [0, 0, 1, 0]
   );
 
-  sandSheet = createObject(gl, sandobj, [0.757, 0.604, 0.42]);
-  drawObject(
+  drawSphere(
     gl,
-    sandSheet,
-    [WALL_MIN_X + 70, 1, WALL_MAX_Z - 70],
-    [7.0, 7.0, 7.0],
-    [0, 0, 1, 0],
-    [0, 1, 0, 0]
-  );
-  drawObject(
-    gl,
-    sandSheet,
-    [WALL_MIN_X + 50, 1, WALL_MAX_Z - 57],
-    [7.0, 7.0, 7.0],
-    [0, 0, 1, 0],
-    [0, 1, 0, 0]
-  );
-  drawObject(
-    gl,
-    sandSheet,
-    [WALL_MIN_X + 70, 1, WALL_MAX_Z - 50],
-    [7.0, 7.0, 7.0],
-    [30, 0, 1, 0],
-    [0, 1, 0, 0]
+    shapes.blackSphere,
+    [x - 0.26 * scale, y + 1.71 * scale, z],
+    [0.025 * scale, 0.025 * scale, 0.025 * scale],
+    [0, 1, 0, 0],
+    [0, 0, 1, 0]
   );
 
-  deadBush = createObject(gl, deadBushObj, [0.604, 0.482, 0.29]);
-  deadBush1 = createObject(gl, deadBushObj, [0.353, 0.271, 0.157]);
-
-  drawObject(
+  drawSphere(
     gl,
-    deadBush,
-    [WALL_MIN_X + 70, 0, WALL_MAX_Z - 70],
-    [1.0, 1.0, 1.0],
-    [0, 0, 1, 0],
-    [0, 1, 0, 0]
+    shapes.blackSphere,
+    [x - 0.25 * scale, y + 1.72 * scale, z + 0.06 * scale],
+    [0.025 * scale, 0.025 * scale, 0.025 * scale],
+    [0, 1, 0, 0],
+    [0, 0, 1, 0]
   );
 
-  drawObject(
+  drawSphere(
     gl,
-    deadBush,
-    [WALL_MIN_X + 60, 0, WALL_MAX_Z - 60],
-    [1.0, 1.0, 1.0],
-    [0, 0, 1, 0],
-    [0, 1, 0, 0]
+    shapes.blackSphere,
+    [x - 0.22 * scale, y + 1.75 * scale, z + 0.12 * scale],
+    [0.025 * scale, 0.025 * scale, 0.025 * scale],
+    [0, 1, 0, 0],
+    [0, 0, 1, 0]
   );
 
-  drawObject(
+  // Buttons on middle sphere - 3 black dots
+  drawSphere(
     gl,
-    deadBush1,
-    [WALL_MIN_X + 60, 0, WALL_MAX_Z - 57],
-    [1.0, 1.0, 1.0],
-    [0, 0, 1, 0],
-    [0, 1, 0, 0]
+    shapes.blackSphere,
+    [x - 0.35 * scale, y + 1.35 * scale, z],
+    [0.04 * scale, 0.04 * scale, 0.04 * scale],
+    [0, 1, 0, 0],
+    [0, 0, 1, 0]
   );
 
-  drawObject(
+  drawSphere(
     gl,
-    deadBush1,
-    [WALL_MIN_X + 66, 0, WALL_MAX_Z - 50],
-    [1.0, 1.0, 1.0],
-    [0, 0, 1, 0],
-    [0, 1, 0, 0]
+    shapes.blackSphere,
+    [x - 0.37 * scale, y + 1.2 * scale, z],
+    [0.04 * scale, 0.04 * scale, 0.04 * scale],
+    [0, 1, 0, 0],
+    [0, 0, 1, 0]
   );
-  drawObject(
+
+  drawSphere(
     gl,
-    deadBush1,
-    [WALL_MIN_X + 73, 0, WALL_MAX_Z - 50],
-    [1.0, 1.0, 1.0],
-    [0, 0, 1, 0],
-    [0, 1, 0, 0]
+    shapes.blackSphere,
+    [x - 0.35 * scale, y + 1.05 * scale, z],
+    [0.04 * scale, 0.04 * scale, 0.04 * scale],
+    [0, 1, 0, 0],
+    [0, 0, 1, 0]
+  );
+
+  // Buttons on bottom sphere - 2 black dots
+  drawSphere(
+    gl,
+    shapes.blackSphere,
+    [x - 0.47 * scale, y + 0.65 * scale, z],
+    [0.04 * scale, 0.04 * scale, 0.04 * scale],
+    [0, 1, 0, 0],
+    [0, 0, 1, 0]
+  );
+
+  drawSphere(
+    gl,
+    shapes.blackSphere,
+    [x - 0.48 * scale, y + 0.45 * scale, z],
+    [0.04 * scale, 0.04 * scale, 0.04 * scale],
+    [0, 1, 0, 0],
+    [0, 0, 1, 0]
   );
 }
 
-function drawCactus(gl, cactus, moving, scaling, rotating1, rotating2) {
-  const cactusGreen = cactus[0];
-  const darkGreen = cactus[1];
-
+function drawCactus(gl, shapes, moving, scaling, rotating1, rotating2) {
   // Main trunk
   drawCylinder(
     gl,
-    cactusGreen,
+    shapes.cactusGreen,
     [moving[0], moving[1], moving[2]],
     [scaling[0] * 0.5, scaling[1] * 0.3, scaling[2] * 0.5],
     [0, 1, 0, 0],
@@ -2017,7 +1426,7 @@ function drawCactus(gl, cactus, moving, scaling, rotating1, rotating2) {
   // Main trunk cap
   drawSphere(
     gl,
-    darkGreen,
+    shapes.cactusDarkGreen,
     [moving[0], moving[1] + 3.3, moving[2]],
     [scaling[0] * 0.52, scaling[1] * 0.52, scaling[2] * 0.52],
     [0, 1, 0, 0],
@@ -2028,7 +1437,7 @@ function drawCactus(gl, cactus, moving, scaling, rotating1, rotating2) {
   for (let i = 0; i < 3; i++) {
     drawSphere(
       gl,
-      darkGreen,
+      shapes.cactusDarkGreen,
       [moving[0] + scaling[0] * 0.5, moving[1] + 0.8 + i * 0.6, moving[2]],
       [scaling[0] * 0.15, scaling[1] * 0.15, scaling[2] * 0.15],
       [0, 1, 0, 0],
@@ -2040,7 +1449,7 @@ function drawCactus(gl, cactus, moving, scaling, rotating1, rotating2) {
   for (let i = 0; i < 3; i++) {
     drawSphere(
       gl,
-      darkGreen,
+      shapes.cactusDarkGreen,
       [moving[0] - scaling[0] * 0.5, moving[1] + 0.8 + i * 0.6, moving[2]],
       [scaling[0] * 0.15, scaling[1] * 0.15, scaling[2] * 0.15],
       [0, 1, 0, 0],
@@ -2051,7 +1460,7 @@ function drawCactus(gl, cactus, moving, scaling, rotating1, rotating2) {
   // Left arm
   drawCylinder(
     gl,
-    cactusGreen,
+    shapes.cactusGreen,
     [moving[0], moving[1] + 1, moving[2]],
     [scaling[0] * 0.3, scaling[1] * 0.3, scaling[2] * 0.2],
     [90, 1, 0, 0],
@@ -2061,7 +1470,7 @@ function drawCactus(gl, cactus, moving, scaling, rotating1, rotating2) {
   // Left trunk cap
   drawSphere(
     gl,
-    darkGreen,
+    shapes.cactusDarkGreen,
     [moving[0], moving[1] + 1, moving[2] + 2],
     [scaling[0] * 0.42, scaling[1] * 0.42, scaling[2] * 0.42],
     [0, 1, 0, 0],
@@ -2072,7 +1481,7 @@ function drawCactus(gl, cactus, moving, scaling, rotating1, rotating2) {
   for (let i = 0; i < 3; i++) {
     drawSphere(
       gl,
-      darkGreen,
+      shapes.cactusDarkGreen,
       [moving[0], moving[1] + 1.2, moving[2] + i - 0.5],
       [scaling[0] * 0.15, scaling[1] * 0.15, scaling[2] * 0.15],
       [0, 1, 0, 0],
@@ -2084,7 +1493,7 @@ function drawCactus(gl, cactus, moving, scaling, rotating1, rotating2) {
   for (let i = 0; i < 2; i++) {
     drawSphere(
       gl,
-      darkGreen,
+      shapes.cactusDarkGreen,
       [moving[0] - 0.2, moving[1] + 1, moving[2] + i + 0.5],
       [scaling[0] * 0.15, scaling[1] * 0.15, scaling[2] * 0.15],
       [0, 1, 0, 0],
@@ -2096,7 +1505,7 @@ function drawCactus(gl, cactus, moving, scaling, rotating1, rotating2) {
   for (let i = 0; i < 3; i++) {
     drawSphere(
       gl,
-      darkGreen,
+      shapes.cactusDarkGreen,
       [moving[0] + 0.2, moving[1] + 1.2, moving[2] + i],
       [scaling[0] * 0.15, scaling[1] * 0.15, scaling[2] * 0.15],
       [0, 1, 0, 0],
@@ -2107,7 +1516,7 @@ function drawCactus(gl, cactus, moving, scaling, rotating1, rotating2) {
   // Right arm
   drawCylinder(
     gl,
-    cactusGreen,
+    shapes.cactusGreen,
     [moving[0], moving[1] + 1.7, moving[2]],
     [scaling[0] * 0.3, scaling[1] * 0.3, scaling[2] * 0.2],
     [270, 1, 0, 0],
@@ -2117,7 +1526,7 @@ function drawCactus(gl, cactus, moving, scaling, rotating1, rotating2) {
   // Right trunk cap
   drawSphere(
     gl,
-    darkGreen,
+    shapes.cactusDarkGreen,
     [moving[0], moving[1] + 1.7, moving[2] - 2],
     [scaling[0] * 0.42, scaling[1] * 0.42, scaling[2] * 0.42],
     [0, 1, 0, 0],
@@ -2128,7 +1537,7 @@ function drawCactus(gl, cactus, moving, scaling, rotating1, rotating2) {
   for (let i = 0; i < 3; i++) {
     drawSphere(
       gl,
-      darkGreen,
+      shapes.cactusDarkGreen,
       [moving[0], moving[1] + 2, moving[2] - i + 0.5],
       [scaling[0] * 0.15, scaling[1] * 0.15, scaling[2] * 0.15],
       [0, 1, 0, 0],
@@ -2140,7 +1549,7 @@ function drawCactus(gl, cactus, moving, scaling, rotating1, rotating2) {
   for (let i = 0; i < 3; i++) {
     drawSphere(
       gl,
-      darkGreen,
+      shapes.cactusDarkGreen,
       [moving[0], moving[1] + 1.4, moving[2] - i],
       [scaling[0] * 0.15, scaling[1] * 0.15, scaling[2] * 0.15],
       [0, 1, 0, 0],
@@ -2152,7 +1561,7 @@ function drawCactus(gl, cactus, moving, scaling, rotating1, rotating2) {
   for (let i = 0; i < 3; i++) {
     drawSphere(
       gl,
-      darkGreen,
+      shapes.cactusDarkGreen,
       [moving[0] - 0.3, moving[1] + 1.7, moving[2] - i],
       [scaling[0] * 0.15, scaling[1] * 0.15, scaling[2] * 0.15],
       [0, 1, 0, 0],
@@ -2164,7 +1573,7 @@ function drawCactus(gl, cactus, moving, scaling, rotating1, rotating2) {
   for (let i = 0; i < 3; i++) {
     drawSphere(
       gl,
-      darkGreen,
+      shapes.cactusDarkGreen,
       [moving[0] + 0.3, moving[1] + 1.7, moving[2] - i],
       [scaling[0] * 0.15, scaling[1] * 0.15, scaling[2] * 0.15],
       [0, 1, 0, 0],
@@ -2173,7 +1582,627 @@ function drawCactus(gl, cactus, moving, scaling, rotating1, rotating2) {
   }
 }
 
-function createWater(gl, fenceShapes) {
+function createArtic(gl, fenceShapes, shapes) {
+  drawFence(
+    gl,
+    fenceShapes,
+    [WALL_MAX_X - 60, 0, WALL_MAX_Z - 60],
+    [0.25, 1, 0.25],
+    false,
+    false
+  );
+
+  // Right sheet
+  drawSheet(
+    gl,
+    shapes.snowSheet,
+    [WALL_MAX_X - 60, 3.5, WALL_MAX_Z - 45],
+    [30.0, 7.0, 1.0],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Left sheet
+  drawSheet(
+    gl,
+    shapes.snowSheet,
+    [WALL_MAX_X - 60, 3.5, WALL_MAX_Z - 75],
+    [30.0, 7.0, 1.0],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Back sheet
+  drawSheet(
+    gl,
+    shapes.snowSheet,
+    [WALL_MAX_X - 45, 3.5, WALL_MAX_Z - 60],
+    [1.0, 7.0, 30.0],
+    [90, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Front 1 left
+  drawSheet(
+    gl,
+    shapes.snowSheet,
+    [WALL_MAX_X - 75, 3.5, WALL_MAX_Z - 69],
+    [1.0, 7.0, 11.5],
+    [90, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Front 2 right
+  drawSheet(
+    gl,
+    shapes.snowSheet,
+    [WALL_MAX_X - 75, 3.5, WALL_MAX_Z - 51],
+    [1.0, 7.0, 11.5],
+    [90, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Floor
+  drawSheet(
+    gl,
+    shapes.snowFloor,
+    [WALL_MAX_X - 60, 0.02, WALL_MAX_Z - 60],
+    [30.0, 1, 30.0],
+    [90, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Polar bear
+  drawPolarBear(
+    gl,
+    shapes,
+    [WALL_MAX_X - 65, 0, WALL_MAX_Z - 65],
+    [1.0, 1.0, 1.0],
+    [180, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Children
+  drawPolarBear(
+    gl,
+    shapes,
+    [WALL_MAX_X - 63, 0, WALL_MAX_Z - 63],
+    [0.5, 0.5, 0.5],
+    [180, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawPolarBear(
+    gl,
+    shapes,
+    [WALL_MAX_X - 65.5, 0, WALL_MAX_Z - 67],
+    [0.5, 0.5, 0.5],
+    [180, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Penguin
+  drawPenguin(gl, shapes, WALL_MAX_X - 60, 0, WALL_MAX_Z - 55, 2);
+
+  // Snowman
+  drawSnowman(gl, shapes, WALL_MAX_X - 55, 0, WALL_MAX_Z - 65, 2);
+
+  // Igloo
+  drawSphere(
+    gl,
+    shapes.iglooSphere,
+    [WALL_MAX_X - 50, 2, WALL_MAX_Z - 51],
+    [5, 5, 5],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawCylinder(
+    gl,
+    shapes.iglooCylinder,
+    [WALL_MAX_X - 50, 1.4, WALL_MAX_Z - 51],
+    [0.5, 1.5, 2],
+    [90, 0, 0, 1],
+    [0, 1, 0, 0]
+  );
+
+  drawCircle(
+    gl,
+    shapes.iglooCircle,
+    [WALL_MAX_X - 55, 1.4, WALL_MAX_Z - 51],
+    [2.5, 1.5, 2],
+    [90, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Pond
+  drawCircle(
+    gl,
+    shapes.pondCircle,
+    [WALL_MAX_X - 65, 0.1, WALL_MAX_Z - 51],
+    [2.5, 1, 2.3],
+    [90, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Fish
+  drawObject(
+    gl,
+    shapes.fish1,
+    [WALL_MAX_X - 65, 0.3, WALL_MAX_Z - 55],
+    [1, 1, 1],
+    [90, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.fish2,
+    [WALL_MAX_X - 65.3, 0.3, WALL_MAX_Z - 55],
+    [1, 1, 1],
+    [90, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.fish2,
+    [WALL_MAX_X - 64.3, 0.3, WALL_MAX_Z - 55],
+    [1, 1, 1],
+    [90, 1, 0, 0],
+    [50, 0, 0, 1]
+  );
+
+  // Snow Rocks
+  drawObject(
+    gl,
+    shapes.snowRock1,
+    [WALL_MAX_X - 48, 0, WALL_MAX_Z - 68],
+    [7.0, 5.0, 6.0],
+    [0, 1, 0, 0],
+    [30, 0, 1, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.snowRock2,
+    [WALL_MAX_X - 72, 0, WALL_MAX_Z - 55],
+    [6.0, 4.0, 5.0],
+    [0, 1, 0, 0],
+    [60, 0, 1, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.snowRock3,
+    [WALL_MAX_X - 70, 0, WALL_MAX_Z - 70],
+    [5.0, 4.0, 5.0],
+    [0, 1, 0, 0],
+    [150, 0, 1, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.snowRock1,
+    [WALL_MAX_X - 48, 0, WALL_MAX_Z - 48],
+    [8.0, 6.0, 7.0],
+    [0, 1, 0, 0],
+    [90, 0, 1, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.snowRock2,
+    [WALL_MAX_X - 58, 0, WALL_MAX_Z - 72],
+    [4.0, 3.0, 4.0],
+    [0, 1, 0, 0],
+    [220, 0, 1, 0]
+  );
+
+  // Snow pile
+  drawObject(
+    gl,
+    shapes.snowPile,
+    [WALL_MAX_X - 68, 1, WALL_MAX_Z - 48],
+    [6.0, 6.0, 6.0],
+    [0, 0, 1, 0],
+    [45, 0, 1, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.snowPile,
+    [WALL_MAX_X - 62, 0.5, WALL_MAX_Z - 72],
+    [4.0, 4.0, 4.0],
+    [0, 0, 1, 0],
+    [90, 0, 1, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.snowPile,
+    [WALL_MAX_X - 52, 0.5, WALL_MAX_Z - 62],
+    [3.5, 3.5, 3.5],
+    [0, 0, 1, 0],
+    [120, 0, 1, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.snowPile,
+    [WALL_MAX_X - 68, 0.5, WALL_MAX_Z - 62],
+    [4.5, 4.5, 4.5],
+    [0, 0, 1, 0],
+    [200, 0, 1, 0]
+  );
+}
+
+function createJungle(gl, fenceShapes, shapes) {
+  drawFence(
+    gl,
+    fenceShapes,
+    [WALL_MIN_X + 60, 0, WALL_MIN_Z + 60],
+    [0.25, 1, 0.25],
+    false,
+    true
+  );
+
+  // Right sheet
+  drawSheet(
+    gl,
+    shapes.greenSheet,
+    [WALL_MIN_X + 60, 3.5, WALL_MIN_Z + 45],
+    [30.0, 7.0, 1.0],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Left sheet
+  drawSheet(
+    gl,
+    shapes.greenSheet,
+    [WALL_MIN_X + 60, 3.5, WALL_MIN_Z + 75],
+    [30.0, 7.0, 1.0],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Back sheet
+  drawSheet(
+    gl,
+    shapes.greenSheet,
+    [WALL_MIN_X + 45, 3.5, WALL_MIN_Z + 60],
+    [1.0, 7.0, 30.0],
+    [90, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Front 1 left
+  drawSheet(
+    gl,
+    shapes.greenSheet,
+    [WALL_MIN_X + 75, 3.5, WALL_MIN_Z + 69],
+    [1.0, 7.0, 11.5],
+    [90, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Front 2 right
+  drawSheet(
+    gl,
+    shapes.greenSheet,
+    [WALL_MIN_X + 75, 3.5, WALL_MIN_Z + 51],
+    [1.0, 7.0, 11.5],
+    [90, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Floor
+  drawSheet(
+    gl,
+    shapes.greenSheet,
+    [WALL_MIN_X + 60, 0.02, WALL_MIN_Z + 60],
+    [30.0, 1, 30.0],
+    [90, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+}
+
+function createDesert(gl, fenceShapes, shapes) {
+  drawFence(
+    gl,
+    fenceShapes,
+    [WALL_MIN_X + 60, 0, WALL_MAX_Z - 60],
+    [0.25, 1, 0.25],
+    false,
+    true
+  );
+
+  // Right sheet
+  drawSheet(
+    gl,
+    shapes.sandSheet,
+    [WALL_MIN_X + 60, 3.5, WALL_MAX_Z - 45],
+    [30.0, 7.0, 1.0],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Left sheet
+  drawSheet(
+    gl,
+    shapes.sandSheet,
+    [WALL_MIN_X + 60, 3.5, WALL_MAX_Z - 75],
+    [30.0, 7.0, 1.0],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Back sheet
+  drawSheet(
+    gl,
+    shapes.sandSheet,
+    [WALL_MIN_X + 45, 3.5, WALL_MAX_Z - 60],
+    [1.0, 7.0, 30.0],
+    [90, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Front 1 left
+  drawSheet(
+    gl,
+    shapes.sandSheet,
+    [WALL_MIN_X + 75, 3.5, WALL_MAX_Z - 69],
+    [1.0, 7.0, 11.5],
+    [90, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Front 2 right
+  drawSheet(
+    gl,
+    shapes.sandSheet,
+    [WALL_MIN_X + 75, 3.5, WALL_MAX_Z - 51],
+    [1.0, 7.0, 11.5],
+    [90, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Floor
+  drawSheet(
+    gl,
+    shapes.sandFloor,
+    [WALL_MIN_X + 60, 0.02, WALL_MAX_Z - 60],
+    [30.0, 1, 30.0],
+    [90, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Camels
+  drawObject(
+    gl,
+    shapes.camel,
+    [WALL_MIN_X + 55, 0.02, WALL_MAX_Z - 50],
+    [0.004, 0.004, 0.004],
+    [270, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.camel,
+    [WALL_MIN_X + 65, 0.02, WALL_MAX_Z - 50],
+    [0.004, 0.004, 0.004],
+    [320, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Cacti
+  drawCactus(
+    gl,
+    shapes,
+    [WALL_MIN_X + 65, 0, WALL_MAX_Z - 65],
+    [1.0, 1.0, 1.0],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawCactus(
+    gl,
+    shapes,
+    [WALL_MIN_X + 60, 0, WALL_MAX_Z - 52],
+    [1.0, 1.0, 1.0],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Pyramid
+  drawPyramid(
+    gl,
+    shapes.desertPyramid,
+    [WALL_MIN_X + 55, 0, WALL_MAX_Z - 65],
+    [9.0, 8.0, 9.0],
+    [10, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Desert Rocks
+  drawObject(
+    gl,
+    shapes.desertRock1,
+    [WALL_MIN_X + 48, 0, WALL_MAX_Z - 55],
+    [8.0, 6.0, 7.0],
+    [0, 1, 0, 0],
+    [25, 0, 1, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.desertRock2,
+    [WALL_MIN_X + 72, 0, WALL_MAX_Z - 62],
+    [6.0, 5.0, 6.0],
+    [0, 1, 0, 0],
+    [45, 0, 1, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.desertRock3,
+    [WALL_MIN_X + 50, 0, WALL_MAX_Z - 48],
+    [5.0, 4.0, 5.0],
+    [0, 1, 0, 0],
+    [120, 0, 1, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.desertRock1,
+    [WALL_MIN_X + 68, 0, WALL_MAX_Z - 72],
+    [7.0, 5.0, 6.0],
+    [0, 1, 0, 0],
+    [80, 0, 1, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.desertRock2,
+    [WALL_MIN_X + 52, 0, WALL_MAX_Z - 68],
+    [4.0, 3.0, 4.0],
+    [0, 1, 0, 0],
+    [200, 0, 1, 0]
+  );
+
+  // Urns
+  drawObject(
+    gl,
+    shapes.urn2,
+    [WALL_MIN_X + 57, 0.65, WALL_MAX_Z - 70],
+    [1.0, 1.0, 1.0],
+    [0, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.urn1,
+    [WALL_MIN_X + 57.5, 0.65, WALL_MAX_Z - 71],
+    [1.0, 1.0, 1.0],
+    [0, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.urn,
+    [WALL_MIN_X + 58, 0.65, WALL_MAX_Z - 70],
+    [1.0, 1.0, 1.0],
+    [0, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.urn1,
+    [WALL_MIN_X + 54, 0.65, WALL_MAX_Z - 62],
+    [1.0, 1.0, 1.0],
+    [0, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.urn2,
+    [WALL_MIN_X + 55, 0.65, WALL_MAX_Z - 60.5],
+    [1.0, 1.0, 1.0],
+    [0, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.urn,
+    [WALL_MIN_X + 56.5, 0.65, WALL_MAX_Z - 62],
+    [1.0, 1.0, 1.0],
+    [0, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Sand dunes
+  drawObject(
+    gl,
+    shapes.sandDune,
+    [WALL_MIN_X + 70, 1, WALL_MAX_Z - 70],
+    [7.0, 7.0, 7.0],
+    [0, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.sandDune,
+    [WALL_MIN_X + 50, 1, WALL_MAX_Z - 57],
+    [7.0, 7.0, 7.0],
+    [0, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.sandDune,
+    [WALL_MIN_X + 70, 1, WALL_MAX_Z - 50],
+    [7.0, 7.0, 7.0],
+    [30, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Dead bushes
+  drawObject(
+    gl,
+    shapes.deadBush,
+    [WALL_MIN_X + 70, 0, WALL_MAX_Z - 70],
+    [1.0, 1.0, 1.0],
+    [0, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.deadBush,
+    [WALL_MIN_X + 60, 0, WALL_MAX_Z - 60],
+    [1.0, 1.0, 1.0],
+    [0, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.deadBush1,
+    [WALL_MIN_X + 60, 0, WALL_MAX_Z - 57],
+    [1.0, 1.0, 1.0],
+    [0, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.deadBush1,
+    [WALL_MIN_X + 66, 0, WALL_MAX_Z - 50],
+    [1.0, 1.0, 1.0],
+    [0, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.deadBush1,
+    [WALL_MIN_X + 73, 0, WALL_MAX_Z - 50],
+    [1.0, 1.0, 1.0],
+    [0, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+}
+
+function createWater(gl, fenceShapes, shapes) {
   drawFence(
     gl,
     fenceShapes,
@@ -2183,62 +2212,60 @@ function createWater(gl, fenceShapes) {
     false
   );
 
-  var waterBlue = createSheet(gl, [0.25, 0.55, 0.85]);
-
-  //right sheet
+  // Right sheet
   drawSheet(
     gl,
-    waterBlue,
+    shapes.waterSheet,
     [WALL_MAX_X - 60, 3.5, WALL_MIN_Z + 45],
     [30.0, 7.0, 1.0],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
 
-  // left sheet
+  // Left sheet
   drawSheet(
     gl,
-    waterBlue,
+    shapes.waterSheet,
     [WALL_MAX_X - 60, 3.5, WALL_MIN_Z + 75],
     [30.0, 7.0, 1.0],
     [0, 1, 0, 0],
     [0, 1, 0, 0]
   );
 
-  // back sheet
+  // Back sheet
   drawSheet(
     gl,
-    waterBlue,
+    shapes.waterSheet,
     [WALL_MAX_X - 45, 3.5, WALL_MIN_Z + 60],
     [1.0, 7.0, 30.0],
     [90, 0, 1, 0],
     [0, 1, 0, 0]
   );
 
-  // front 1 left
+  // Front 1 left
   drawSheet(
     gl,
-    waterBlue,
+    shapes.waterSheet,
     [WALL_MAX_X - 75, 3.5, WALL_MIN_Z + 69],
     [1.0, 7.0, 11.5],
     [90, 0, 1, 0],
     [0, 1, 0, 0]
   );
 
-  // front 2 right
+  // Front 2 right
   drawSheet(
     gl,
-    waterBlue,
+    shapes.waterSheet,
     [WALL_MAX_X - 75, 3.5, WALL_MIN_Z + 51],
     [1.0, 7.0, 11.5],
     [90, 0, 1, 0],
     [0, 1, 0, 0]
   );
 
-  //floor
+  // Floor
   drawSheet(
     gl,
-    waterBlue,
+    shapes.waterSheet,
     [WALL_MAX_X - 60, 0.02, WALL_MIN_Z + 60],
     [30.0, 1, 30.0],
     [90, 1, 0, 0],
