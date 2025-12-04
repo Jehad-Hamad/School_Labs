@@ -17,13 +17,11 @@ var VSHADER_SOURCE = `
     varying vec2 v_TexCoord;
     
     void main() {
-        gl_Position = u_ModelViewMatrix * u_xformMatrix * a_Position;
+        vec4 vertexPosition = u_xformMatrix * a_Position;
+        gl_Position = u_ModelViewMatrix * vertexPosition;
 
         // Recalculate the normal based on the model matrix and make its length 1.
         vec3 normal = normalize(vec3(u_NormalMatrix * a_Normal));
-
-        // Calculate world coordinate of vertex
-        vec4 vertexPosition = u_xformMatrix * a_Position;
 
         // Calculate light direction FROM vertex TO light
         vec3 lightDirection = normalize(u_LightPosition - vec3(vertexPosition));
@@ -198,13 +196,44 @@ function main() {
     pondCircle: createCircle(gl, [1.0, 1.0, 1.0], 'pictures/ice.jpg'),
 
     // Rocks
-    desertRock1: createObject(gl, rockObj, [0.76, 0.69, 0.57]), // Sandy tan
-    desertRock2: createObject(gl, rockObj, [0.65, 0.55, 0.45]), // Darker brown
-    desertRock3: createObject(gl, rockObj, [0.82, 0.75, 0.62]), // Light sandstone
+    desertRock1: createObject(
+      gl,
+      rockObj,
+      [0.76, 0.69, 0.57],
+      'pictures/limeStone.jpg'
+    ), // Sandy tan
+    desertRock2: createObject(
+      gl,
+      rockObj,
+      [0.65, 0.55, 0.45],
+      'pictures/normalRock.jpg'
+    ), // Darker brown
+    desertRock3: createObject(
+      gl,
+      rockObj,
+      [0.82, 0.75, 0.62],
+      'pictures/limeStone.jpg'
+    ), // Light sandstone
 
-    snowRock1: createObject(gl, rockObj, [0.6, 0.6, 0.65]), // Blue-gray
-    snowRock2: createObject(gl, rockObj, [0.5, 0.5, 0.55]), // Darker gray
-    snowRock3: createObject(gl, rockObj, [0.7, 0.7, 0.75]), // Light gray
+    snowRock1: createObject(
+      gl,
+      rockObj,
+      [0.8, 0.8, 0.85],
+      'pictures/snowRock.jpg'
+    ),
+    // Grey - Blue
+    snowRock2: createObject(
+      gl,
+      rockObj,
+      [0.5, 0.5, 0.55],
+      'pictures/snowRock.jpg'
+    ), // Darker gray
+    snowRock3: createObject(
+      gl,
+      rockObj,
+      [0.7, 0.7, 0.75],
+      'pictures/snowRock.jpg'
+    ), // Light gray
 
     // Fish
     fish1: createObject(gl, fishObj, [0.96, 0.51, 0.19]), // Orange clownfish
@@ -231,10 +260,8 @@ function main() {
 
     // Sheets for biomes
     snowSheet: createSheet(gl, [1.0, 1.0, 1.0]),
-    greenSheet: createSheet(gl, [0.2, 0.8, 0.2]),
+    greenSheet: createSheet(gl, [0.0, 0.176, 0.016]),
     sandSheet: createSheet(gl, [0.93, 0.82, 0.6]),
-    waterSheet: createSheet(gl, [0.25, 0.55, 0.85]),
-
     snowFloor: createSheet(gl, [1, 1, 1], 'pictures/snow.jpg'),
     sandFloor: createSheet(gl, [1, 1, 1], 'pictures/sand.jpg'),
 
@@ -249,7 +276,6 @@ function main() {
     articSign: createSign(gl, [0.78, 0.75, 0.7], 'pictures/ARTIC.jpg'),
     jungleSign: createSign(gl, [0.78, 0.75, 0.7], 'pictures/JUNGLE.jpg'),
     desertSign: createSign(gl, [0.78, 0.75, 0.7], 'pictures/DESERT.jpg'),
-    waterSign: createSign(gl, [0.78, 0.75, 0.7], 'pictures/WATER.jpg'),
   };
 
   drawPlanes(gl, planes);
@@ -348,7 +374,6 @@ function main() {
     }
 
     if (eyeX > 0 && eyeX < WALL_MAX_X && eyeZ > WALL_MIN_Z && eyeZ < 0) {
-      createWater(gl, fenceShapes, shapes);
     }
 
     if (eyeX > 0 && eyeX < WALL_MAX_X && eyeZ > 0 && eyeZ < WALL_MAX_Z) {
