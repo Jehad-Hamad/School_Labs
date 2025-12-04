@@ -335,25 +335,15 @@ function main() {
     drawPath(gl, floorSheet, benchs, lamp);
     drawFence(gl, fenceShapes);
 
-    if (eyeX < WALL_MIN_X + 40 && eyeZ > -5 && eyeZ < 25) {
-      drawTicketStand(gl, shapes);
-    }
+    drawTicketStand(gl, shapes);
 
-    if (eyeX > WALL_MIN_X && eyeX < 0 && eyeZ > WALL_MIN_Z && eyeZ < 0) {
-      createJungle(gl, fenceShapes, shapes);
-    }
+    createJungle(gl, fenceShapes, shapes);
 
-    if (eyeX > WALL_MIN_X && eyeX < 0 && eyeZ > 0 && eyeZ < WALL_MAX_Z) {
-      createDesert(gl, fenceShapes, shapes);
-    }
+    createDesert(gl, fenceShapes, shapes);
 
-    if (eyeX > 0 && eyeX < WALL_MAX_X && eyeZ > WALL_MIN_Z && eyeZ < 0) {
-      createWater(gl, fenceShapes, shapes);
-    }
+    createWater(gl, fenceShapes, shapes);
 
-    if (eyeX > 0 && eyeX < WALL_MAX_X && eyeZ > 0 && eyeZ < WALL_MAX_Z) {
-      createArtic(gl, fenceShapes, shapes);
-    }
+    createArtic(gl, fenceShapes, shapes);
   }
 
   document.onkeydown = function (ev) {

@@ -522,6 +522,11 @@ function initBuffers(
   texCoords,
   textureUrl
 ) {
+  // VOA buffer
+  gl.vaoExt = gl.getExtension('OES_vertex_array_object'); // Looked up how to use
+  const VOA = gl.vaoExt.createVertexArrayOES();
+  gl.vaoExt.bindVertexArrayOES(VOA);
+
   // Create Buffers
   const vertexBuffer = gl.createBuffer();
   const colorBuffer = gl.createBuffer();
@@ -543,6 +548,7 @@ function initBuffers(
   gl.vertexAttribPointer(a_Color, 3, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(a_Color);
 
+  // Bind and buffer the normal array to the normal buffer
   gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, normals, gl.STATIC_DRAW);
   const a_Normal = gl.getAttribLocation(gl.program, 'a_Normal');
@@ -566,8 +572,11 @@ function initBuffers(
   if (indices != null) {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indicesBuffer);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
-
     indicesCount = indices.length;
+  }
+
+  if (gl.vaoExt) {
+    gl.vaoExt.bindVertexArrayOES(null);
   }
 
   // Load texture if provided
@@ -577,6 +586,7 @@ function initBuffers(
   }
 
   return {
+    VOA,
     vertexBuffer,
     colorBuffer,
     normalBuffer,
@@ -596,24 +606,33 @@ function initBuffers(
 // Function to initialize buffers for the object so I can draw later rather than calling initBuffers()
 function initObject(gl, object) {
   // Bind the objects vertex buffer to the webgl buffer
-  gl.bindBuffer(gl.ARRAY_BUFFER, object.vertexBuffer);
-  gl.vertexAttribPointer(object.a_Position, 3, gl.FLOAT, false, 0, 0);
-  gl.enableVertexAttribArray(object.a_Position);
+  if (object.VOA) {
+    gl.vaoExt.bindVertexArrayOES(object.VOA);
+  } else {
+    gl.bindBuffer(gl.ARRAY_BUFFER, object.vertexBuffer);
+    gl.vertexAttribPointer(object.a_Position, 3, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(object.a_Position);
 
-  // Bind the objects color buffer to the webgl buffer
-  gl.bindBuffer(gl.ARRAY_BUFFER, object.colorBuffer);
-  gl.vertexAttribPointer(object.a_Color, 3, gl.FLOAT, false, 0, 0);
-  gl.enableVertexAttribArray(object.a_Color);
+    // Bind the objects color buffer to the webgl buffer
+    gl.bindBuffer(gl.ARRAY_BUFFER, object.colorBuffer);
+    gl.vertexAttribPointer(object.a_Color, 3, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(object.a_Color);
 
-  gl.bindBuffer(gl.ARRAY_BUFFER, object.normalBuffer);
-  gl.vertexAttribPointer(object.a_Normal, 3, gl.FLOAT, false, 0, 0);
-  gl.enableVertexAttribArray(object.a_Normal);
+    gl.bindBuffer(gl.ARRAY_BUFFER, object.normalBuffer);
+    gl.vertexAttribPointer(object.a_Normal, 3, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(object.a_Normal);
 
-  // Bind texture coordinates
-  if (object.texCoordBuffer) {
-    gl.bindBuffer(gl.ARRAY_BUFFER, object.texCoordBuffer);
-    gl.vertexAttribPointer(object.a_TexCoord, 2, gl.FLOAT, false, 0, 0);
-    gl.enableVertexAttribArray(object.a_TexCoord);
+    // Bind texture coordinates
+    if (object.texCoordBuffer) {
+      gl.bindBuffer(gl.ARRAY_BUFFER, object.texCoordBuffer);
+      gl.vertexAttribPointer(object.a_TexCoord, 2, gl.FLOAT, false, 0, 0);
+      gl.enableVertexAttribArray(object.a_TexCoord);
+    }
+
+    // Bind the objects indicesBuffer to the webgl buffer
+    if (object.indicesBuffer) {
+      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, object.indicesBuffer);
+    }
   }
 
   // Set texture if available
@@ -624,11 +643,6 @@ function initObject(gl, object) {
     gl.uniform1i(u_UseTexture, 1);
   } else {
     gl.uniform1i(u_UseTexture, 0);
-  }
-
-  // Bind the objects indicesBuffer to the webgl buffer
-  if (object.indicesBuffer) {
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, object.indicesBuffer);
   }
 }
 

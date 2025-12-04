@@ -282,236 +282,218 @@ function drawPath(gl, sheet, benchs, lamp) {
   // STARTING PATH Leading to big enclosure
   var pathX = WALL_MIN_X + 15;
 
-  if (eyeX < WALL_MIN_X + 40 && eyeZ > -5 && eyeZ < 25) {
-    // Break starting path into segments (30 units total, 10 per segment)
-    for (let i = 0; i < 3; i++) {
-      drawSheet(
-        gl,
-        sheet,
-        [pathX + i * 10, 0.01, 0],
-        [10, 0, 3.5],
-        [90, 1, 0, 0],
-        [0, 1, 0, 0]
-      );
-    }
-
-    drawObject(
+  // Break starting path into segments (30 units total, 10 per segment)
+  for (let i = 0; i < 3; i++) {
+    drawSheet(
       gl,
-      benchs[0],
-      [pathX - 10, 0, -3],
-      [0.05, 0.05, 0.05],
-      [-90, 0, 1, 0],
-      [0, 1, 0, 0]
-    );
-
-    drawLamp(
-      gl,
-      lamp,
-      [pathX - 10, 0.0, 4.0],
-      [0.5, 1.0, 0.7],
-      [0, 1, 0, 0],
-      [0, 1, 0, 0]
-    );
-
-    drawLamp(
-      gl,
-      lamp,
-      [pathX, 0.0, -4.0],
-      [0.5, 1.0, 0.7],
-      [0, 1, 0, 0],
+      sheet,
+      [pathX + i * 10, 0.01, 0],
+      [10, 0, 3.5],
+      [90, 1, 0, 0],
       [0, 1, 0, 0]
     );
   }
+
+  drawObject(
+    gl,
+    benchs[0],
+    [pathX - 10, 0, -3],
+    [0.05, 0.05, 0.05],
+    [-90, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawLamp(
+    gl,
+    lamp,
+    [pathX - 10, 0.0, 4.0],
+    [0.5, 1.0, 0.7],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawLamp(
+    gl,
+    lamp,
+    [pathX, 0.0, -4.0],
+    [0.5, 1.0, 0.7],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
 
   // vertical line - break into segments
-  // Only render when not in a room (when eyeZ is between -5 and 5)
-  if (eyeZ > -5 && eyeZ < 5) {
-    var verticalLength = WALL_MAX_X + 40;
-    var numVerticalSegments = Math.ceil(verticalLength / 10);
+  var verticalLength = WALL_MAX_X + 40;
+  var numVerticalSegments = Math.ceil(verticalLength / 10);
 
-    for (let i = 0; i < numVerticalSegments; i++) {
-      var segmentLength = Math.min(10, verticalLength - i * 10);
-      drawSheet(
-        gl,
-        sheet,
-        [-(WALL_MAX_X + 40) / 2 + i * 10, 0.01, 0],
-        [segmentLength, 0, 3.5],
-        [90, 1, 0, 0],
-        [0, 1, 0, 0]
-      );
-    }
-  }
-
-  // Only render these benches/lamps when in the left area and not in rooms
-  if (eyeX <= -15 && eyeZ > -5 && eyeZ < 5) {
-    drawObject(
+  for (let i = 0; i < numVerticalSegments; i++) {
+    var segmentLength = Math.min(10, verticalLength - i * 10);
+    drawSheet(
       gl,
-      benchs[1],
-      [pathX + 20, 0, -3],
-      [0.05, 0.05, 0.05],
-      [-90, 0, 1, 0],
-      [0, 1, 0, 0]
-    );
-
-    drawLamp(
-      gl,
-      lamp,
-      [pathX + 30, 0.0, 3.0],
-      [0.5, 1.0, 0.7],
-      [0, 1, 0, 0],
-      [0, 1, 0, 0]
-    );
-
-    drawObject(
-      gl,
-      benchs[2],
-      [pathX + 40, 0, 3.0],
-      [0.05, 0.05, 0.05],
-      [90, 0, 1, 0],
-      [0, 1, 0, 0]
-    );
-
-    drawLamp(
-      gl,
-      lamp,
-      [pathX + 50, 0.0, -3.0],
-      [0.5, 1.0, 0.7],
-      [0, 1, 0, 0],
+      sheet,
+      [-(WALL_MAX_X + 40) / 2 + i * 10, 0.01, 0],
+      [segmentLength, 0, 3.5],
+      [90, 1, 0, 0],
       [0, 1, 0, 0]
     );
   }
 
-  // Only render these benches/lamps when in the right area and not in rooms
-  if (eyeX >= -15 && eyeZ > -5 && eyeZ < 5) {
-    drawObject(
-      gl,
-      benchs[0],
-      [pathX + 80, 0, 3],
-      [0.05, 0.05, 0.05],
-      [90, 0, 1, 0],
-      [0, 1, 0, 0]
-    );
+  drawObject(
+    gl,
+    benchs[1],
+    [pathX + 20, 0, -3],
+    [0.05, 0.05, 0.05],
+    [-90, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
 
-    drawObject(
-      gl,
-      benchs[2],
-      [pathX + 90, 0, -3],
-      [0.05, 0.05, 0.05],
-      [-90, 0, 1, 0],
-      [0, 1, 0, 0]
-    );
+  drawLamp(
+    gl,
+    lamp,
+    [pathX + 30, 0.0, 3.0],
+    [0.5, 1.0, 0.7],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
 
-    // Lamp near second bench
-    drawLamp(
-      gl,
-      lamp,
-      [pathX + 95, 0.0, 3.5],
-      [0.5, 1.0, 0.7],
-      [0, 1, 0, 0],
-      [0, 1, 0, 0]
-    );
-  }
+  drawObject(
+    gl,
+    benchs[2],
+    [pathX + 40, 0, 3.0],
+    [0.05, 0.05, 0.05],
+    [90, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawLamp(
+    gl,
+    lamp,
+    [pathX + 50, 0.0, -3.0],
+    [0.5, 1.0, 0.7],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawObject(
+    gl,
+    benchs[0],
+    [pathX + 80, 0, 3],
+    [0.05, 0.05, 0.05],
+    [90, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawObject(
+    gl,
+    benchs[2],
+    [pathX + 90, 0, -3],
+    [0.05, 0.05, 0.05],
+    [-90, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Lamp near second bench
+  drawLamp(
+    gl,
+    lamp,
+    [pathX + 95, 0.0, 3.5],
+    [0.5, 1.0, 0.7],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
 
   // horizontal line - break into segments
-  // Only render when not in starting area and not in rooms (when eyeX is between -5 and 5)
-  if (eyeX >= -20 && eyeX > -5 && eyeX < 5) {
-    var horizontalLength = WALL_MAX_X + 40;
-    var numHorizontalSegments = Math.ceil(horizontalLength / 10);
+  var horizontalLength = WALL_MAX_X + 40;
+  var numHorizontalSegments = Math.ceil(horizontalLength / 10);
 
-    for (let i = 0; i < numHorizontalSegments; i++) {
-      var segmentLength = Math.min(10, horizontalLength - i * 10);
-      drawSheet(
-        gl,
-        sheet,
-        [0, 0.01, -(WALL_MAX_X + 40) / 2 + i * 10],
-        [3.5, 0, segmentLength],
-        [90, 1, 0, 0],
-        [0, 1, 0, 0]
-      );
-    }
+  for (let i = 0; i < numHorizontalSegments; i++) {
+    var segmentLength = Math.min(10, horizontalLength - i * 10);
+    drawSheet(
+      gl,
+      sheet,
+      [0, 0.01, -(WALL_MAX_X + 40) / 2 + i * 10],
+      [3.5, 0, segmentLength],
+      [90, 1, 0, 0],
+      [0, 1, 0, 0]
+    );
   }
 
   // Only render these benches/lamps when in the top area and not in rooms
-  if (eyeX >= -20 && eyeZ <= -5 && eyeX > -5 && eyeX < 5) {
-    drawObject(
-      gl,
-      benchs[0],
-      [3, 0, pathX + 40],
-      [0.05, 0.05, 0.05],
-      [180, 0, 1, 0],
-      [0, 1, 0, 0]
-    );
+  drawObject(
+    gl,
+    benchs[0],
+    [3, 0, pathX + 40],
+    [0.05, 0.05, 0.05],
+    [180, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
 
-    // Lamp on horizontal path
-    drawLamp(
-      gl,
-      lamp,
-      [-4.0, 0.0, pathX + 35],
-      [0.5, 1.0, 0.7],
-      [0, 1, 0, 0],
-      [0, 1, 0, 0]
-    );
+  // Lamp on horizontal path
+  drawLamp(
+    gl,
+    lamp,
+    [-4.0, 0.0, pathX + 35],
+    [0.5, 1.0, 0.7],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
 
-    drawObject(
-      gl,
-      benchs[2],
-      [-3, 0, pathX + 60],
-      [0.05, 0.05, 0.05],
-      [0, 1, 0, 0],
-      [0, 1, 0, 0]
-    );
+  drawObject(
+    gl,
+    benchs[2],
+    [-3, 0, pathX + 60],
+    [0.05, 0.05, 0.05],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
 
-    // Another lamp
-    drawLamp(
-      gl,
-      lamp,
-      [4.0, 0.0, pathX + 55],
-      [0.5, 1.0, 0.7],
-      [0, 1, 0, 0],
-      [0, 1, 0, 0]
-    );
-  }
+  // Another lamp
+  drawLamp(
+    gl,
+    lamp,
+    [4.0, 0.0, pathX + 55],
+    [0.5, 1.0, 0.7],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
 
   // Only render these benches/lamps when in the bottom area and not in rooms
-  if (eyeX >= -20 && eyeZ >= 5 && eyeX > -5 && eyeX < 5) {
-    drawObject(
-      gl,
-      benchs[1],
-      [3, 0, 15],
-      [0.05, 0.05, 0.05],
-      [180, 0, 1, 0],
-      [0, 1, 0, 0]
-    );
+  drawObject(
+    gl,
+    benchs[1],
+    [3, 0, 15],
+    [0.05, 0.05, 0.05],
+    [180, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
 
-    // Lamp near entrance
-    drawLamp(
-      gl,
-      lamp,
-      [-4.0, 0.0, 10],
-      [0.5, 1.0, 0.7],
-      [0, 1, 0, 0],
-      [0, 1, 0, 0]
-    );
+  // Lamp near entrance
+  drawLamp(
+    gl,
+    lamp,
+    [-4.0, 0.0, 10],
+    [0.5, 1.0, 0.7],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
 
-    drawObject(
-      gl,
-      benchs[0],
-      [-3, 0, 30],
-      [0.05, 0.05, 0.05],
-      [0, 0, 1, 0],
-      [0, 1, 0, 0]
-    );
+  drawObject(
+    gl,
+    benchs[0],
+    [-3, 0, 30],
+    [0.05, 0.05, 0.05],
+    [0, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
 
-    // Lamp in middle area
-    drawLamp(
-      gl,
-      lamp,
-      [4.0, 0.0, 25],
-      [0.5, 1.0, 0.7],
-      [0, 1, 0, 0],
-      [0, 1, 0, 0]
-    );
-  }
+  // Lamp in middle area
+  drawLamp(
+    gl,
+    lamp,
+    [4.0, 0.0, 25],
+    [0.5, 1.0, 0.7],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
 }
 
 function drawFence(
