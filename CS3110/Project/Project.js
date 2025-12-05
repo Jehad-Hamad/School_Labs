@@ -183,6 +183,14 @@ function main() {
     // Polar bear
     polarBear: createObject(gl, polarbearkObj, [0.91, 0.85, 0.66]),
 
+    // Penguin
+    penguin: createObject(
+      gl,
+      penguinObj,
+      [1, 1, 1],
+      'pictures/MAT_Penguin_baseColor.png'
+    ),
+
     // Cactus
     cactusGreen: createCylinder(gl, [0.13, 0.55, 0.13]),
     cactusDarkGreen: createSphere(gl, [0.0, 0.39, 0.0]),
@@ -246,9 +254,24 @@ function main() {
     camel: createObject(gl, camelObj, [0.651, 0.478, 0.239]),
 
     // Urns
-    urn: createObject(gl, urnObj, [0.227, 0.184, 0.157]),
-    urn1: createObject(gl, urnObj, [0.545, 0.306, 0.196]),
-    urn2: createObject(gl, urnObj, [0.353, 0.243, 0.169]),
+    urn: createObject(
+      gl,
+      urnObj,
+      [0.227, 0.184, 0.157],
+      `pictures/urn_text.png`
+    ),
+    urn1: createObject(
+      gl,
+      urnObj,
+      [0.545, 0.306, 0.196],
+      `pictures/urn_text.png`
+    ),
+    urn2: createObject(
+      gl,
+      urnObj,
+      [0.353, 0.243, 0.169],
+      `pictures/urn_text.png`
+    ),
 
     // Sand dunes and files
     sandDune: createObject(gl, sandobj, [0.757, 0.604, 0.42]),
@@ -279,6 +302,14 @@ function main() {
 
     // Jungle animals and objects
     elephant: createObject(gl, elephantObj, [0.6, 0.6, 0.6]),
+    femaleLion: createObject(gl, femaleLionObj, [0.6, 0.6, 0.0]),
+    tiger: createObject(
+      gl,
+      tigerObj,
+      [1.0, 1.0, 1.0],
+      'pictures/Material_001_baseColor.png'
+    ),
+    lion: createObject(gl, lionObj, [1.0, 1.0, 1.0], `pictures/image0.png`),
 
     // Jungle bushes
     bush1: createObject(gl, bush1Obj, [0.0, 0.5, 0.0]),

@@ -1740,17 +1740,18 @@ function createArtic(gl, fenceShapes, shapes) {
     [0, 1, 0, 0]
   );
 
-  drawPolarBear(
-    gl,
-    shapes,
-    [WALL_MAX_X - 65.5, 0, WALL_MAX_Z - 67],
-    [0.5, 0.5, 0.5],
-    [180, 0, 1, 0],
-    [0, 1, 0, 0]
-  );
-
   // Penguin
   drawPenguin(gl, shapes, WALL_MAX_X - 60, 0, WALL_MAX_Z - 55, 2);
+
+  // Pengiun texture
+  drawObject(
+    gl,
+    shapes.penguin,
+    [WALL_MAX_X - 65, 0, WALL_MAX_Z - 50],
+    [0.22, 0.2, 0.2],
+    [90, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
 
   // Snowman
   drawSnowman(gl, shapes, WALL_MAX_X - 55, 0, WALL_MAX_Z - 65, 2);
@@ -1983,12 +1984,12 @@ function createJungle(gl, fenceShapes, shapes) {
     [0, 1, 0, 0]
   );
 
-  // Elephants
+  // Animals
   drawObject(
     gl,
-    shapes.elephant,
-    [WALL_MIN_X + 58, 2, WALL_MIN_Z + 50],
-    [0.5, 0.5, 0.5],
+    shapes.femaleLion,
+    [WALL_MIN_X + 58, 1.3, WALL_MIN_Z + 50],
+    [0.22, 0.2, 0.2],
     [0, 0, 1, 0],
     [0, 1, 0, 0]
   );
@@ -1996,9 +1997,27 @@ function createJungle(gl, fenceShapes, shapes) {
   drawObject(
     gl,
     shapes.elephant,
-    [WALL_MIN_X + 55, 2.2, WALL_MIN_Z + 60],
+    [WALL_MIN_X + 60, 2.2, WALL_MIN_Z + 60],
     [0.7, 0.7, 0.7],
     [220, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.tiger,
+    [WALL_MIN_X + 58, 2, WALL_MIN_Z + 65],
+    [0.015, 0.015, 0.015],
+    [0, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.lion,
+    [WALL_MIN_X + 55, 0, WALL_MIN_Z + 59],
+    [0.1, 0.1, 0.1],
+    [0, 0, 1, 0],
     [0, 1, 0, 0]
   );
 
