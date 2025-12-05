@@ -276,6 +276,34 @@ function main() {
     articSign: createSign(gl, [0.78, 0.75, 0.7], 'pictures/ARTIC.jpg'),
     jungleSign: createSign(gl, [0.78, 0.75, 0.7], 'pictures/JUNGLE.jpg'),
     desertSign: createSign(gl, [0.78, 0.75, 0.7], 'pictures/DESERT.jpg'),
+
+    // Jungle animals and objects
+    elephant: createObject(gl, elephantObj, [0.6, 0.6, 0.6]),
+
+    // Jungle bushes
+    bush1: createObject(gl, bush1Obj, [0.0, 0.5, 0.0]),
+    bush2: createObject(gl, bush2Obj, [0.13, 0.55, 0.13]),
+    bush3: createObject(gl, bush3Obj, [0.0, 0.39, 0.0]),
+
+    // Jungle rocks
+    jungleRock1: createObject(
+      gl,
+      rockObj,
+      [0.4, 0.35, 0.25],
+      'pictures/normalRock.jpg'
+    ),
+    jungleRock2: createObject(
+      gl,
+      rockObj,
+      [0.45, 0.4, 0.3],
+      'pictures/normalRock.jpg'
+    ),
+    jungleRock3: createObject(
+      gl,
+      rockObj,
+      [0.35, 0.3, 0.2],
+      'pictures/normalRock.jpg'
+    ),
   };
 
   drawPlanes(gl, planes);

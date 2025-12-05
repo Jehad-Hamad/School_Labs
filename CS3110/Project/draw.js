@@ -1982,6 +1982,135 @@ function createJungle(gl, fenceShapes, shapes) {
     [90, 1, 0, 0],
     [0, 1, 0, 0]
   );
+
+  // Elephants
+  drawObject(
+    gl,
+    shapes.elephant,
+    [WALL_MIN_X + 58, 2, WALL_MIN_Z + 50],
+    [0.5, 0.5, 0.5],
+    [0, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.elephant,
+    [WALL_MIN_X + 55, 2.2, WALL_MIN_Z + 60],
+    [0.7, 0.7, 0.7],
+    [220, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Bushes scattered around the jungle
+  drawObject(
+    gl,
+    shapes.bush1,
+    [WALL_MIN_X + 48, 0, WALL_MIN_Z + 50],
+    [4.0, 4.0, 4.0],
+    [0, 1, 0, 0],
+    [45, 0, 1, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.bush2,
+    [WALL_MIN_X + 52, 0, WALL_MIN_Z + 48],
+    [1.8, 1.8, 1.8],
+    [0, 1, 0, 0],
+    [120, 0, 1, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.bush1,
+    [WALL_MIN_X + 72, 0, WALL_MIN_Z + 68],
+    [5, 5, 5],
+    [0, 1, 0, 0],
+    [90, 0, 1, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.bush2,
+    [WALL_MIN_X + 52, 0, WALL_MIN_Z + 68],
+    [2.1, 2.1, 2.1],
+    [0, 1, 0, 0],
+    [270, 0, 1, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.bush3,
+    [WALL_MIN_X + 68, 0, WALL_MIN_Z + 70],
+    [0.009, 0.009, 0.009],
+    [0, 1, 0, 0],
+    [315, 0, 1, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.bush1,
+    [WALL_MIN_X + 50, 0, WALL_MIN_Z + 72],
+    [2.0, 2.0, 2.0],
+    [0, 1, 0, 0],
+    [180, 0, 1, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.bush2,
+    [WALL_MIN_X + 70, 0, WALL_MIN_Z + 48],
+    [3, 3, 3],
+    [0, 1, 0, 0],
+    [60, 0, 1, 0]
+  );
+
+  // Jungle rocks
+  drawObject(
+    gl,
+    shapes.jungleRock1,
+    [WALL_MIN_X + 50, 0, WALL_MIN_Z + 60],
+    [6.0, 5.0, 6.0],
+    [0, 1, 0, 0],
+    [30, 0, 1, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.jungleRock2,
+    [WALL_MIN_X + 70, 0, WALL_MIN_Z + 60],
+    [5.5, 4.5, 5.5],
+    [0, 1, 0, 0],
+    [150, 0, 1, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.jungleRock3,
+    [WALL_MIN_X + 48, 0, WALL_MIN_Z + 55],
+    [4.5, 4.0, 4.5],
+    [0, 1, 0, 0],
+    [90, 0, 1, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.jungleRock1,
+    [WALL_MIN_X + 72, 0, WALL_MIN_Z + 48],
+    [5.0, 4.5, 5.0],
+    [0, 1, 0, 0],
+    [220, 0, 1, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.jungleRock2,
+    [WALL_MIN_X + 55, 0, WALL_MIN_Z + 72],
+    [4.0, 3.5, 4.0],
+    [0, 1, 0, 0],
+    [270, 0, 1, 0]
+  );
 }
 
 function createDesert(gl, fenceShapes, shapes) {
