@@ -284,6 +284,7 @@ function main() {
     // Sheets for biomes
     snowSheet: createSheet(gl, [1.0, 1.0, 1.0]),
     greenSheet: createSheet(gl, [0.0, 0.176, 0.016]),
+    waterSheet: createSheet(gl, [0.25, 0.55, 0.85]),
     sandSheet: createSheet(gl, [0.93, 0.82, 0.6]),
     snowFloor: createSheet(gl, [1, 1, 1], 'pictures/snow.jpg'),
     sandFloor: createSheet(gl, [1, 1, 1], 'pictures/sand.jpg'),
@@ -299,6 +300,7 @@ function main() {
     articSign: createSign(gl, [0.78, 0.75, 0.7], 'pictures/ARTIC.jpg'),
     jungleSign: createSign(gl, [0.78, 0.75, 0.7], 'pictures/JUNGLE.jpg'),
     desertSign: createSign(gl, [0.78, 0.75, 0.7], 'pictures/DESERT.jpg'),
+    waterSign: createSign(gl, [0.78, 0.75, 0.7], 'pictures/WATER.jpg'),
 
     // Jungle animals and objects
     elephant: createObject(gl, elephantObj, [0.6, 0.6, 0.6]),
@@ -433,6 +435,7 @@ function main() {
     }
 
     if (eyeX > 0 && eyeX < WALL_MAX_X && eyeZ > WALL_MIN_Z && eyeZ < 0) {
+      createWater(gl, fenceShapes, shapes);
     }
 
     if (eyeX > 0 && eyeX < WALL_MAX_X && eyeZ > 0 && eyeZ < WALL_MAX_Z) {

@@ -2433,3 +2433,82 @@ function createDesert(gl, fenceShapes, shapes) {
     [0, 1, 0, 0]
   );
 }
+
+function createWater(gl, fenceShapes, shapes) {
+  drawFence(
+    gl,
+    fenceShapes,
+    [WALL_MAX_X - 60, 0, WALL_MIN_Z + 60],
+    [0.25, 1, 0.25],
+    false,
+    false
+  );
+
+  drawSign(
+    gl,
+    shapes.waterSign,
+    [WALL_MAX_X - 75, 7, WALL_MIN_Z + 63.3],
+    [1, 1, 1],
+    true
+  );
+
+  // Right sheet
+  drawSheet(
+    gl,
+    shapes.waterSheet,
+    [WALL_MAX_X - 60, 3.5, WALL_MIN_Z + 45],
+    [30.0, 7.0, 1.0],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Left sheet
+  drawSheet(
+    gl,
+    shapes.waterSheet,
+    [WALL_MAX_X - 60, 3.5, WALL_MIN_Z + 75],
+    [30.0, 7.0, 1.0],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Back sheet
+  drawSheet(
+    gl,
+    shapes.waterSheet,
+    [WALL_MAX_X - 45, 3.5, WALL_MIN_Z + 60],
+    [1.0, 7.0, 30.0],
+    [90, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Front 1 left
+  drawSheet(
+    gl,
+    shapes.waterSheet,
+    [WALL_MAX_X - 75, 3.5, WALL_MIN_Z + 69],
+    [1.0, 7.0, 11.5],
+    [90, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Front 2 right
+  drawSheet(
+    gl,
+    shapes.waterSheet,
+    [WALL_MAX_X - 75, 3.5, WALL_MIN_Z + 51],
+    [1.0, 7.0, 11.5],
+    [90, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Floor
+  drawSheet(
+    gl,
+    shapes.waterSheet,
+    [WALL_MAX_X - 60, 0.02, WALL_MIN_Z + 60],
+    [30.0, 1, 30.0],
+    [90, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+}
