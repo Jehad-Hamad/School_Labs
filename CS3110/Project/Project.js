@@ -337,6 +337,86 @@ function main() {
       [0.35, 0.3, 0.2],
       'pictures/normalRock.jpg'
     ),
+
+    // Aquatic biome animals
+    shark: createObject(
+      gl,
+      sharkObj,
+      [0.5, 0.5, 0.6],
+      'pictures/sharktext.png'
+    ),
+    whale: createObject(gl, whaleObj, [0.3, 0.35, 0.5]),
+    squid: createObject(gl, squidObj, [0.5, 0.0, 0.5]),
+    cave: createObject(gl, caveObj, [0.4, 0.35, 0.3]),
+
+    // Aquatic fish
+    tropicalFish1: createObject(gl, fishObj, [0.96, 0.51, 0.19]), // Orange clownfish
+    tropicalFish2: createObject(gl, fishObj, [0.0, 0.5, 0.7]), // Blue fish
+    tropicalFish3: createObject(
+      gl,
+      fish2Obj,
+      [1.0, 1.0, 1.0],
+      'pictures/fish2Objext.png'
+    ),
+
+    // Aquatic plants
+    waterPlant: createObject(
+      gl,
+      waterPLantObj,
+      [0.1, 0.5, 0.2],
+      'pictures/waterplantText.jpg'
+    ),
+    waterPlant2: createObject(gl, waterPLantObj, [0.0, 0.6, 0.3]),
+    waterPlant3: createObject(gl, waterPLantObj, [0.15, 0.45, 0.25]),
+
+    // Coral
+    coral1: createObject(
+      gl,
+      coral1Obj,
+      [1.0, 0.4, 0.5],
+      'pictures/Coral1ObjText.jpg'
+    ),
+    coral2: createObject(
+      gl,
+      coral2Obj,
+      [1.0, 0.6, 0.3],
+      'pictures/coral2ObjText.png'
+    ),
+    coral3: createObject(
+      gl,
+      coral1Obj,
+      [0.9, 0.3, 0.4],
+      'pictures/Coral1ObjText.jpg'
+    ),
+    coral4: createObject(
+      gl,
+      coral2Obj,
+      [1.0, 0.5, 0.6],
+      'pictures/coral2ObjText.png'
+    ),
+
+    // Aquatic rocks
+    aquaticRock1: createObject(
+      gl,
+      rockObj,
+      [0.4, 0.45, 0.5],
+      'pictures/normalRock.jpg'
+    ),
+    aquaticRock2: createObject(
+      gl,
+      rockObj,
+      [0.35, 0.4, 0.45],
+      'pictures/normalRock.jpg'
+    ),
+    aquaticRock3: createObject(
+      gl,
+      rockObj,
+      [0.5, 0.5, 0.55],
+      'pictures/normalRock.jpg'
+    ),
+
+    // Aquatic floor
+    sandyFloor: createSheet(gl, [1, 1, 1], 'pictures/sand.jpg'),
   };
 
   drawPlanes(gl, planes);

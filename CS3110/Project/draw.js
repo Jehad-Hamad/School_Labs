@@ -2452,7 +2452,7 @@ function createWater(gl, fenceShapes, shapes) {
     true
   );
 
-  // Right sheet
+  // Right sheet (water wall)
   drawSheet(
     gl,
     shapes.waterSheet,
@@ -2462,7 +2462,7 @@ function createWater(gl, fenceShapes, shapes) {
     [0, 1, 0, 0]
   );
 
-  // Left sheet
+  // Left sheet (water wall)
   drawSheet(
     gl,
     shapes.waterSheet,
@@ -2472,7 +2472,7 @@ function createWater(gl, fenceShapes, shapes) {
     [0, 1, 0, 0]
   );
 
-  // Back sheet
+  // Back sheet (water wall)
   drawSheet(
     gl,
     shapes.waterSheet,
@@ -2482,7 +2482,7 @@ function createWater(gl, fenceShapes, shapes) {
     [0, 1, 0, 0]
   );
 
-  // Front 1 left
+  // Front 1 left (water wall)
   drawSheet(
     gl,
     shapes.waterSheet,
@@ -2492,7 +2492,7 @@ function createWater(gl, fenceShapes, shapes) {
     [0, 1, 0, 0]
   );
 
-  // Front 2 right
+  // Front 2 right (water wall)
   drawSheet(
     gl,
     shapes.waterSheet,
@@ -2502,13 +2502,363 @@ function createWater(gl, fenceShapes, shapes) {
     [0, 1, 0, 0]
   );
 
-  // Floor
+  // Sandy floor
   drawSheet(
     gl,
-    shapes.waterSheet,
+    shapes.sandyFloor,
     [WALL_MAX_X - 60, 0.02, WALL_MIN_Z + 60],
     [30.0, 1, 30.0],
     [90, 1, 0, 0],
     [0, 1, 0, 0]
+  );
+  // === ROCKS around the edges ===
+  // Back left corner rock
+  drawObject(
+    gl,
+    shapes.aquaticRock1,
+    [WALL_MAX_X - 50, 0.1, WALL_MIN_Z + 48],
+    [5.0, 4.0, 5.0],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Back right corner rock
+  drawObject(
+    gl,
+    shapes.aquaticRock2,
+    [WALL_MAX_X - 50, 0.1, WALL_MIN_Z + 72],
+    [4.0, 3.5, 4.0],
+    [45, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Front left rock
+  drawObject(
+    gl,
+    shapes.aquaticRock3,
+    [WALL_MAX_X - 70, 0.1, WALL_MIN_Z + 48],
+    [3.5, 3.0, 3.5],
+    [90, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Front right rock
+  drawObject(
+    gl,
+    shapes.aquaticRock1,
+    [WALL_MAX_X - 70, 0.1, WALL_MIN_Z + 72],
+    [4.5, 4.0, 4.5],
+    [180, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Center back rock cluster
+  drawObject(
+    gl,
+    shapes.aquaticRock2,
+    [WALL_MAX_X - 48, 0.1, WALL_MIN_Z + 60],
+    [6.0, 5.0, 6.0],
+    [30, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  // === WATER PLANTS scattered around ===
+  // Plant cluster 1 - back left
+  drawObject(
+    gl,
+    shapes.waterPlant,
+    [WALL_MAX_X - 52, 0, WALL_MIN_Z + 50],
+    [2.0, 2.5, 2.0],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.waterPlant2,
+    [WALL_MAX_X - 54, 0, WALL_MIN_Z + 52],
+    [1.8, 2.2, 1.8],
+    [15, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Plant cluster 2 - back right
+  drawObject(
+    gl,
+    shapes.waterPlant3,
+    [WALL_MAX_X - 52, 0, WALL_MIN_Z + 70],
+    [2.2, 2.8, 2.2],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.waterPlant,
+    [WALL_MAX_X - 50, 0, WALL_MIN_Z + 68],
+    [1.5, 2.0, 1.5],
+    [30, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Plant cluster 3 - front center
+  drawObject(
+    gl,
+    shapes.waterPlant2,
+    [WALL_MAX_X - 68, 0, WALL_MIN_Z + 58],
+    [2.0, 2.4, 2.0],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.waterPlant3,
+    [WALL_MAX_X - 66, 0, WALL_MIN_Z + 62],
+    [1.6, 2.0, 1.6],
+    [45, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  // Plant cluster 4 - center area
+  drawObject(
+    gl,
+    shapes.waterPlant,
+    [WALL_MAX_X - 58, 0, WALL_MIN_Z + 55],
+    [1.8, 2.3, 1.8],
+    [60, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.waterPlant2,
+    [WALL_MAX_X - 62, 0, WALL_MIN_Z + 65],
+    [2.0, 2.5, 2.0],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  // === CORAL scattered around ===
+  drawObject(
+    gl,
+    shapes.coral1,
+    [WALL_MAX_X - 60, 0, WALL_MIN_Z + 47],
+    [0.3, 0.3, 0.3],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.coral2,
+    [WALL_MAX_X - 64, 0, WALL_MIN_Z + 50],
+    [0.25, 0.25, 0.25],
+    [45, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.coral3,
+    [WALL_MAX_X - 55, 0, WALL_MIN_Z + 70],
+    [0.3, 0.3, 0.3],
+    [90, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.coral4,
+    [WALL_MAX_X - 68, 0, WALL_MIN_Z + 65],
+    [0.28, 0.28, 0.28],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.coral1,
+    [WALL_MAX_X - 52, 0, WALL_MIN_Z + 58],
+    [0.25, 0.25, 0.25],
+    [135, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.coral2,
+    [WALL_MAX_X - 70, 0, WALL_MIN_Z + 55],
+    [0.3, 0.3, 0.3],
+    [180, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  // === SAND DUNES ===
+  drawObject(
+    gl,
+    shapes.sandDune,
+    [WALL_MAX_X - 55, 0.5, WALL_MIN_Z + 50],
+    [3.0, 2.0, 3.0],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.sandDune,
+    [WALL_MAX_X - 68, 0.5, WALL_MIN_Z + 68],
+    [2.5, 1.5, 2.5],
+    [45, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.sandDune,
+    [WALL_MAX_X - 50, 0.5, WALL_MIN_Z + 65],
+    [2.0, 1.8, 2.0],
+    [90, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.sandDune,
+    [WALL_MAX_X - 65, 0.5, WALL_MIN_Z + 55],
+    [2.8, 1.6, 2.8],
+    [120, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.sandDune,
+    [WALL_MAX_X - 48, 0.5, WALL_MIN_Z + 55],
+    [2.2, 1.4, 2.2],
+    [180, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  // === MORE ROCKS ===
+  drawObject(
+    gl,
+    shapes.aquaticRock1,
+    [WALL_MAX_X - 58, 0.1, WALL_MIN_Z + 48],
+    [4.0, 3.5, 4.0],
+    [60, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.aquaticRock2,
+    [WALL_MAX_X - 65, 0.1, WALL_MIN_Z + 72],
+    [3.5, 3.0, 3.5],
+    [135, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.aquaticRock3,
+    [WALL_MAX_X - 55, 0.1, WALL_MIN_Z + 68],
+    [3.0, 2.5, 3.0],
+    [200, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  // === SHARK ===
+  drawObject(
+    gl,
+    shapes.shark,
+    [WALL_MAX_X - 60, 3, WALL_MIN_Z + 58],
+    [2, 2, 2],
+    [0, 1, 0, 0],
+    [90, 0, 1, 0]
+  );
+
+  // === WHALE ===
+  drawObject(
+    gl,
+    shapes.whale,
+    [WALL_MAX_X - 52, 4, WALL_MIN_Z + 60],
+    [0.8, 0.8, 0.8],
+    [0, 1, 0, 0],
+    [0, 0, 1, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.squid,
+    [WALL_MAX_X - 60, 4, WALL_MIN_Z + 70],
+    [0.06, 0.06, 0.06],
+    [200, 0, 1, 0],
+    [0, 0, 1, 0]
+  );
+
+  // === FISH ===
+  drawObject(
+    gl,
+    shapes.tropicalFish1,
+    [WALL_MAX_X - 65, 2, WALL_MIN_Z + 52],
+    [1.0, 1.0, 1.0],
+    [0, 1, 0, 0],
+    [45, 0, 1, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.tropicalFish1,
+    [WALL_MAX_X - 67, 2.5, WALL_MIN_Z + 54],
+    [0.8, 0.8, 0.8],
+    [0, 1, 0, 0],
+    [30, 0, 1, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.tropicalFish2,
+    [WALL_MAX_X - 63, 2.5, WALL_MIN_Z + 66],
+    [1.0, 1.0, 1.0],
+    [0, 1, 0, 0],
+    [300, 0, 1, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.tropicalFish2,
+    [WALL_MAX_X - 56, 3, WALL_MIN_Z + 70],
+    [0.9, 0.9, 0.9],
+    [0, 1, 0, 0],
+    [225, 0, 1, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.tropicalFish3,
+    [WALL_MAX_X - 58, 2, WALL_MIN_Z + 62],
+    [1.2, 1.2, 1.2],
+    [0, 1, 0, 0],
+    [180, 0, 1, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.tropicalFish3,
+    [WALL_MAX_X - 70, 1.5, WALL_MIN_Z + 60],
+    [1.0, 1.0, 1.0],
+    [0, 1, 0, 0],
+    [90, 0, 1, 0]
+  );
+
+  // === CAVE in the corner ===
+  drawObject(
+    gl,
+    shapes.cave,
+    [WALL_MAX_X - 50, 0, WALL_MIN_Z + 50],
+    [0.009, 0.009, 0.009],
+    [0, 1, 0, 0],
+    [30, 0, 1, 0]
   );
 }
