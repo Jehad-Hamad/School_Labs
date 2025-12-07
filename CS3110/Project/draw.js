@@ -278,7 +278,7 @@ function drawLamp(gl, lamp, moving, scaling, rotating1, rotating2) {
   );
 }
 
-function drawPath(gl, sheet, benchs, lamp) {
+function drawPath(gl, sheet, benchs, lamp, shapes) {
   // STARTING PATH Leading to big enclosure
   var pathX = WALL_MIN_X + 15;
 
@@ -337,6 +337,17 @@ function drawPath(gl, sheet, benchs, lamp) {
         [-(WALL_MAX_X + 40) / 2 + i * 10, 0.01, 0],
         [segmentLength, 0, 3.5],
         [90, 1, 0, 0],
+        [0, 1, 0, 0]
+      );
+    }
+
+    if (eyeX > 40) {
+      drawObject(
+        gl,
+        shapes.FoodTruck,
+        [WALL_MAX_X - 35, 0.0, 0],
+        [0.007, 0.007, 0.007],
+        [-90, 0, 1, 0],
         [0, 1, 0, 0]
       );
     }
@@ -426,6 +437,28 @@ function drawPath(gl, sheet, benchs, lamp) {
         [0, 0.01, -(WALL_MAX_X + 40) / 2 + i * 10],
         [3.5, 0, segmentLength],
         [90, 1, 0, 0],
+        [0, 1, 0, 0]
+      );
+    }
+
+    if (eyeZ >= 34) {
+      drawObject(
+        gl,
+        shapes.HotDogTruck,
+        [2, 1, WALL_MAX_Z - 40],
+        [4, 4, 4],
+        [90, 0, 1, 0],
+        [0, 1, 0, 0]
+      );
+    }
+
+    if (eyeZ <= -34) {
+      drawObject(
+        gl,
+        shapes.DonutTruck,
+        [-1, 1, WALL_MIN_Z + 40],
+        [1, 1, 1],
+        [-90, 0, 1, 0],
         [0, 1, 0, 0]
       );
     }
@@ -1741,7 +1774,15 @@ function createArtic(gl, fenceShapes, shapes) {
   );
 
   // Penguin
-  drawPenguin(gl, shapes, WALL_MAX_X - 60, 0, WALL_MAX_Z - 55, 2);
+  drawObject(
+    gl,
+    shapes.articWolf,
+    [WALL_MAX_X - 60, 0, WALL_MAX_Z - 55],
+    [3, 3, 3],
+    [-90, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+  // drawPenguin(gl, shapes, WALL_MAX_X - 60, 0, WALL_MAX_Z - 55, 2);
 
   // Pengiun texture
   drawObject(
@@ -1987,38 +2028,75 @@ function createJungle(gl, fenceShapes, shapes) {
   // Animals
   drawObject(
     gl,
-    shapes.femaleLion,
-    [WALL_MIN_X + 58, 1.3, WALL_MIN_Z + 50],
-    [0.22, 0.2, 0.2],
-    [0, 0, 1, 0],
-    [0, 1, 0, 0]
-  );
-
-  drawObject(
-    gl,
     shapes.elephant,
     [WALL_MIN_X + 60, 2.2, WALL_MIN_Z + 60],
     [0.7, 0.7, 0.7],
-    [220, 0, 1, 0],
+    [30, 0, 1, 0],
     [0, 1, 0, 0]
   );
 
   drawObject(
     gl,
     shapes.tiger,
-    [WALL_MIN_X + 58, 2, WALL_MIN_Z + 65],
+    [WALL_MIN_X + 58, 2, WALL_MIN_Z + 50],
     [0.015, 0.015, 0.015],
-    [0, 0, 1, 0],
+    [15, 0, 1, 0],
     [0, 1, 0, 0]
   );
 
   drawObject(
     gl,
     shapes.lion,
-    [WALL_MIN_X + 55, 0, WALL_MIN_Z + 59],
+    [WALL_MIN_X + 55, 0, WALL_MIN_Z + 53],
     [0.1, 0.1, 0.1],
     [0, 0, 1, 0],
     [0, 1, 0, 0]
+  );
+
+  // Trees;
+  drawObject(
+    gl,
+    shapes.jungleTree1,
+    [WALL_MIN_X + 48, 0, WALL_MIN_Z + 50],
+    [1.0, 2.0, 1.0],
+    [0, 1, 0, 0],
+    [70, 0, 1, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.jungleTree1,
+    [WALL_MIN_X + 58, 0, WALL_MIN_Z + 70],
+    [1.0, 1.8, 1.0],
+    [0, 1, 0, 0],
+    [45, 0, 1, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.jungleTree1,
+    [WALL_MIN_X + 55, 0, WALL_MIN_Z + 43],
+    [1.0, 1.0, 1.0],
+    [0, 1, 0, 0],
+    [0, 0, 1, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.jungleTree1,
+    [WALL_MIN_X + 58, 0, WALL_MIN_Z + 53],
+    [1.0, 1.5, 1.0],
+    [0, 1, 0, 0],
+    [30, 0, 1, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.jungleTree1,
+    [WALL_MIN_X + 44, 0, WALL_MIN_Z + 60],
+    [1.0, 1.7, 1.0],
+    [0, 1, 0, 0],
+    [60, 0, 1, 0]
   );
 
   // Bushes scattered around the jungle
@@ -2222,10 +2300,19 @@ function createDesert(gl, fenceShapes, shapes) {
 
   drawObject(
     gl,
-    shapes.camel,
-    [WALL_MIN_X + 65, 0.02, WALL_MAX_Z - 50],
-    [0.004, 0.004, 0.004],
-    [320, 0, 1, 0],
+    shapes.scorpion,
+    [WALL_MIN_X + 63, 0.02, WALL_MAX_Z - 50],
+    [0.1, 0.1, 0.1],
+    [40, 0, 1, 0],
+    [0, 1, 0, 0]
+  );
+
+  drawObject(
+    gl,
+    shapes.snake,
+    [WALL_MIN_X + 65, 0, WALL_MAX_Z - 60],
+    [1.1, 1.1, 1.1],
+    [-90, 0, 1, 0],
     [0, 1, 0, 0]
   );
 

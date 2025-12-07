@@ -191,6 +191,13 @@ function main() {
       'pictures/MAT_Penguin_baseColor.png'
     ),
 
+    articWolf: createObject(
+      gl,
+      articFoxObj,
+      [1, 1, 1],
+      'pictures/wolf_mat_baseColor.png'
+    ),
+
     // Cactus
     cactusGreen: createCylinder(gl, [0.13, 0.55, 0.13]),
     cactusDarkGreen: createSphere(gl, [0.0, 0.39, 0.0]),
@@ -252,6 +259,8 @@ function main() {
 
     // Camel
     camel: createObject(gl, camelObj, [0.651, 0.478, 0.239]),
+    snake: createObject(gl, snakeObj, [1, 1, 1], 'pictures/snakeText.png'),
+    scorpion: createObject(gl, scorpionObj, [0.651, 0.478, 0.239]),
 
     // Urns
     urn: createObject(
@@ -338,6 +347,13 @@ function main() {
       'pictures/normalRock.jpg'
     ),
 
+    jungleTree1: createObject(
+      gl,
+      tree1Obj,
+      [1, 1, 1],
+      'pictures/tree_texture.png'
+    ),
+
     // Aquatic biome animals
     shark: createObject(
       gl,
@@ -417,11 +433,30 @@ function main() {
 
     // Aquatic floor
     sandyFloor: createSheet(gl, [1, 1, 1], 'pictures/sand.jpg'),
+
+    FoodTruck: createObject(
+      gl,
+      pizzaTruckObj,
+      [1.0, 1.0, 1.0],
+      'pictures/Truck_mat_baseColor.png'
+    ),
+    DonutTruck: createObject(
+      gl,
+      donutTruckObj,
+      [1.0, 1.0, 1.0],
+      'pictures/shell_baseColor.png'
+    ),
+    HotDogTruck: createObject(
+      gl,
+      hotDogTruckObj,
+      [1.0, 1.0, 1.0],
+      'pictures/hot-dog_baseColor.png'
+    ),
   };
 
   drawPlanes(gl, planes);
   drawFence(gl, fenceShapes);
-  drawPath(gl, floorSheet, benchs, lamp);
+  drawPath(gl, floorSheet, benchs, lamp, shapes);
   drawTicketStand(gl, shapes);
 
   function keyDown(ev) {
@@ -468,21 +503,26 @@ function main() {
       // eyeY = Math.max(3, eyeY);
     } else if (ev.key.toLowerCase() === '1') {
       // TP to the jungle
-      eyeX = -35;
+      eyeX = -7;
       eyeZ = -30;
+      horizontalAngle = 235.6;
     } else if (ev.key.toLowerCase() === '2') {
-      eyeX = -35;
+      // TP to the Desert
+      eyeX = -7;
       eyeZ = 30;
-      eyeY = 10;
+      horizontalAngle = 235.6;
     } else if (ev.key.toLowerCase() === '3') {
       // TP to the water
-      eyeX = 35;
+      eyeX = 7;
       eyeZ = -30;
+      horizontalAngle = 238.7;
     } else if (ev.key.toLowerCase() === '4') {
-      eyeX = 24;
-      eyeZ = 34;
+      // TP to the Arctic
+      eyeX = 7;
+      eyeZ = 30;
+      horizontalAngle = 238.7;
     }
-    console.log(eyeX, eyeZ);
+    console.log(eyeX, eyeZ, horizontalAngle);
 
     // changes look at.
     atX = eyeX + Math.cos(horizontalAngle);
@@ -499,7 +539,7 @@ function main() {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     drawPlanes(gl, planes);
-    drawPath(gl, floorSheet, benchs, lamp);
+    drawPath(gl, floorSheet, benchs, lamp, shapes);
     drawFence(gl, fenceShapes);
 
     if (eyeX < WALL_MIN_X + 40 && eyeZ > -5 && eyeZ < 25) {
