@@ -12,6 +12,8 @@ var VSHADER_SOURCE = `
     uniform vec3 u_LightPosition;    // Light direction
     uniform vec3 u_LightColor;       // Light color
     uniform vec3 u_AmbientLight;      // Ambient light color
+    uniform vec3 u_ViewPosition;     // Camera/eye position for specular (Looked up why is needed)
+    uniform float u_Shininess;       // Specular shininess exponent
 
     varying vec4 v_Color;
     varying vec2 v_TexCoord;
@@ -28,10 +30,16 @@ var VSHADER_SOURCE = `
 
         // Calculate diffuse lighting
         float nDotL = max(dot(lightDirection, normal), 0.0);
-
         vec3 diffuse = u_LightColor * a_Color.rgb * nDotL;
         vec3 ambient = u_AmbientLight * a_Color.rgb;
-        v_Color = vec4(diffuse + ambient, a_Color.a);
+
+        // Calculate specular lighting
+        vec3 viewDirection = normalize(u_ViewPosition - vec3(vertexPosition)); // Had to look up why this his here
+        vec3 reflectDirection = reflect(-lightDirection, normal);
+        float spec = pow(max(dot(viewDirection, reflectDirection), 0.0), u_Shininess);
+        vec3 specular = u_LightColor * spec;
+
+        v_Color = vec4(ambient + diffuse + specular, a_Color.a);
         
         v_TexCoord = a_TexCoord;
     }`;
@@ -67,6 +75,8 @@ var viewMatrix,
   u_LightPosition,
   u_LightColor,
   u_AmbientLight,
+  u_ViewPosition,
+  u_Shininess,
   u_UseTexture,
   u_Sampler;
 
@@ -110,6 +120,8 @@ function main() {
   u_LightPosition = gl.getUniformLocation(gl.program, 'u_LightPosition');
   u_LightColor = gl.getUniformLocation(gl.program, 'u_LightColor');
   u_AmbientLight = gl.getUniformLocation(gl.program, 'u_AmbientLight');
+  u_ViewPosition = gl.getUniformLocation(gl.program, 'u_ViewPosition');
+  u_Shininess = gl.getUniformLocation(gl.program, 'u_Shininess');
   u_UseTexture = gl.getUniformLocation(gl.program, 'u_UseTexture');
   u_Sampler = gl.getUniformLocation(gl.program, 'u_Sampler');
 
@@ -119,6 +131,8 @@ function main() {
   gl.uniform3f(u_LightPosition, 0.0, 15.0, 0.0);
   // Set the ambient light
   gl.uniform3f(u_AmbientLight, 0.6, 0.6, 0.6);
+  // Set specular shininess
+  gl.uniform1f(u_Shininess, 32.0);
 
   u_ModelViewMatrix = gl.getUniformLocation(gl.program, 'u_ModelViewMatrix');
   u_xformMatrix = gl.getUniformLocation(gl.program, 'u_xformMatrix');
@@ -133,6 +147,7 @@ function main() {
   atY = eyeY + Math.sin(verticalAngle);
 
   viewMatrix.setLookAt(eyeX, eyeY, eyeZ, atX, atY, atZ, upX, upY, upZ);
+  gl.uniform3f(u_ViewPosition, eyeX, eyeY, eyeZ); // Look Up
 
   projMatrix = new Matrix4();
   projMatrix.setPerspective(fov, canvas.width / canvas.height, near, far);
@@ -530,6 +545,7 @@ function main() {
     atY = eyeY + Math.sin(verticalAngle);
 
     viewMatrix.setLookAt(eyeX, eyeY, eyeZ, atX, atY, atZ, upX, upY, upZ);
+    gl.uniform3f(u_ViewPosition, eyeX, eyeY, eyeZ);
 
     projMatrix.setPerspective(fov, canvas.width / canvas.height, near, far);
     modelMatrix.setRotate(0, 0, 1, 0);
@@ -547,18 +563,22 @@ function main() {
     }
 
     if (eyeX > WALL_MIN_X && eyeX < 0 && eyeZ > WALL_MIN_Z && eyeZ < 0) {
+      gl.uniform3f(u_LightPosition, -30, 15.0, -29);
       createJungle(gl, fenceShapes, shapes);
     }
 
     if (eyeX > WALL_MIN_X && eyeX < 0 && eyeZ > 0 && eyeZ < WALL_MAX_Z) {
+      gl.uniform3f(u_LightPosition, -30, 15.0, 29);
       createDesert(gl, fenceShapes, shapes);
     }
 
     if (eyeX > 0 && eyeX < WALL_MAX_X && eyeZ > WALL_MIN_Z && eyeZ < 0) {
+      gl.uniform3f(u_LightPosition, 30, 15.0, -29);
       createWater(gl, fenceShapes, shapes);
     }
 
     if (eyeX > 0 && eyeX < WALL_MAX_X && eyeZ > 0 && eyeZ < WALL_MAX_Z) {
+      gl.uniform3f(u_LightPosition, 30, 15.0, 29);
       createArtic(gl, fenceShapes, shapes);
     }
   }
