@@ -474,6 +474,142 @@ function main() {
   drawPath(gl, floorSheet, benchs, lamp, shapes);
   drawTicketStand(gl, shapes);
 
+  const jungleAnimals = {
+    elephantX: WALL_MIN_X + 60,
+    elephantZ: WALL_MIN_Z + 60,
+    elephantXSpeed: 0.05,
+    elephantZSpeed: 0.05,
+
+    tigerX: WALL_MIN_X + 58,
+    tigerZ: WALL_MIN_Z + 50,
+    tigerXSpeed: 0.08,
+    tigerZSpeed: -0.08,
+
+    lionX: WALL_MIN_X + 55,
+    lionZ: WALL_MIN_Z + 53,
+    lionXSpeed: -0.06,
+    lionZSpeed: 0.06,
+  };
+
+  const arcticAnimals = {
+    articWolfX: WALL_MAX_X - 60,
+    articWolfZ: WALL_MAX_Z - 55,
+
+    penguinX: WALL_MAX_X - 65,
+    penguinZ: WALL_MAX_Z - 50,
+  };
+
+  const desertAnimals = {
+    camelX: WALL_MIN_X + 55,
+    camelZ: WALL_MAX_Z - 50,
+
+    scorpionX: WALL_MIN_X + 63,
+    scorpionZ: WALL_MAX_Z - 50,
+
+    snakeX: WALL_MIN_X + 65,
+    snakeZ: WALL_MAX_Z - 60,
+  };
+
+  const waterAnimals = {
+    sharkX: WALL_MAX_X - 60,
+    sharkZ: WALL_MIN_Z + 58,
+
+    whaleX: WALL_MAX_X - 52,
+    whaleZ: WALL_MIN_Z + 60,
+
+    squidX: WALL_MAX_X - 60,
+    squidZ: WALL_MIN_Z + 70,
+  };
+
+  function render() {
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+    drawPlanes(gl, planes);
+    drawPath(gl, floorSheet, benchs, lamp, shapes);
+    drawFence(gl, fenceShapes);
+
+    if (eyeX < WALL_MIN_X + 40 && eyeZ > -5 && eyeZ < 25) {
+      drawTicketStand(gl, shapes);
+    }
+
+    if (eyeX > WALL_MIN_X && eyeX < 0 && eyeZ > WALL_MIN_Z && eyeZ < 0) {
+      gl.uniform3f(u_LightPosition, -30, 15.0, -29);
+      createJungle(gl, fenceShapes, shapes, jungleAnimals);
+    }
+
+    if (eyeX > WALL_MIN_X && eyeX < 0 && eyeZ > 0 && eyeZ < WALL_MAX_Z) {
+      gl.uniform3f(u_LightPosition, -30, 15.0, 29);
+      createDesert(gl, fenceShapes, shapes, desertAnimals);
+    }
+
+    if (eyeX > 0 && eyeX < WALL_MAX_X && eyeZ > WALL_MIN_Z && eyeZ < 0) {
+      gl.uniform3f(u_LightPosition, 30, 15.0, -29);
+      createWater(gl, fenceShapes, shapes, waterAnimals);
+    }
+
+    if (eyeX > 0 && eyeX < WALL_MAX_X && eyeZ > 0 && eyeZ < WALL_MAX_Z) {
+      gl.uniform3f(u_LightPosition, 30, 15.0, 29);
+      createArtic(gl, fenceShapes, shapes, arcticAnimals);
+    }
+  }
+
+  function animateJungle() {
+    // Update elephant position
+    jungleAnimals.elephantX += jungleAnimals.elephantXSpeed;
+    jungleAnimals.elephantZ += jungleAnimals.elephantZSpeed;
+    // Bounce off enclosure walls
+    if (
+      jungleAnimals.elephantX > WALL_MIN_X + 75 ||
+      jungleAnimals.elephantX < WALL_MIN_X + 50
+    )
+      jungleAnimals.elephantXSpeed *= -1;
+    if (
+      jungleAnimals.elephantX > WALL_MIN_Z + 70 ||
+      jungleAnimals.elephantZ < WALL_MIN_Z + 50
+    )
+      jungleAnimals.elephantZSpeed *= -1;
+
+    // Update tiger position
+    jungleAnimals.tigerX += jungleAnimals.tigerXSpeed;
+    jungleAnimals.tigerZ += jungleAnimals.tigerZSpeed;
+    // Bounce off enclosure walls
+    if (
+      jungleAnimals.tigerX > WALL_MIN_X + 75 ||
+      jungleAnimals.tigerX < WALL_MIN_X + 50
+    )
+      jungleAnimals.tigerXSpeed *= -1;
+    if (
+      jungleAnimals.tigerZ > WALL_MIN_Z + 70 ||
+      jungleAnimals.tigerZ < WALL_MIN_Z + 50
+    )
+      jungleAnimals.tigerZSpeed *= -1;
+
+    // Update lion position
+    jungleAnimals.lionX += jungleAnimals.lionXSpeed;
+    jungleAnimals.lionZ += jungleAnimals.lionZSpeed;
+    // Bounce off enclosure walls
+    if (
+      jungleAnimals.lionX > WALL_MIN_X + 75 ||
+      jungleAnimals.lionX < WALL_MIN_X + 50
+    )
+      jungleAnimals.lionXSpeed *= -1;
+    if (
+      jungleAnimals.lionZ > WALL_MIN_Z + 70 ||
+      jungleAnimals.lionZ < WALL_MIN_Z + 50
+    )
+      jungleAnimals.lionZSpeed *= -1;
+  }
+
+
+
+  function animate() {
+    animateJungle();
+    render();
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+
   function keyDown(ev) {
     // Camera Rotation
     if (ev.keyCode === 39) {
@@ -551,36 +687,6 @@ function main() {
     modelMatrix.setRotate(0, 0, 1, 0);
     modelViewMatrix = projMatrix.multiply(viewMatrix).multiply(modelMatrix);
     gl.uniformMatrix4fv(u_ModelViewMatrix, false, modelViewMatrix.elements);
-
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-    drawPlanes(gl, planes);
-    drawPath(gl, floorSheet, benchs, lamp, shapes);
-    drawFence(gl, fenceShapes);
-
-    if (eyeX < WALL_MIN_X + 40 && eyeZ > -5 && eyeZ < 25) {
-      drawTicketStand(gl, shapes);
-    }
-
-    if (eyeX > WALL_MIN_X && eyeX < 0 && eyeZ > WALL_MIN_Z && eyeZ < 0) {
-      gl.uniform3f(u_LightPosition, -30, 15.0, -29);
-      createJungle(gl, fenceShapes, shapes);
-    }
-
-    if (eyeX > WALL_MIN_X && eyeX < 0 && eyeZ > 0 && eyeZ < WALL_MAX_Z) {
-      gl.uniform3f(u_LightPosition, -30, 15.0, 29);
-      createDesert(gl, fenceShapes, shapes);
-    }
-
-    if (eyeX > 0 && eyeX < WALL_MAX_X && eyeZ > WALL_MIN_Z && eyeZ < 0) {
-      gl.uniform3f(u_LightPosition, 30, 15.0, -29);
-      createWater(gl, fenceShapes, shapes);
-    }
-
-    if (eyeX > 0 && eyeX < WALL_MAX_X && eyeZ > 0 && eyeZ < WALL_MAX_Z) {
-      gl.uniform3f(u_LightPosition, 30, 15.0, 29);
-      createArtic(gl, fenceShapes, shapes);
-    }
   }
 
   document.onkeydown = function (ev) {

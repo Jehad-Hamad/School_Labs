@@ -1674,7 +1674,7 @@ function drawSign(
   }
 }
 
-function createArtic(gl, fenceShapes, shapes) {
+function createArtic(gl, fenceShapes, shapes, arcticAnimals) {
   drawFence(
     gl,
     fenceShapes,
@@ -1777,7 +1777,7 @@ function createArtic(gl, fenceShapes, shapes) {
   drawObject(
     gl,
     shapes.articWolf,
-    [WALL_MAX_X - 60, 0, WALL_MAX_Z - 55],
+    [arcticAnimals.articWolfX, 0, arcticAnimals.articWolfZ],
     [3, 3, 3],
     [-90, 0, 1, 0],
     [0, 1, 0, 0]
@@ -1788,7 +1788,7 @@ function createArtic(gl, fenceShapes, shapes) {
   drawObject(
     gl,
     shapes.penguin,
-    [WALL_MAX_X - 65, 0, WALL_MAX_Z - 50],
+    [arcticAnimals.penguinX, 0, arcticAnimals.penguinZ],
     [0.22, 0.2, 0.2],
     [90, 0, 1, 0],
     [0, 1, 0, 0]
@@ -1947,7 +1947,7 @@ function createArtic(gl, fenceShapes, shapes) {
   );
 }
 
-function createJungle(gl, fenceShapes, shapes) {
+function createJungle(gl, fenceShapes, shapes, jungleAnimals) {
   drawFence(
     gl,
     fenceShapes,
@@ -2029,7 +2029,7 @@ function createJungle(gl, fenceShapes, shapes) {
   drawObject(
     gl,
     shapes.elephant,
-    [WALL_MIN_X + 60, 2.2, WALL_MIN_Z + 60],
+    [jungleAnimals.elephantX, 2.2, jungleAnimals.elephantZ],
     [0.7, 0.7, 0.7],
     [30, 0, 1, 0],
     [0, 1, 0, 0]
@@ -2038,7 +2038,7 @@ function createJungle(gl, fenceShapes, shapes) {
   drawObject(
     gl,
     shapes.tiger,
-    [WALL_MIN_X + 58, 2, WALL_MIN_Z + 50],
+    [jungleAnimals.tigerX, 2, jungleAnimals.tigerZ],
     [0.015, 0.015, 0.015],
     [15, 0, 1, 0],
     [0, 1, 0, 0]
@@ -2047,7 +2047,7 @@ function createJungle(gl, fenceShapes, shapes) {
   drawObject(
     gl,
     shapes.lion,
-    [WALL_MIN_X + 55, 0, WALL_MIN_Z + 53],
+    [jungleAnimals.lionX, 0, jungleAnimals.lionZ],
     [0.1, 0.1, 0.1],
     [0, 0, 1, 0],
     [0, 1, 0, 0]
@@ -2210,7 +2210,7 @@ function createJungle(gl, fenceShapes, shapes) {
   );
 }
 
-function createDesert(gl, fenceShapes, shapes) {
+function createDesert(gl, fenceShapes, shapes, desertAnimals) {
   drawFence(
     gl,
     fenceShapes,
@@ -2292,7 +2292,7 @@ function createDesert(gl, fenceShapes, shapes) {
   drawObject(
     gl,
     shapes.camel,
-    [WALL_MIN_X + 55, 0.02, WALL_MAX_Z - 50],
+    [desertAnimals.camelX, 0.02, desertAnimals.camelZ],
     [0.004, 0.004, 0.004],
     [270, 0, 1, 0],
     [0, 1, 0, 0]
@@ -2301,7 +2301,7 @@ function createDesert(gl, fenceShapes, shapes) {
   drawObject(
     gl,
     shapes.scorpion,
-    [WALL_MIN_X + 63, 0.02, WALL_MAX_Z - 50],
+    [desertAnimals.scorpionX, 0.02, desertAnimals.scorpionZ],
     [0.1, 0.1, 0.1],
     [40, 0, 1, 0],
     [0, 1, 0, 0]
@@ -2310,7 +2310,7 @@ function createDesert(gl, fenceShapes, shapes) {
   drawObject(
     gl,
     shapes.snake,
-    [WALL_MIN_X + 65, 0, WALL_MAX_Z - 60],
+    [desertAnimals.snakeX, 0, desertAnimals.snakeZ],
     [1.1, 1.1, 1.1],
     [-90, 0, 1, 0],
     [0, 1, 0, 0]
@@ -2521,7 +2521,7 @@ function createDesert(gl, fenceShapes, shapes) {
   );
 }
 
-function createWater(gl, fenceShapes, shapes) {
+function createWater(gl, fenceShapes, shapes, waterAnimals) {
   drawFence(
     gl,
     fenceShapes,
@@ -2859,7 +2859,7 @@ function createWater(gl, fenceShapes, shapes) {
   drawObject(
     gl,
     shapes.shark,
-    [WALL_MAX_X - 60, 3, WALL_MIN_Z + 58],
+    [waterAnimals.sharkX, 3, waterAnimals.sharkZ],
     [2, 2, 2],
     [0, 1, 0, 0],
     [90, 0, 1, 0]
@@ -2869,7 +2869,7 @@ function createWater(gl, fenceShapes, shapes) {
   drawObject(
     gl,
     shapes.whale,
-    [WALL_MAX_X - 52, 4, WALL_MIN_Z + 60],
+    [waterAnimals.whaleX, 4, waterAnimals.whaleZ],
     [0.8, 0.8, 0.8],
     [0, 1, 0, 0],
     [0, 0, 1, 0]
@@ -2878,7 +2878,7 @@ function createWater(gl, fenceShapes, shapes) {
   drawObject(
     gl,
     shapes.squid,
-    [WALL_MAX_X - 60, 4, WALL_MIN_Z + 70],
+    [waterAnimals.squidX, 4, waterAnimals.squidZ],
     [0.06, 0.06, 0.06],
     [200, 0, 1, 0],
     [0, 0, 1, 0]
