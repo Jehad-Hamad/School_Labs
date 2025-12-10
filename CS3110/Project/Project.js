@@ -494,31 +494,47 @@ function main() {
   const arcticAnimals = {
     articWolfX: WALL_MAX_X - 60,
     articWolfZ: WALL_MAX_Z - 55,
+    articWolfXSpeed: 0.07,
+    articWolfZSpeed: 0.07,
 
     penguinX: WALL_MAX_X - 65,
     penguinZ: WALL_MAX_Z - 50,
+    penguinXSpeed: -0.04,
+    penguinZSpeed: 0.04,
   };
 
   const desertAnimals = {
     camelX: WALL_MIN_X + 55,
     camelZ: WALL_MAX_Z - 50,
+    camelXSpeed: 0.03,
+    camelZSpeed: 0.03,
 
     scorpionX: WALL_MIN_X + 63,
     scorpionZ: WALL_MAX_Z - 50,
+    scorpionXSpeed: -0.06,
+    scorpionZSpeed: -0.06,
 
     snakeX: WALL_MIN_X + 65,
     snakeZ: WALL_MAX_Z - 60,
+    snakeXSpeed: 0.05,
+    snakeZSpeed: -0.05,
   };
 
   const waterAnimals = {
     sharkX: WALL_MAX_X - 60,
     sharkZ: WALL_MIN_Z + 58,
+    sharkXSpeed: 0.09,
+    sharkZSpeed: 0.09,
 
     whaleX: WALL_MAX_X - 52,
     whaleZ: WALL_MIN_Z + 60,
+    whaleXSpeed: 0.04,
+    whaleZSpeed: -0.04,
 
     squidX: WALL_MAX_X - 60,
     squidZ: WALL_MIN_Z + 70,
+    squidXSpeed: -0.07,
+    squidZSpeed: 0.07,
   };
 
   function render() {
@@ -557,14 +573,14 @@ function main() {
     // Update elephant position
     jungleAnimals.elephantX += jungleAnimals.elephantXSpeed;
     jungleAnimals.elephantZ += jungleAnimals.elephantZSpeed;
-    // Bounce off enclosure walls
+    // Bounce off enclosure walls (avoid front entrance)
     if (
-      jungleAnimals.elephantX > WALL_MIN_X + 75 ||
+      jungleAnimals.elephantX > WALL_MIN_X + 70 ||
       jungleAnimals.elephantX < WALL_MIN_X + 50
     )
       jungleAnimals.elephantXSpeed *= -1;
     if (
-      jungleAnimals.elephantX > WALL_MIN_Z + 70 ||
+      jungleAnimals.elephantZ > WALL_MIN_Z + 70 ||
       jungleAnimals.elephantZ < WALL_MIN_Z + 50
     )
       jungleAnimals.elephantZSpeed *= -1;
@@ -572,9 +588,9 @@ function main() {
     // Update tiger position
     jungleAnimals.tigerX += jungleAnimals.tigerXSpeed;
     jungleAnimals.tigerZ += jungleAnimals.tigerZSpeed;
-    // Bounce off enclosure walls
+    // Bounce off enclosure walls (avoid front entrance)
     if (
-      jungleAnimals.tigerX > WALL_MIN_X + 75 ||
+      jungleAnimals.tigerX > WALL_MIN_X + 70 ||
       jungleAnimals.tigerX < WALL_MIN_X + 50
     )
       jungleAnimals.tigerXSpeed *= -1;
@@ -587,9 +603,9 @@ function main() {
     // Update lion position
     jungleAnimals.lionX += jungleAnimals.lionXSpeed;
     jungleAnimals.lionZ += jungleAnimals.lionZSpeed;
-    // Bounce off enclosure walls
+    // Bounce off enclosure walls (avoid front entrance)
     if (
-      jungleAnimals.lionX > WALL_MIN_X + 75 ||
+      jungleAnimals.lionX > WALL_MIN_X + 70 ||
       jungleAnimals.lionX < WALL_MIN_X + 50
     )
       jungleAnimals.lionXSpeed *= -1;
@@ -600,10 +616,137 @@ function main() {
       jungleAnimals.lionZSpeed *= -1;
   }
 
+  function animateArctic() {
+    // Update articWolf position
+    arcticAnimals.articWolfX += arcticAnimals.articWolfXSpeed;
+    arcticAnimals.articWolfZ += arcticAnimals.articWolfZSpeed;
+    // Bounce off enclosure walls (avoid front entrance)
+    if (
+      arcticAnimals.articWolfX > WALL_MAX_X - 50 ||
+      arcticAnimals.articWolfX < WALL_MAX_X - 70
+    )
+      arcticAnimals.articWolfXSpeed *= -1;
+    if (
+      arcticAnimals.articWolfZ > WALL_MAX_Z - 50 ||
+      arcticAnimals.articWolfZ < WALL_MAX_Z - 70
+    )
+      arcticAnimals.articWolfZSpeed *= -1;
 
+    // Update penguin position
+    arcticAnimals.penguinX += arcticAnimals.penguinXSpeed;
+    arcticAnimals.penguinZ += arcticAnimals.penguinZSpeed;
+    // Bounce off enclosure walls (avoid front entrance)
+    if (
+      arcticAnimals.penguinX > WALL_MAX_X - 50 ||
+      arcticAnimals.penguinX < WALL_MAX_X - 70
+    )
+      arcticAnimals.penguinXSpeed *= -1;
+    if (
+      arcticAnimals.penguinZ > WALL_MAX_Z - 50 ||
+      arcticAnimals.penguinZ < WALL_MAX_Z - 70
+    )
+      arcticAnimals.penguinZSpeed *= -1;
+  }
+
+  function animateDesert() {
+    // Update camel position
+    desertAnimals.camelX += desertAnimals.camelXSpeed;
+    desertAnimals.camelZ += desertAnimals.camelZSpeed;
+    // Bounce off enclosure walls (avoid front entrance)
+    if (
+      desertAnimals.camelX > WALL_MIN_X + 70 ||
+      desertAnimals.camelX < WALL_MIN_X + 50
+    )
+      desertAnimals.camelXSpeed *= -1;
+    if (
+      desertAnimals.camelZ > WALL_MAX_Z - 50 ||
+      desertAnimals.camelZ < WALL_MAX_Z - 70
+    )
+      desertAnimals.camelZSpeed *= -1;
+
+    // Update scorpion position
+    desertAnimals.scorpionX += desertAnimals.scorpionXSpeed;
+    desertAnimals.scorpionZ += desertAnimals.scorpionZSpeed;
+    // Bounce off enclosure walls (avoid front entrance)
+    if (
+      desertAnimals.scorpionX > WALL_MIN_X + 70 ||
+      desertAnimals.scorpionX < WALL_MIN_X + 50
+    )
+      desertAnimals.scorpionXSpeed *= -1;
+    if (
+      desertAnimals.scorpionZ > WALL_MAX_Z - 50 ||
+      desertAnimals.scorpionZ < WALL_MAX_Z - 70
+    )
+      desertAnimals.scorpionZSpeed *= -1;
+
+    // Update snake position
+    desertAnimals.snakeX += desertAnimals.snakeXSpeed;
+    desertAnimals.snakeZ += desertAnimals.snakeZSpeed;
+    // Bounce off enclosure walls (avoid front entrance)
+    if (
+      desertAnimals.snakeX > WALL_MIN_X + 70 ||
+      desertAnimals.snakeX < WALL_MIN_X + 50
+    )
+      desertAnimals.snakeXSpeed *= -1;
+    if (
+      desertAnimals.snakeZ > WALL_MAX_Z - 50 ||
+      desertAnimals.snakeZ < WALL_MAX_Z - 70
+    )
+      desertAnimals.snakeZSpeed *= -1;
+  }
+
+  function animateWater() {
+    // Update shark position
+    waterAnimals.sharkX += waterAnimals.sharkXSpeed;
+    waterAnimals.sharkZ += waterAnimals.sharkZSpeed;
+    // Bounce off enclosure walls (avoid front entrance)
+    if (
+      waterAnimals.sharkX > WALL_MAX_X - 50 ||
+      waterAnimals.sharkX < WALL_MAX_X - 70
+    )
+      waterAnimals.sharkXSpeed *= -1;
+    if (
+      waterAnimals.sharkZ > WALL_MIN_Z + 70 ||
+      waterAnimals.sharkZ < WALL_MIN_Z + 50
+    )
+      waterAnimals.sharkZSpeed *= -1;
+
+    // Update whale position
+    waterAnimals.whaleX += waterAnimals.whaleXSpeed;
+    waterAnimals.whaleZ += waterAnimals.whaleZSpeed;
+    // Bounce off enclosure walls (avoid front entrance)
+    if (
+      waterAnimals.whaleX > WALL_MAX_X - 50 ||
+      waterAnimals.whaleX < WALL_MAX_X - 70
+    )
+      waterAnimals.whaleXSpeed *= -1;
+    if (
+      waterAnimals.whaleZ > WALL_MIN_Z + 70 ||
+      waterAnimals.whaleZ < WALL_MIN_Z + 50
+    )
+      waterAnimals.whaleZSpeed *= -1;
+
+    // Update squid position
+    waterAnimals.squidX += waterAnimals.squidXSpeed;
+    waterAnimals.squidZ += waterAnimals.squidZSpeed;
+    // Bounce off enclosure walls (avoid front entrance)
+    if (
+      waterAnimals.squidX > WALL_MAX_X - 50 ||
+      waterAnimals.squidX < WALL_MAX_X - 70
+    )
+      waterAnimals.squidXSpeed *= -1;
+    if (
+      waterAnimals.squidZ > WALL_MIN_Z + 70 ||
+      waterAnimals.squidZ < WALL_MIN_Z + 50
+    )
+      waterAnimals.squidZSpeed *= -1;
+  }
 
   function animate() {
     animateJungle();
+    animateArctic();
+    animateDesert();
+    animateWater();
     render();
     requestAnimationFrame(animate);
   }
