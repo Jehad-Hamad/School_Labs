@@ -479,16 +479,19 @@ function main() {
     elephantZ: WALL_MIN_Z + 60,
     elephantXSpeed: 0.05,
     elephantZSpeed: 0.05,
+    elephantRotation: 0,
 
     tigerX: WALL_MIN_X + 58,
     tigerZ: WALL_MIN_Z + 50,
     tigerXSpeed: 0.08,
     tigerZSpeed: -0.08,
+    tigerRotation: 0,
 
     lionX: WALL_MIN_X + 55,
     lionZ: WALL_MIN_Z + 53,
     lionXSpeed: -0.06,
     lionZSpeed: 0.06,
+    lionRotation: 0,
   };
 
   const arcticAnimals = {
@@ -496,11 +499,13 @@ function main() {
     articWolfZ: WALL_MAX_Z - 55,
     articWolfXSpeed: 0.07,
     articWolfZSpeed: 0.07,
+    articWolfRotation: 0,
 
     penguinX: WALL_MAX_X - 65,
     penguinZ: WALL_MAX_Z - 50,
     penguinXSpeed: -0.04,
     penguinZSpeed: 0.04,
+    penguinRotation: 0,
   };
 
   const desertAnimals = {
@@ -508,16 +513,19 @@ function main() {
     camelZ: WALL_MAX_Z - 50,
     camelXSpeed: 0.03,
     camelZSpeed: 0.03,
+    camelRotation: 0,
 
     scorpionX: WALL_MIN_X + 63,
     scorpionZ: WALL_MAX_Z - 50,
     scorpionXSpeed: -0.06,
     scorpionZSpeed: -0.06,
+    scorpionRotation: 0,
 
     snakeX: WALL_MIN_X + 65,
     snakeZ: WALL_MAX_Z - 60,
-    snakeXSpeed: 0.05,
-    snakeZSpeed: -0.05,
+    snakeXSpeed: 0.08,
+    snakeZSpeed: -0.08,
+    snakeRotation: 0,
   };
 
   const waterAnimals = {
@@ -525,16 +533,19 @@ function main() {
     sharkZ: WALL_MIN_Z + 58,
     sharkXSpeed: 0.09,
     sharkZSpeed: 0.09,
+    sharkRotation: 0,
 
     whaleX: WALL_MAX_X - 52,
     whaleZ: WALL_MIN_Z + 60,
     whaleXSpeed: 0.04,
     whaleZSpeed: -0.04,
+    whaleRotation: 0,
 
     squidX: WALL_MAX_X - 60,
     squidZ: WALL_MIN_Z + 70,
     squidXSpeed: -0.07,
     squidZSpeed: 0.07,
+    squidRotation: 0,
   };
 
   function render() {
@@ -570,7 +581,10 @@ function main() {
   }
 
   function animateJungle() {
-    // Update elephant position
+    // Update elephant rotation and position
+    jungleAnimals.elephantRotation =
+      -Math.atan2(jungleAnimals.elephantZSpeed, jungleAnimals.elephantXSpeed) *
+      (180 / Math.PI);
     jungleAnimals.elephantX += jungleAnimals.elephantXSpeed;
     jungleAnimals.elephantZ += jungleAnimals.elephantZSpeed;
     // Bounce off enclosure walls (avoid front entrance)
@@ -585,7 +599,10 @@ function main() {
     )
       jungleAnimals.elephantZSpeed *= -1;
 
-    // Update tiger position
+    // Update tiger rotation and position
+    jungleAnimals.tigerRotation =
+      -Math.atan2(jungleAnimals.tigerZSpeed, jungleAnimals.tigerXSpeed) *
+      (180 / Math.PI);
     jungleAnimals.tigerX += jungleAnimals.tigerXSpeed;
     jungleAnimals.tigerZ += jungleAnimals.tigerZSpeed;
     // Bounce off enclosure walls (avoid front entrance)
@@ -600,7 +617,10 @@ function main() {
     )
       jungleAnimals.tigerZSpeed *= -1;
 
-    // Update lion position
+    // Update lion rotation and position
+    jungleAnimals.lionRotation =
+      -Math.atan2(jungleAnimals.lionZSpeed, jungleAnimals.lionXSpeed) *
+      (180 / Math.PI);
     jungleAnimals.lionX += jungleAnimals.lionXSpeed;
     jungleAnimals.lionZ += jungleAnimals.lionZSpeed;
     // Bounce off enclosure walls (avoid front entrance)
@@ -617,7 +637,13 @@ function main() {
   }
 
   function animateArctic() {
-    // Update articWolf position
+    // Update articWolf rotation and position
+    arcticAnimals.articWolfRotation =
+      -Math.atan2(
+        arcticAnimals.articWolfZSpeed,
+        arcticAnimals.articWolfXSpeed
+      ) *
+      (180 / Math.PI);
     arcticAnimals.articWolfX += arcticAnimals.articWolfXSpeed;
     arcticAnimals.articWolfZ += arcticAnimals.articWolfZSpeed;
     // Bounce off enclosure walls (avoid front entrance)
@@ -632,7 +658,10 @@ function main() {
     )
       arcticAnimals.articWolfZSpeed *= -1;
 
-    // Update penguin position
+    // Update penguin rotation and position
+    arcticAnimals.penguinRotation =
+      -Math.atan2(arcticAnimals.penguinZSpeed, arcticAnimals.penguinXSpeed) *
+      (180 / Math.PI);
     arcticAnimals.penguinX += arcticAnimals.penguinXSpeed;
     arcticAnimals.penguinZ += arcticAnimals.penguinZSpeed;
     // Bounce off enclosure walls (avoid front entrance)
@@ -649,7 +678,10 @@ function main() {
   }
 
   function animateDesert() {
-    // Update camel position
+    // Update camel rotation and position
+    desertAnimals.camelRotation =
+      -Math.atan2(desertAnimals.camelZSpeed, desertAnimals.camelXSpeed) *
+      (180 / Math.PI);
     desertAnimals.camelX += desertAnimals.camelXSpeed;
     desertAnimals.camelZ += desertAnimals.camelZSpeed;
     // Bounce off enclosure walls (avoid front entrance)
@@ -664,7 +696,10 @@ function main() {
     )
       desertAnimals.camelZSpeed *= -1;
 
-    // Update scorpion position
+    // Update scorpion rotation and position
+    desertAnimals.scorpionRotation =
+      -Math.atan2(desertAnimals.scorpionZSpeed, desertAnimals.scorpionXSpeed) *
+      (180 / Math.PI);
     desertAnimals.scorpionX += desertAnimals.scorpionXSpeed;
     desertAnimals.scorpionZ += desertAnimals.scorpionZSpeed;
     // Bounce off enclosure walls (avoid front entrance)
@@ -679,7 +714,10 @@ function main() {
     )
       desertAnimals.scorpionZSpeed *= -1;
 
-    // Update snake position
+    // Update snake rotation and position
+    desertAnimals.snakeRotation =
+      -Math.atan2(desertAnimals.snakeZSpeed, desertAnimals.snakeXSpeed) *
+      (180 / Math.PI);
     desertAnimals.snakeX += desertAnimals.snakeXSpeed;
     desertAnimals.snakeZ += desertAnimals.snakeZSpeed;
     // Bounce off enclosure walls (avoid front entrance)
@@ -696,7 +734,10 @@ function main() {
   }
 
   function animateWater() {
-    // Update shark position
+    // Update shark rotation and position
+    waterAnimals.sharkRotation =
+      -Math.atan2(waterAnimals.sharkZSpeed, waterAnimals.sharkXSpeed) *
+      (180 / Math.PI);
     waterAnimals.sharkX += waterAnimals.sharkXSpeed;
     waterAnimals.sharkZ += waterAnimals.sharkZSpeed;
     // Bounce off enclosure walls (avoid front entrance)
@@ -711,7 +752,10 @@ function main() {
     )
       waterAnimals.sharkZSpeed *= -1;
 
-    // Update whale position
+    // Update whale rotation and position
+    waterAnimals.whaleRotation =
+      -Math.atan2(waterAnimals.whaleZSpeed, waterAnimals.whaleXSpeed) *
+      (180 / Math.PI);
     waterAnimals.whaleX += waterAnimals.whaleXSpeed;
     waterAnimals.whaleZ += waterAnimals.whaleZSpeed;
     // Bounce off enclosure walls (avoid front entrance)
@@ -726,7 +770,10 @@ function main() {
     )
       waterAnimals.whaleZSpeed *= -1;
 
-    // Update squid position
+    // Update squid rotation and position
+    waterAnimals.squidRotation =
+      -Math.atan2(waterAnimals.squidZSpeed, waterAnimals.squidXSpeed) *
+      (180 / Math.PI);
     waterAnimals.squidX += waterAnimals.squidXSpeed;
     waterAnimals.squidZ += waterAnimals.squidZSpeed;
     // Bounce off enclosure walls (avoid front entrance)
@@ -794,7 +841,7 @@ function main() {
     } else if (ev.key.toLowerCase() === 'e') {
       // Fly Down
       eyeY -= 1.0;
-      // eyeY = Math.max(3, eyeY);
+      eyeY = Math.max(3, eyeY);
     } else if (ev.key.toLowerCase() === '1') {
       // TP to the jungle
       eyeX = -7;
@@ -816,7 +863,6 @@ function main() {
       eyeZ = 30;
       horizontalAngle = 238.7;
     }
-    console.log(eyeX, eyeZ, horizontalAngle);
 
     // changes look at.
     atX = eyeX + Math.cos(horizontalAngle);
