@@ -1,0 +1,19 @@
+CS3610 FINAL JEHAD
+
+Question:
+Design a desktop device performance reporting library.
+The report should display information about one of the following devices:
+GPU
+CPU
+HDD
+
+Design the library in such a way that the abstraction is separated from the implementation.
+After completing the design, add functionality to the library that allows you to display information about the RAM device.
+
+1. Explain: The pattern I would choose is bridge as we want abstraction that is separated from the implementation.
+   We can also add functionality to the library without changing previous code
+   The Bridge pattern attempts to solve the problem of not chaging and expanding out code when we want to add new functionality in the furture
+
+2) LOOK AT BUILDER_UML.PNG
+
+3) LOOK AT ALL CODE AND RUN MAIN.PY
