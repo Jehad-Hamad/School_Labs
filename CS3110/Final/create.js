@@ -208,25 +208,64 @@ function createCylinder(gl, color, textureUrl = null) {
   );
 }
 
-// Function to create Pyramid give just color
+// Function to create Pyramid (square base) give just color
 function createPyramid(gl, color, textureUrl = null) {
-  // Points
+  // Define vertices for a square-based pyramid
   const vertices = [
-    // Base
-    -0.5, 0, -0.5, 0.5, 0, -0.5, 0.0, 0, 0.5,
+    // Base (square on y = 0)
+    -0.5, 0.0, -0.5, 0.5, 0.0, -0.5, 0.5, 0.0, 0.5, -0.5, 0.0, 0.5,
 
-    // Apex
-    0.0, 1.0, 0.0,
+    // Front face (apex + 2 base vertices)
+    0.0, 1.0, 0.0, -0.5, 0.0, 0.5, 0.5, 0.0, 0.5,
+
+    // Right face
+    0.0, 1.0, 0.0, 0.5, 0.0, 0.5, 0.5, 0.0, -0.5,
+
+    // Back face
+    0.0, 1.0, 0.0, 0.5, 0.0, -0.5, -0.5, 0.0, -0.5,
+
+    // Left face
+    0.0, 1.0, 0.0, -0.5, 0.0, -0.5, -0.5, 0.0, 0.5,
   ];
 
-  const normals = [0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1];
+  // Calculate normals for each face
+  const normals = [
+    // Base (pointing down)
+    0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0,
 
-  const texCoords = [0, 0, 1, 0, 0.5, 1, 0.5, 0.5];
+    // Front face (calculate normal for slanted face)
+    0, 0.447, 0.894, 0, 0.447, 0.894, 0, 0.447, 0.894,
 
-  // Indices
+    // Right face
+    0.894, 0.447, 0, 0.894, 0.447, 0, 0.894, 0.447, 0,
+
+    // Back face
+    0, 0.447, -0.894, 0, 0.447, -0.894, 0, 0.447, -0.894,
+
+    // Left face
+    -0.894, 0.447, 0, -0.894, 0.447, 0, -0.894, 0.447, 0,
+  ];
+
+  const texCoords = [
+    // Base
+    0, 0, 1, 0, 1, 1, 0, 1,
+    // Each triangular face
+    0.5, 1, 0, 0, 1, 0, 0.5, 1, 0, 0, 1, 0, 0.5, 1, 0, 0, 1, 0, 0.5, 1, 0, 0,
+    1, 0,
+  ];
+
+  // Indices for base (2 triangles) and 4 side faces (4 triangles)
   const indices = [
-    //base
-    0, 1, 2, 0, 1, 3, 1, 2, 3, 0, 2, 3,
+    // Base
+    0, 2, 1, 0, 3, 2,
+    // Front face
+    4, 5, 6,
+    // Right face
+    7, 8, 9,
+    // Back face
+    10, 11, 12,
+    // Left face
+    13, 14, 15,
   ];
 
   // Unpack color
@@ -247,63 +286,81 @@ function createPyramid(gl, color, textureUrl = null) {
 }
 
 function createCube(gl, color, textureUrl = null) {
-  // Vertices for all 8 corners of the cube
+  // Define 24 vertices (4 per face) for proper normals on each face
   const vertices = [
-    1, 0, 1, 1, 0, -1, -1, 0, -1, -1, 0, 1,
-
-    1, 1, 1, 1, 1, -1, -1, 1, -1, -1, 1, 1,
+    // Front face (z = 0.5)
+    -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5,
+    // Back face (z = -0.5)
+    -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5,
+    // Top face (y = 0.5)
+    -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5,
+    // Bottom face (y = -0.5)
+    -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5,
+    // Right face (x = 0.5)
+    0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5,
+    // Left face (x = -0.5)
+    -0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5,
   ];
 
   const normals = [
-    // Bottom
-    0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0,
-    // Top
-    0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0,
-    // Front
+    // Front face
     0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1,
-    // Back
+    // Back face
     0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1,
-    // Right
+    // Top face
+    0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0,
+    // Bottom face
+    0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0,
+    // Right face
     1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
-    // Left
+    // Left face
     -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0,
   ];
 
   const texCoords = [
-    // Bottom face
-    0, 0, 1, 0, 1, 1, 0, 1,
-    // Top face
-    0, 0, 1, 0, 1, 1, 0, 1,
-    // Front face
-    0, 0, 1, 0, 1, 1, 0, 1,
-    // Back face
-    0, 0, 1, 0, 1, 1, 0, 1,
-    // Right face
-    0, 0, 1, 0, 1, 1, 0, 1,
-    // Left face
-    0, 0, 1, 0, 1, 1, 0, 1,
+    // Front, Back, Top, Bottom, Right, Left
+    0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1,
+    0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1,
   ];
 
-  // Indices defining triangles for all 6 faces
-  // Each face needs 2 triangles = 6 indices
+  // Indices for all 6 faces (2 triangles per face)
   const indices = [
-    // Bottom face
-    0, 1, 2, 0, 2, 3,
-
-    // Top face
-    4, 7, 6, 4, 6, 5,
-
-    // Front face
-    0, 4, 5, 0, 5, 1,
-
-    // Back face
-    3, 2, 6, 3, 6, 7,
-
-    // Right face
-    1, 5, 6, 1, 6, 2,
-
-    // Left face
-    0, 3, 7, 0, 7, 4,
+    0,
+    1,
+    2,
+    0,
+    2,
+    3, // Front
+    4,
+    5,
+    6,
+    4,
+    6,
+    7, // Back
+    8,
+    9,
+    10,
+    8,
+    10,
+    11, // Top
+    12,
+    13,
+    14,
+    12,
+    14,
+    15, // Bottom
+    16,
+    17,
+    18,
+    16,
+    18,
+    19, // Right
+    20,
+    21,
+    22,
+    20,
+    22,
+    23, // Left
   ];
 
   // Unpack color for each vertex
@@ -503,13 +560,6 @@ function createObject(gl, objText, color, textureUrl = null) {
     texCoords,
     textureUrl
   );
-}
-
-function createLamp(gl, color) {
-  const lampBlock = createCube(gl, [color[0], color[1], color[2]]);
-  const lampPane = createSheet(gl, [1.0, 1.0, 1.0]);
-
-  return [lampBlock, lampPane];
 }
 
 // Function to initialize buffers for the first time
@@ -764,17 +814,3 @@ function parseOBJ(objText) {
   };
 }
 
-function createCactus(gl) {
-  const cactusGreen = createCylinder(gl, [0.2, 0.6, 0.2]);
-  const darkGreen = createSphere(gl, [0.3, 0.5, 0.15]);
-
-  return [cactusGreen, darkGreen];
-}
-
-function createSign(gl, color, texture = null) {
-  const sign = {
-    backSheet: createCube(gl, color),
-    textureSheet: createSheet(gl, [1, 1, 1], texture),
-  };
-  return sign;
-}
