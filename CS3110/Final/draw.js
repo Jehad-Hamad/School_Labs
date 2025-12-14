@@ -12,12 +12,13 @@ function drawPlane(gl, plane) {
   gl.drawArrays(gl.TRIANGLE_FAN, 0, plane.vertexCount);
 }
 
-function drawSphere(gl, sphere, moving, scaling, rotating1, rotating2) {
+function drawSphere(gl, sphere, moving, scaling, r1, r2, r3) {
   var xformMatrix = new Matrix4();
   xformMatrix
     .setTranslate(...moving)
-    .rotate(...rotating1)
-    .rotate(...rotating2)
+    .rotate(...r1)
+    .rotate(...r2)
+    .rotate(...r3)
     .scale(...scaling);
   gl.uniformMatrix4fv(u_xformMatrix, false, xformMatrix.elements);
 
@@ -30,13 +31,14 @@ function drawSphere(gl, sphere, moving, scaling, rotating1, rotating2) {
   gl.drawElements(gl.TRIANGLES, sphere.indicesCount, gl.UNSIGNED_SHORT, 0);
 }
 
-function drawCylinder(gl, cylinder, moving, scaling, rotating1, rotating2) {
+function drawCylinder(gl, cylinder, moving, scaling, r1, r2, r3) {
   var xformMatrix = new Matrix4();
   xformMatrix
     .setTranslate(...moving)
-    .scale(...scaling)
-    .rotate(...rotating1)
-    .rotate(...rotating2);
+    .rotate(...r1)
+    .rotate(...r2)
+    .rotate(...r3)
+    .scale(...scaling);
   gl.uniformMatrix4fv(u_xformMatrix, false, xformMatrix.elements);
 
   var normalMatrix = new Matrix4();
@@ -48,13 +50,14 @@ function drawCylinder(gl, cylinder, moving, scaling, rotating1, rotating2) {
   gl.drawElements(gl.TRIANGLES, cylinder.indicesCount, gl.UNSIGNED_SHORT, 0);
 }
 
-function drawPyramid(gl, pyramid, moving, scaling, rotating1, rotating2) {
+function drawPyramid(gl, pyramid, moving, scaling, r1, r2, r3) {
   var xformMatrix = new Matrix4();
   xformMatrix
     .setTranslate(...moving)
-    .scale(...scaling)
-    .rotate(...rotating1)
-    .rotate(...rotating2);
+    .rotate(...r1)
+    .rotate(...r2)
+    .rotate(...r3)
+    .scale(...scaling);
   gl.uniformMatrix4fv(u_xformMatrix, false, xformMatrix.elements);
 
   var normalMatrix = new Matrix4();
@@ -66,12 +69,12 @@ function drawPyramid(gl, pyramid, moving, scaling, rotating1, rotating2) {
   gl.drawElements(gl.TRIANGLES, pyramid.indicesCount, gl.UNSIGNED_SHORT, 0);
 }
 
-function drawCircle(gl, circle, moving, scaling, rotating1) {
+function drawCircle(gl, circle, moving, scaling, r1) {
   var xformMatrix = new Matrix4();
   xformMatrix
     .setTranslate(...moving)
-    .scale(...scaling)
-    .rotate(...rotating1);
+    .rotate(...r1)
+    .scale(...scaling);
   gl.uniformMatrix4fv(u_xformMatrix, false, xformMatrix.elements);
 
   var normalMatrix = new Matrix4();
@@ -83,13 +86,14 @@ function drawCircle(gl, circle, moving, scaling, rotating1) {
   gl.drawArrays(gl.TRIANGLE_FAN, 0, circle.vertexCount);
 }
 
-function drawTriangle(gl, triangle, moving, scaling, rotating1, rotating2) {
+function drawTriangle(gl, triangle, moving, scaling, r1, r2, r3) {
   var xformMatrix = new Matrix4();
   xformMatrix
     .setTranslate(...moving)
-    .scale(...scaling)
-    .rotate(...rotating1)
-    .rotate(...rotating2);
+    .rotate(...r1)
+    .rotate(...r2)
+    .rotate(...r3)
+    .scale(...scaling);
   gl.uniformMatrix4fv(u_xformMatrix, false, xformMatrix.elements);
 
   var normalMatrix = new Matrix4();
@@ -119,12 +123,12 @@ function drawSheet(gl, sheet, moving, scaling, rotating1, rotating2) {
   gl.drawArrays(gl.TRIANGLE_FAN, 0, sheet.vertexCount);
 }
 
-function drawStar(gl, star, moving, scaling, rotating1) {
+function drawStar(gl, star, moving, scaling, r1) {
   var xformMatrix = new Matrix4();
   xformMatrix
     .setTranslate(...moving)
-    .scale(...scaling)
-    .rotate(...rotating1);
+    .rotate(...r1)
+    .scale(...scaling);
   gl.uniformMatrix4fv(u_xformMatrix, false, xformMatrix.elements);
 
   var normalMatrix = new Matrix4();
@@ -136,12 +140,12 @@ function drawStar(gl, star, moving, scaling, rotating1) {
   gl.drawArrays(gl.TRIANGLE_FAN, 0, star.vertexCount);
 }
 
-function drawLine(gl, line, moving, scaling, rotating1) {
+function drawLine(gl, line, moving, scaling, r1) {
   var xformMatrix = new Matrix4();
   xformMatrix
     .setTranslate(...moving)
-    .scale(...scaling)
-    .rotate(...rotating1);
+    .rotate(...r1)
+    .scale(...scaling);
   gl.uniformMatrix4fv(u_xformMatrix, false, xformMatrix.elements);
 
   var normalMatrix = new Matrix4();
@@ -153,13 +157,14 @@ function drawLine(gl, line, moving, scaling, rotating1) {
   gl.drawArrays(gl.LINES, 0, line.vertexCount);
 }
 
-function drawCube(gl, cube, moving, scaling, rotating1, rotating2) {
+function drawCube(gl, cube, moving, scaling, r1, r2, r3) {
   var xformMatrix = new Matrix4();
   xformMatrix
     .setTranslate(...moving)
-    .scale(...scaling)
-    .rotate(...rotating1)
-    .rotate(...rotating2);
+    .rotate(...r1)
+    .rotate(...r2)
+    .rotate(...r3)
+    .scale(...scaling);
   gl.uniformMatrix4fv(u_xformMatrix, false, xformMatrix.elements);
 
   var normalMatrix = new Matrix4();
@@ -171,13 +176,14 @@ function drawCube(gl, cube, moving, scaling, rotating1, rotating2) {
   gl.drawElements(gl.TRIANGLES, cube.indicesCount, gl.UNSIGNED_SHORT, 0);
 }
 
-function drawObject(gl, object, moving, scaling, rotating1, rotating2) {
+function drawObject(gl, object, moving, scaling, r1, r2, r3) {
   var xformMatrix = new Matrix4();
   xformMatrix
     .setTranslate(...moving)
-    .scale(...scaling)
-    .rotate(...rotating1)
-    .rotate(...rotating2);
+    .rotate(...r1)
+    .rotate(...r2)
+    .rotate(...r3)
+    .scale(...scaling);
   gl.uniformMatrix4fv(u_xformMatrix, false, xformMatrix.elements);
 
   var normalMatrix = new Matrix4();

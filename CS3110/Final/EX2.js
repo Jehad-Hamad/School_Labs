@@ -124,8 +124,8 @@ function main() {
 
   // Set light properties
   gl.uniform3f(u_LightColor, 1.0, 1.0, 1.0);
-  gl.uniform3f(u_LightPosition, 5.0, 10.0, 5.0);
-  gl.uniform3f(u_AmbientLight, 0.3, 0.3, 0.3);
+  gl.uniform3f(u_LightPosition, 1.0, 10.0, 1.0);
+  gl.uniform3f(u_AmbientLight, 0.5, 0.5, 0.5);
   gl.uniform1f(u_Shininess, 32.0);
 
   u_ModelViewMatrix = gl.getUniformLocation(gl.program, 'u_ModelViewMatrix');
@@ -151,10 +151,14 @@ function main() {
   gl.uniformMatrix4fv(u_ModelViewMatrix, false, modelViewMatrix.elements);
 
   // Create example shapes with different colors
-  const redCube = createCube(gl, [1.0, 0.0, 0.0]);
-  const greenSphere = createSphere(gl, [0.0, 1.0, 0.0]);
+  const Cube = createCube(gl, [1.0, 1.0, 1.0], 'resources/blueflower2.jpg');
+  const Sphere = createSphere(gl, [1.0, 1.0, 1.0], 'resources/sky.jpg');
   const blueCylinder = createCylinder(gl, [0.0, 0.0, 1.0]);
-  const yellowPyramid = createPyramid(gl, [1.0, 1.0, 0.0]);
+  const Pyramid = createPyramid(
+    gl,
+    [1.0, 1.0, 1.0],
+    'resources/blueflower.jpg'
+  );
   const floor = createSheet(gl, [0.5, 0.5, 0.5]);
 
   function render() {
@@ -166,7 +170,7 @@ function main() {
     // Draw cube
     drawCube(
       gl,
-      redCube,
+      Cube,
       [-3, 0, 0],
       [1, 1, 1],
       [0, 0, 1, 0],
@@ -177,7 +181,7 @@ function main() {
     // Draw sphere
     drawSphere(
       gl,
-      greenSphere,
+      Sphere,
       [0, 0, 0],
       [1, 1, 1],
       [0, 0, 1, 0],
@@ -188,9 +192,9 @@ function main() {
     // Draw pyramid
     drawPyramid(
       gl,
-      yellowPyramid,
+      Pyramid,
       [3, 0, 0],
-      [1.5, 1.5, 1.5],
+      [1, 1, 1],
       [0, 0, 1, 0],
       [0, 1, 0, 0],
       [0, 0, 0, 1]

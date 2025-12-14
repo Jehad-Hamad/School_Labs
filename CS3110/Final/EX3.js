@@ -124,8 +124,8 @@ function main() {
 
   // Set light properties
   gl.uniform3f(u_LightColor, 1.0, 1.0, 1.0);
-  gl.uniform3f(u_LightPosition, 5.0, 10.0, 5.0);
-  gl.uniform3f(u_AmbientLight, 0.3, 0.3, 0.3);
+  gl.uniform3f(u_LightPosition, 1.0, 10.0, 1.0);
+  gl.uniform3f(u_AmbientLight, 0.5, 0.5, 0.5);
   gl.uniform1f(u_Shininess, 32.0);
 
   u_ModelViewMatrix = gl.getUniformLocation(gl.program, 'u_ModelViewMatrix');
@@ -151,55 +151,168 @@ function main() {
   gl.uniformMatrix4fv(u_ModelViewMatrix, false, modelViewMatrix.elements);
 
   // Create example shapes with different colors
-  const redCube = createCube(gl, [1.0, 0.0, 0.0]);
-  const greenSphere = createSphere(gl, [0.0, 1.0, 0.0]);
+  const Cube = createCube(gl, [1.0, 1.0, 1.0], 'resources/blueflower2.jpg');
+  const Sphere = createSphere(gl, [1.0, 1.0, 1.0], 'resources/sky.jpg');
   const blueCylinder = createCylinder(gl, [0.0, 0.0, 1.0]);
-  const yellowPyramid = createPyramid(gl, [1.0, 1.0, 0.0]);
+  const Pyramid = createPyramid(
+    gl,
+    [1.0, 1.0, 1.0],
+    'resources/blueflower.jpg'
+  );
   const floor = createSheet(gl, [0.5, 0.5, 0.5]);
+
+  const shapes = {
+    // Cube
+    cubeTx: -3,
+    cubeTy: 0,
+    cubeTz: 0,
+
+    cubeTxDir: 1,
+    cubeTyDir: 1,
+    cubeTzDir: 1,
+
+    cubeSx: 1,
+    cubeSy: 1,
+    cubeSz: 1,
+
+    cubeSxDir: 1,
+    cubeSyDir: 1,
+    cubeSzDir: 1,
+
+    cubeRx: 0,
+    cubeRy: 0,
+    cubeRz: 0,
+
+    // Sphere
+    sphereTx: 0,
+    sphereTy: 0,
+    sphereTz: 0,
+
+    sphereTxDir: 1,
+    sphereTyDir: 1,
+    sphereTzDir: 1,
+
+    sphereSx: 1,
+    sphereSy: 1,
+    sphereSz: 1,
+
+    sphereSxDir: 1,
+    sphereSyDir: 1,
+    sphereSzDir: 1,
+
+    sphereRx: 0,
+    sphereRy: 0,
+    sphereRz: 0,
+
+    // Pyramid
+    pyramidTx: 3,
+    pyramidTy: 0,
+    pyramidTz: 0,
+
+    pyramidTxDir: 1,
+    pyramidTyDir: 1,
+    pyramidTzDir: 1,
+
+    pyramidSx: 1,
+    pyramidSy: 1.5,
+    pyramidSz: 1,
+
+    pyramidSxDir: 1,
+    pyramidSyDir: 1,
+    pyramidSzDir: 1,
+
+    pyramidRx: 0,
+    pyramidRy: 0,
+    pyramidRz: 0,
+  };
 
   function render() {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    // Draw floor
+    // Floor (unchanged)
     drawSheet(gl, floor, [0, -1, 0], [10, 1, 10], [90, 1, 0, 0], [0, 0, 1, 0]);
 
-    // Draw cube
+    // Cube
     drawCube(
       gl,
-      redCube,
-      [-3, 0, 0],
-      [1, 1, 1],
-      [0, 0, 1, 0],
-      [0, 1, 0, 0],
-      [0, 0, 0, 1]
+      Cube,
+      [shapes.cubeTx, shapes.cubeTy, shapes.cubeTz],
+      [shapes.cubeSx, shapes.cubeSy, shapes.cubeSz],
+      [shapes.cubeRx, 1, 0, 0],
+      [shapes.cubeRy, 0, 1, 0],
+      [shapes.cubeRz, 0, 0, 1]
     );
 
-    // Draw sphere
+    // Sphere
     drawSphere(
       gl,
-      greenSphere,
-      [0, 0, 0],
-      [1, 1, 1],
-      [0, 0, 1, 0],
-      [0, 1, 0, 0],
-      [0, 0, 0, 1]
+      Sphere,
+      [shapes.sphereTx, shapes.sphereTy, shapes.sphereTz],
+      [shapes.sphereSx, shapes.sphereSy, shapes.sphereSz],
+      [shapes.sphereRx, 1, 0, 0],
+      [shapes.sphereRy, 0, 1, 0],
+      [shapes.sphereRz, 0, 0, 1]
     );
 
-    // Draw pyramid
+    // Pyramid
     drawPyramid(
       gl,
-      yellowPyramid,
-      [3, 0, 0],
-      [1.5, 1.5, 1.5],
-      [0, 0, 1, 0],
-      [0, 1, 0, 0],
-      [0, 0, 0, 1]
+      Pyramid,
+      [shapes.pyramidTx, shapes.pyramidTy, shapes.pyramidTz],
+      [shapes.pyramidSx, shapes.pyramidSy, shapes.pyramidSz],
+      [shapes.pyramidRx, 1, 0, 0],
+      [shapes.pyramidRy, 0, 1, 0],
+      [shapes.pyramidRz, 0, 0, 1]
     );
-
-    requestAnimationFrame(render);
   }
 
-  render();
+  function scaling(shape, smallestSize, biggestSize, speed, axis) {
+    const scaleKey = `${shape}S${axis}`; // cubeSx
+    const dirKey = `${shape}S${axis}Dir`; // cubeSxDir
+
+    if (shapes[scaleKey] >= biggestSize) {
+      shapes[scaleKey] = biggestSize;
+      shapes[dirKey] *= -1;
+    }
+
+    if (shapes[scaleKey] <= smallestSize) {
+      shapes[scaleKey] = smallestSize;
+      shapes[dirKey] *= -1;
+    }
+
+    shapes[scaleKey] += speed * shapes[dirKey];
+  }
+
+  function rotating(shape, speed, axis) {
+    const rotatingKey = `${shape}R${axis}`; // cubeRx
+    shapes[rotatingKey] += speed;
+  }
+
+  function translating(shape, min, max, speed, axis) {
+    const posKey = `${shape}T${axis}`; // cubeTx
+    const dirKey = `${shape}T${axis}Dir`; // cubeTxDir
+
+    if (shapes[posKey] >= max) {
+      shapes[posKey] = max;
+      shapes[dirKey] *= -1;
+    }
+
+    if (shapes[posKey] <= min) {
+      shapes[posKey] = min;
+      shapes[dirKey] *= -1;
+    }
+
+    shapes[posKey] += speed * shapes[dirKey];
+  }
+
+  function animate() {
+    scaling('cube', 1, 3, 0.01, 'x');
+    rotating('sphere', 1, 'y');
+    translating('pyramid', 1, 3, 0.01, 'y');
+    render();
+    requestAnimationFrame(animate);
+  }
+  animate();
 
   // Keyboard controls
   function keyDown(ev) {
