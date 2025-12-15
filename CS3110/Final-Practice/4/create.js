@@ -285,7 +285,10 @@ function createPyramid(gl, color, textureUrl = null) {
   );
 }
 
-function createCube(gl, color, textureUrl = null) {
+function createCube(gl, color, textureUrls = null) {
+  // textureUrls can be a single URL (same texture for all faces)
+  // or an array of 6 URLs: [front, back, top, bottom, right, left]
+
   // Define 24 vertices (4 per face) for proper normals on each face
   const vertices = [
     // Front face (z = 0.5)
@@ -369,15 +372,33 @@ function createCube(gl, color, textureUrl = null) {
     colors.push(...color);
   }
 
-  return initBuffers(
+  // Handle multiple textures
+  let textures = null;
+  if (textureUrls) {
+    if (Array.isArray(textureUrls) && textureUrls.length === 6) {
+      // Load 6 different textures
+      textures = textureUrls.map(url => loadTexture(gl, url));
+    } else if (typeof textureUrls === 'string') {
+      // Single texture for all faces
+      textures = loadTexture(gl, textureUrls);
+    }
+  }
+
+  const buffers = initBuffers(
     gl,
     new Float32Array(vertices),
     new Float32Array(colors),
     new Float32Array(normals),
     new Uint16Array(indices),
     new Float32Array(texCoords),
-    textureUrl
+    null // Don't pass texture to initBuffers
   );
+
+  // Add textures to the returned object
+  buffers.textures = textures;
+  buffers.useTexture = textures !== null;
+
+  return buffers;
 }
 
 // Function to create Circle give just color
@@ -654,7 +675,8 @@ function initBuffers(
 }
 
 // Function to initialize buffers for the object so I can draw later rather than calling initBuffers()
-function initObject(gl, object) {
+function initObject(gl, object, faceIndex = null) {
+  // faceIndex is used when drawing individual faces with different textures
   // Bind the objects vertex buffer to the webgl buffer
   if (object.VOA) {
     gl.vaoExt.bindVertexArrayOES(object.VOA);
@@ -686,11 +708,29 @@ function initObject(gl, object) {
   }
 
   // Set texture if available
-  if (object.texture && object.useTexture) {
-    gl.activeTexture(gl.TEXTURE0);
-    gl.bindTexture(gl.TEXTURE_2D, object.texture);
-    gl.uniform1i(u_Sampler, 0);
-    gl.uniform1i(u_UseTexture, 1);
+  if (object.useTexture) {
+    // Check if we have multiple textures (array)
+    if (Array.isArray(object.textures) && faceIndex !== null) {
+      // Use specific texture for this face
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindTexture(gl.TEXTURE_2D, object.textures[faceIndex]);
+      gl.uniform1i(u_Sampler, 0);
+      gl.uniform1i(u_UseTexture, 1);
+    } else if (object.texture) {
+      // Use single texture (backward compatibility)
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindTexture(gl.TEXTURE_2D, object.texture);
+      gl.uniform1i(u_Sampler, 0);
+      gl.uniform1i(u_UseTexture, 1);
+    } else if (object.textures && !Array.isArray(object.textures)) {
+      // Single texture stored in textures property
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindTexture(gl.TEXTURE_2D, object.textures);
+      gl.uniform1i(u_Sampler, 0);
+      gl.uniform1i(u_UseTexture, 1);
+    } else {
+      gl.uniform1i(u_UseTexture, 0);
+    }
   } else {
     gl.uniform1i(u_UseTexture, 0);
   }
@@ -813,4 +853,3 @@ function parseOBJ(objText) {
     indices: new Uint16Array(indices),
   };
 }
-

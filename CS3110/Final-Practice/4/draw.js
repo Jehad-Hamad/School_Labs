@@ -172,8 +172,16 @@ function drawCube(gl, cube, moving, scaling, r1, r2, r3) {
   normalMatrix.transpose();
   gl.uniformMatrix4fv(u_NormalMatrix, false, normalMatrix.elements);
 
-  initObject(gl, cube);
-  gl.drawElements(gl.TRIANGLES, cube.indicesCount, gl.UNSIGNED_SHORT, 0);
+  // Draw each face with its own texture if available
+  if (Array.isArray(cube.textures)) {
+    for (let i = 0; i < 6; i++) {
+      initObject(gl, cube, i);
+      gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, i * 12);
+    }
+  } else {
+    initObject(gl, cube);
+    gl.drawElements(gl.TRIANGLES, cube.indicesCount, gl.UNSIGNED_SHORT, 0);
+  }
 }
 
 function drawObject(gl, object, moving, scaling, r1, r2, r3) {

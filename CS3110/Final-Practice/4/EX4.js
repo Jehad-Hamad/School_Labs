@@ -151,7 +151,23 @@ function main() {
   gl.uniformMatrix4fv(u_ModelViewMatrix, false, modelViewMatrix.elements);
 
   // Create example shapes with different colors
-  const Cube = createCube(gl, [1.0, 1.0, 1.0], 'resources/blueflower2.jpg');
+  // Option 1: Single texture for all faces (works as before)
+  // const Cube = createCube(gl, [1.0, 1.0, 1.0], 'resources/blueflower2.jpg');
+
+  // Option 2: Different texture for each face [front, back, top, bottom, right, left]
+  const Cube = createCube(
+    gl,
+    [1.0, 1.0, 1.0],
+    [
+      'resources/blueflower2.jpg', // Front
+      'resources/blueflower.jpg', // Back
+      'resources/pinkflower.jpg', // Top
+      'resources/redflower.jpg', // Bottom
+      'resources/yellowflower.jpg', // Right
+      'resources/orange.jpg', // Left
+    ]
+  );
+
   const floor = createSheet(gl, [0.5, 0.5, 0.5]);
 
   var speed = 1;
