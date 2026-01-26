@@ -1,21 +1,25 @@
+"Using Array to avoid GNU Smalltalk scoping issues"
+rand := Random new.
+bet := ''.
+game := Array with: 100 with: 0.  "game at: 1 = credits, game at: 2 = pot"
+rounds := 1.
+
 "Block to validate bets"
-validateBet := [:currentBet :availableCredits | | userBet |
+validateBet := [:currentBet | | userBet |
     userBet := currentBet.
-    
-    ' ' displayNl.
-    [userBet ~= 'q' and: [userBet asInteger <= 0 or: [userBet asInteger > availableCredits]]] whileTrue: [
+
+    [userBet ~= 'q' and: [userBet asInteger <= 0 or: [userBet asInteger > (game at: 1)]]] whileTrue: [
         (userBet asInteger <= 0) ifTrue: [
             'Bet must be greater than 0! Try again: ' display.
         ].
-    
-        (userBet asInteger > availableCredits) ifTrue: [
-            ('You only have ', availableCredits asString, ' credits!  Try again: ') display.
+
+        (userBet asInteger > (game at: 1)) ifTrue: [
+            ('You only have ', (game at: 1) asString, ' credits!  Try again: ') display.
         ].
-    
+
         userBet := stdin nextLine.
     ].
 
-    ' ' displayNl.
     userBet  "Return the validated bet"
 ].
 
@@ -83,26 +87,24 @@ classifyRoll := [:array | | result |
 ].
 
 
-"Initialize game state"
-rand := Random new.
-bet:= ''.
-credits := 100.
-pot := 0.
-
 'Welcome to Ceelo. ' displayNl.
 ' ' displayNl.
-('You have ', credits asString, ' Credits') displayNl.
+('You have ', (game at: 1) asString, ' Credits') displayNl.
+('This is round: ', rounds asString) displayNl.
 'Please bet an amount to roll the dice or q to stop ' display.
 
 "Main game loop - runs until player quits"
-[bet ~='q'] whileTrue: [
+[(bet ~= 'q') & ((game at: 1) > 0)] whileTrue: [
 
-    bet:= stdin nextLine.
-    bet := validateBet value: bet value: credits.
 
-    (bet ~= 'q') ifTrue:[ | betAmount |
+    bet := stdin nextLine.
+    bet := validateBet value: bet.
 
-        betAmount := bet asInteger.
+    ((bet ~= 'q') & ((game at: 1) > 0)) ifTrue:[
+
+
+        game at: 1 put: ((game at: 1) - (bet asInteger)).
+        game at: 2 put: (bet asInteger).
 
         "Roll three dice for the player"
         dice1 := rand between: 1 and: 6.
@@ -111,10 +113,9 @@ pot := 0.
         playerArray := Array withAll: {dice1. dice2. dice3.}.
         playerArray := playerArray sorted.
 
+        '' displayNl.
         'You rolled ' display.
-        playerArray do: [:each |
-            (each asString, ' ') display
-        ].
+        playerArray do: [:each | (each asString, ' ') display ].
         '' displayNl.
 
         "Classify player's roll and handle re-rolls"
@@ -127,13 +128,12 @@ pot := 0.
             dice2 := rand between: 1 and: 6.
             dice3 := rand between: 1 and: 6.
             playerArray := Array withAll: {dice1. dice2. dice3.}.
-            
+            playerArray := playerArray sorted.
+
             'You rolled ' display.
-            playerArray do: [:each |
-                (each asString, ' ') display
-            ].
+            playerArray do: [:each | (each asString, ' ') display ].
             '' displayNl.
-            
+
             playerRollType := classifyRoll value: playerArray.
         ].
 
@@ -147,14 +147,17 @@ pot := 0.
         "Check for instant wins/losses"
         (playerRollType = 'trip') ifTrue: [
             'TRIPLE! You win!' displayNl.
+            game at: 1 put: ((game at: 1) + ((game at: 2) * 2)).
         ].
 
         (playerRollType = 'win456') ifTrue: [
             '4-5-6! You win!' displayNl.
+            game at: 1 put: ((game at: 1) + ((game at: 2) * 2)).
         ].
 
         (playerRollType = 'twoAlikeSix') ifTrue: [
             'Two Alike and Six High! You win!' displayNl.
+            game at: 1 put: ((game at: 1) + ((game at: 2) * 2)).
         ].
 
         (playerRollType = 'lose123') ifTrue: [
@@ -169,89 +172,95 @@ pot := 0.
         (playerRollType = 'point') ifTrue: [
             ' ' displayNl.
             'Dealer is rolling...' displayNl.
-            
+
             "Dealer rolls until valid"
             dealerDice1 := rand between: 1 and: 6.
             dealerDice2 := rand between: 1 and: 6.
             dealerDice3 := rand between: 1 and: 6.
             dealerArray := Array withAll: {dealerDice1. dealerDice2. dealerDice3.}.
+            dealerArray := dealerArray sorted.
+
+            'Dealer rolled ' display.
+            dealerArray do: [:each | (each asString, ' ') display].
+            '' displayNl.
+
             dealerRollType := classifyRoll value: dealerArray.
-            
+
             "Keep rerolling till valid"
             [dealerRollType = 'reroll'] whileTrue: [
+                'Invalid roll! Rolling again...' displayNl.
+
                 dealerDice1 := rand between: 1 and: 6.
                 dealerDice2 := rand between: 1 and: 6.
                 dealerDice3 := rand between: 1 and: 6.
                 dealerArray := Array withAll: {dealerDice1. dealerDice2. dealerDice3.}.
+                dealerArray := dealerArray sorted.
+
+                'Dealer rolled ' display.
+                dealerArray do: [:each | (each asString, ' ') display].
+                '' displayNl.
                 dealerRollType := classifyRoll value: dealerArray.
             ].
-            
-            'Dealer rolled ' display.
-            dealerArray do: [:each |
-                (each asString, ' ') display
-            ].
-            '' displayNl.
-            
+
+
             "Compare results - dealer wins beat player point"
             (dealerRollType = 'trip') | (dealerRollType = 'win456') | (dealerRollType = 'twoAlikeSix') ifTrue: [
                 'Dealer wins! With a ' display.
-                (dealerRollType = 'trip') ifTrue: [
-                    'TRIPLE! You lose!' displayNl.
-                ].
+                (dealerRollType = 'trip') ifTrue: [ 'TRIPLE! You lose!' displayNl. ].
 
-                (dealerRollType = 'win456') ifTrue: [
-                    '4-5-6! You lose!' displayNl.
-                ].
+                (dealerRollType = 'win456') ifTrue: [ '4-5-6! You lose!' displayNl. ].
 
-                (dealerRollType = 'twoAlikeSix') ifTrue: [
-                    'Two Alike and Six High! You lose!' displayNl.
-                ].
+                (dealerRollType = 'twoAlikeSix') ifTrue: [ 'Two Alike and Six High! You lose!' displayNl. ].
             ].
-            
+
             "Dealer losses mean player wins"
             (dealerRollType = 'lose123') | (dealerRollType = 'loseAce') ifTrue: [
                 'Dealer loses! With a ' display.
                 (dealerRollType = 'lose123') ifTrue: [
                     '1-2-3! You Win!' displayNl.
+                    game at: 1 put: ((game at: 1) + ((game at: 2) * 2)).
                 ].
 
                 (dealerRollType = 'loseAce') ifTrue: [
                     'Ace out! You Win!' displayNl.
+                    game at: 1 put: ((game at: 1) + ((game at: 2) * 2)).
                 ].
             ].
-            
+
             "Compare points to player"
             (dealerRollType = 'point') ifTrue: [
                 dealerPoint := pairAndValue value: dealerArray.
                 ('Dealer point is: ', dealerPoint asString) displayNl.
-                
+
                 (playerPoint > dealerPoint) ifTrue: [
                     'Your point is higher! You win!' displayNl.
+                    game at: 1 put: ((game at: 1) + ((game at: 2) * 2)).
                 ].
-                
-                (playerPoint < dealerPoint) ifTrue: [
-                    'Dealer point is higher! You lose!' displayNl.
-                ].
-                
+
+                (playerPoint < dealerPoint) ifTrue: [ 'Dealer point is higher! You lose!' displayNl. ].
+
                 (playerPoint = dealerPoint) ifTrue: [
                     'Push! Same point - bet returned.' displayNl.
+                    game at: 1 put: ((game at: 1) + (game at: 2)).
                 ].
             ].
         ].
 
         ' ' displayNl.
-        ('You have ', credits asString, ' Credits') displayNl.
-        'Please bet an amount to roll the dice or q to stop ' display.
+        ('You have ', (game at: 1) asString, ' Credits') displayNl.
 
         "Check if player is broke"
-        (credits <= 0) ifTrue: [
-            ' ' displayNl.
+        ((game at: 1) == 0) ifTrue: [
             'You are out of credits! Game over.' displayNl.
-            bet := 'q'.
+        ] ifFalse: [
+            rounds := (rounds + 1 ).
+            ('This is round: ', rounds asString) displayNl.
+            'Please bet an amount to roll the dice or q to stop ' display.
         ].
     ].
 ].
 
 "Game over - display final results"
+' ' displayNl.
 'Thanks for playing!' displayNl.
-('You have ', credits asString, ' Credits') displayNl.
+('You have ', (game at: 1) asString, ' Credits in total') displayNl.
