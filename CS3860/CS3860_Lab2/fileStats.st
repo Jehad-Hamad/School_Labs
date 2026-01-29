@@ -1,9 +1,6 @@
-oldGCFlag := Smalltalk vm parameterAt: 6.
-Smalltalk vm parameterAt: 6 put: 0.
-
 "Get the file and parse it"
-'Please enter the name of your file: ' displayNl.
-fileName := 'File.txt'.
+'Please enter the name of your file: ' display.
+fileName := stdin nextLine.
 '' displayNl.
 
 "Open the file and save the sentence and also print the orginal sentence"
@@ -93,6 +90,7 @@ wordBag asSet do:[:word |
 ].
 '' displayNl.
 '' displayNl.
+
 
 '/--------------\' displayNl.
 '|   Histogram  |' displayNl.
