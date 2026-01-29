@@ -1,14 +1,24 @@
+oldGCFlag := Smalltalk vm parameterAt: 6.
+Smalltalk vm parameterAt: 6 put: 0.
 
 "Get the file and parse it"
 'Please enter the name of your file: ' displayNl.
 fileName := 'File.txt'.
 '' displayNl.
 
-"Open the file and save the sentence"
+"Open the file and save the sentence and also print the orginal sentence"
 f := FileStream open: fileName mode: FileStream read.
 fileContents := WriteStream on: (String new).
 linesCount := 0.
-f linesDo: [:x | x printOn: fileContents. linesCount := linesCount + 1].
+'This is the orginal sentece: ' displayNl.
+f linesDo: [:x | 
+    x display. 
+    x printOn: fileContents. 
+    linesCount := linesCount + 1
+].
+
+'' displayNl.
+'' displayNl.
 
 "Parse the sentence into words (case-sensitive)"
 words := fileContents contents tokenize: '[^A-Za-z]+'.
@@ -55,7 +65,86 @@ charBag := allChars asLowercase asBag.
     char := Character value: asciiValue.
     (char asString , '        | ') display.
     
-    (charBag occurencesOf char) <= 10 ifTrue: [
-        1 to: (charBag occurencesOf char) do
+    (charBag occurrencesOf: char) <= 10 ifTrue: [
+        1 to: (charBag occurrencesOf: char) do: [:i |
+            ('*') display.
+        ].
+    ] ifFalse: [
+        ('********** ', '(', (charBag occurrencesOf: char) asString, ')') display.
     ].
+    '' displayNl
+].
+
+'' displayNl.
+'' displayNl.
+
+'/--------------\' displayNl.
+'|  Dictionary  |' displayNl.
+'\--------------/' displayNl.
+'' displayNl.
+'' displayNl.
+'Word             Frequency' displayNl.
+'--------------------------' displayNl.
+
+wordBag := words asBag.
+wordBag remove: ''.
+wordBag asSet do:[:word |
+    (((word, '                         ') copyFrom: 1 to: 25), (wordBag occurrencesOf: word) asString) displayNl.
+].
+'' displayNl.
+'' displayNl.
+
+'/--------------\' displayNl.
+'|   Histogram  |' displayNl.
+'\--------------/' displayNl.
+'' displayNl.
+'' displayNl.
+
+wordArray := wordBag asSet asArray.
+mostStars :=  (wordBag sortedByCount first) key.
+i := mostStars.
+
+longestWord := 0.
+wordArray do: [:word |
+    ((word size) > longestWord) ifTrue:[
+        longestWord := word size.
+    ].
+].
+
+offset := (longestWord + 8).
+amountOfWords := wordArray size.
+1 to: i do: [ :m |
+    (String new: offset withAll: $ ) display.
+    1 to: (wordArray size) do: [:x |
+        ((wordBag occurrencesOf: (wordArray at: x)) = mostStars) ifTrue: [
+            wordBag remove: (wordArray at: x).
+            ' *' display.
+        ] ifFalse: [
+            '  ' display.
+        ].
+    ].
+    mostStars :=  mostStars - 1.
+    mostStars > 0 ifTrue: [
+        '' displayNl
+    ] ifFalse: [
+        '' displayNl.
+        (offset + (wordArray size * 2)) timesRepeat: ['-' display].
+        '' displayNl.
+    ].
+]
+(String new: offset withAll: $ ) display.
+((wordArray size )) timesRepeat: [' ^' display].
+'' displayNl.
+
+width := (offset + (wordArray size * 2)).
+amountOfSpace := 0.
+
+1 to: (wordArray size) do: [ :x |
+    ((wordArray at: x)) display.
+    amountOfSpace := (longestWord - ((wordArray at: x) size)).
+    amountOfSpace timesRepeat: [' ' display].
+    (offset - longestWord + (x * 2) - 1) timesRepeat: ['-' display].
+    '/' display.
+    ((wordArray size) - x) timesRepeat: [' |' display].
+    ''displayNl.
 ].
