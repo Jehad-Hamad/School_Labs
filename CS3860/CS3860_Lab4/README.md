@@ -51,6 +51,31 @@ firstLoc 99 [1..9]
 
 ---
 
+## partTwo.hs (Haskell — Hill Cipher)
+
+Implements a Hill cipher encrypt/decrypt using a 3×3 key matrix.
+
+**Run:**
+```bash
+ghci partTwo.hs
+```
+
+**Encrypt — `cipherMsg`:**
+```haskell
+key = threeXn [6, 24, 1, 13, 16, 10, 20, 17, 15]
+cipheredMsg = cipherMsg key "SELLITNOW"
+-- "HSVRTRUPW"
+```
+
+**Decrypt — `deCipherMsg`:**
+```haskell
+inverseKey = threeXn [8, 5, 10, 21, 8, 21, 21, 12, 8]
+deCipherMsg inverseKey cipheredMsg
+-- "SELLITNOW"
+```
+
+---
+
 ## main.st (Smalltalk)
 
 **Run with GNU Smalltalk:**
