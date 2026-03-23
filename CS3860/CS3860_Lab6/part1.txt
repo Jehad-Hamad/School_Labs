@@ -1,0 +1,100 @@
+Unification Assignment Answers
+
+I. p(b, b, a) and p(X, Y, Z)
+
+Unifies.
+
+- b = X -> X = b
+- b = Y -> Y = b
+- a = Z -> Z = a
+
+MGU: {X\b, Y\b, Z\a}
+
+Unified term: p(b, b, a)
+
+
+II. p(f(a, b), c, d) and p(f(X, Y), X, Z)
+
+Does not unify.
+
+- f(a, b) = f(X, Y) -> X = a, Y = b
+- c = X -> X = c
+- d = Z -> Z = d
+
+X must be both a (from arg 1) and c (from arg 2). a != c. Contradiction.
+
+
+III. p(f(a, b), a, d) and p(f(X, Y), X, Z)
+
+Unifies.
+
+- f(a, b) = f(X, Y) -> X = a, Y = b
+- a = X -> X = a (consistent with above)
+- d = Z -> Z = d
+
+MGU: {X\a, Y\b, Z\d}
+
+Unified term: p(f(a, b), a, d)
+
+
+IV. p(a, Z, Z) and p(Y, Y, b)
+
+Does not unify.
+
+- a = Y -> Y = a
+- Z = Y -> Z = a
+- Z = b -> but Z = a from above, and a != b. Contradiction.
+
+
+V. q(X, f(X, Y), Y) and q(U, f(Z, c), Z)
+
+Unifies.
+
+- X = U
+- f(X, Y) = f(Z, c) -> X = Z, Y = c
+- Y = Z -> Z = c (since Y = c)
+- X = Z = c
+- U = X = c
+
+MGU: {X\c, U\c, Y\c, Z\c}
+
+Unified term: q(c, f(c, c), c)
+
+
+VI. q(f(X, Y), Y, X) and q(Z, U, U)
+
+Unifies.
+
+- f(X, Y) = Z -> Z = f(X, Y)
+- Y = U
+- X = U -> X = Y = U
+- Z = f(U, U)
+
+MGU: {X\U, Y\U, Z\f(U, U)}
+
+Unified term: q(f(U, U), U, U)
+
+
+VII. q(X, Z, Z) and q(U, U, Y)
+
+Unifies.
+
+- X = U
+- Z = U
+- Z = Y -> Y = U
+
+MGU: {X\U, Z\U, Y\U}
+
+Unified term: q(U, U, U)
+
+
+VIII. q(X, f(Y, g(X, a))) and q(h(U, a), Z)
+
+Unifies.
+
+- X = h(U, a)
+- f(Y, g(X, a)) = Z -> Z = f(Y, g(h(U, a), a))
+
+MGU: {X\h(U, a), Z\f(Y, g(h(U, a), a))}
+
+Unified term: q(h(U, a), f(Y, g(h(U, a), a)))
