@@ -1,0 +1,52 @@
+room(office).
+room(hall).
+room(kitchen).
+room(cellar).
+room(dining_room).
+
+location(broccoli, kitchen).
+location(crackers, kitchen).
+location(apple, kitchen).
+location(desk, office).
+location(computer, office).
+location(washing_machine, cellar).
+location(flashlight, desk).
+location(blankie, washing_machine).
+
+door(office, hall).
+door(hall, dining_room).
+door(dining_room, kitchen).
+door(kitchen, office).
+door(cellar, kitchen).
+
+connect(X, Y) :- door(X, Y).
+connect(X, Y) :- door(Y, X).
+
+list_things(Place) :-
+    location(X, Place),
+    tab(2), format("~w", [X]), nl,
+    fail.
+list_things(_).
+
+look_in(Place) :-                                                                                                 
+    format("The ~w contains:~n", [Place]),                                                                        
+    list_things(Place).
+
+list_connections(Place) :-
+    format("The ~w is connected to:~n", [Place]), 
+    connect(Place, Y),
+    tab(2), format("~w", [Y]), nl,
+    fail.
+list_connections(_).
+
+can_go(Place) :-
+    here(X),
+    connect(X, Place).
+
+edible(crackers).
+edible(apple).
+
+tastes_yucky(X) :- \+ edible(X).
+
+here(kitchen).
+turned_off(flashlight).
