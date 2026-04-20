@@ -16,3 +16,4 @@
 - [Assignment 8 Task 4](https://jehad-hamad.github.io/cs3990w26_Hamad/a8/t4/)
 - [FINAL Project](https://jehad-hamad.github.io/cs3990w26_Hamad/finalProject/)
 - [Midterm](https://jehad-hamad.github.io/cs3990w26_Hamad/Midterm/)
+- [Final Exam](https://jehad-hamad.github.io/cs3990w26_Hamad/FinalExam/)
