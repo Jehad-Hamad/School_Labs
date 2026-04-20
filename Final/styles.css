@@ -1,0 +1,47 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: orange;
+}
+
+#dishPanel {
+  font: bold;
+  padding: 15px;
+}
+
+.categoryBtn {
+  background-color: orangered;
+  border: none;
+  padding: 8px;
+  margin-top: 8px;
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+#dishDesc {
+  padding: 20px;
+}
+
+.dishCard {
+  background-color: orangered;
+  padding: 16px;
+}
+
+.dishCard img {
+  max-width: 150px;
+  height: auto;
+  display: block;
+  margin: 10px 0;
+}
+
+.dishCard h2 {
+  margin-bottom: 8px;
+}
+
+.dishCard p {
+  font-size: 20px;
+}
