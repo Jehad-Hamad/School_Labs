@@ -1,0 +1,193 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Courier New", Courier, monospace;
+  background: url(Pictures/bodyBg.png) center/cover no-repeat;
+  min-height: 100vh;
+  padding: 10px;
+}
+
+h1 {
+  color: black;
+  margin-bottom: 10px;
+}
+
+#startBtn {
+  background-color: purple;
+  padding: 10px 20px;
+  border-radius: 10px;
+  color: gold;
+  box-shadow: inset 30px 0 20px rgba(0, 0, 0, 0.6);
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#startBtn:hover {
+  transform: scale(1.2);
+  box-shadow: inset 30px 0 20px rgba(0, 0, 0, 0.6), 0 0 15px rgba(128, 0, 128, 0.5);
+}
+
+#stars {
+  font-size: 24px;
+}
+
+#scoreArea {
+  display: none;
+  text-align: center;
+  margin-top: 80px;
+}
+
+#timerArea {
+  display: none;
+  text-align: center;
+  margin-top: 10px;
+}
+
+#board {
+  display: none;
+  border: black 7px solid;
+  border-radius: 10px;
+  background: linear-gradient(to bottom right, white, lightpink, purple);
+  min-height: 600px;
+  max-width: 1800px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 15px;
+}
+
+#board.active {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.tile {
+  background-color: #263238;
+  min-height: 130px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  padding: 10px;
+}
+
+.tile.flipped {
+  background-color: #880e4f;
+}
+
+.tile.done {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.card-front p {
+  margin-bottom: 5px;
+}
+
+.card-front label {
+  display: block;
+  text-align: left;
+  margin: 3px 0;
+  cursor: pointer;
+}
+
+.checkBtn {
+  background-color: #4a148c;
+  color: #fff;
+  border: none;
+  padding: 5px 12px;
+  margin-top: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 4px;
+}
+
+.asset-icon {
+  font-size: 30px;
+}
+
+.asset-front p {
+  margin-top: 5px;
+  font-size: 12px;
+}
+
+@media (max-width: 900px) {
+  #board.active {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  #scoreLabel, #message, #timer {
+    font-size: 2.5ch;
+  }
+}
+
+@media (max-width: 600px) {
+  #board.active {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  h1 {
+    font-size: 1.2em;
+  }
+
+  #scoreLabel, #message, #timer {
+    font-size: 2ch;
+  }
+
+  .tile {
+    min-height: 100px;
+    font-size: 12px;
+  }
+
+  #scoreArea {
+    margin-top: 40px;
+  }
+}
+
+@media (max-width: 400px) {
+  #board.active {
+    grid-template-columns: 1fr;
+  }
+
+  .tile {
+    min-height: 80px;
+  }
+}
+
+#scoreLabel {
+  font-size: 3ch;
+  background: linear-gradient(to right, #e91e63, #ff9800);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: bold;
+  font-style: italic;
+}
+
+#message {
+  display: none;
+  font-size: 3ch;
+  background: linear-gradient(to right, #e91e63, #ff9800);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: bold;
+}
+
+#timer {
+  display: block;
+  margin-top: 15px;
+  font-size: 3ch;
+  background: linear-gradient(to right, #e91e63, #ff9800);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: bold;
+}

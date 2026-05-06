@@ -1,0 +1,226 @@
+/* PART 1*/
+/* Task 1*/
+article:nth-last-of-type(2) {
+    background-color: rgb(66, 37, 2);
+    color: rgb(245, 201, 147);
+}
+
+article:nth-last-of-type(2) .task1, 
+article:nth-last-of-type(2) .task2 {
+    margin: 6px;
+    padding: 5px;
+    border: 3px solid transparent;
+    background-color: rgb(245, 201, 147);
+    color: rgb(66, 37, 2);
+}
+
+article:nth-last-of-type(2) h2 {
+    font-style: italic;
+}
+
+/* Task 2*/
+article:nth-last-of-type(2):hover .task1, 
+article:nth-last-of-type(2):hover .task2 {
+    opacity: 0.5;
+}
+
+article:nth-last-of-type(2) .task1:hover, 
+article:nth-last-of-type(2) .task2:hover {
+    opacity: 1;
+    border: 3px solid red;
+}
+
+/* Task 3*/
+article:nth-last-of-type(2) .task1 div {
+    opacity: 0;
+    position: relative;
+    margin-top: 15px;
+    margin-left: 15px;
+    margin-bottom: 15px;
+    width: fit-content;
+    border-radius: 18px;
+    padding: 6px;
+    background-color: orange;
+}
+
+article:nth-last-of-type(2) .task1:hover div {
+    opacity: 1;
+}
+
+/* Speech bubble arrow */
+article:nth-last-of-type(2) .task1 div::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 90px;
+    border-width: 10px;
+    border-style: solid;
+    border-color: orange transparent transparent transparent;
+}
+
+/* Task 4*/
+/* First element - highlighted background */
+article:nth-last-of-type(2) .task2 li:first-child {
+    width: fit-content;
+    background-color: orange;
+    color: brown;
+}
+
+/* All elements except .special */
+article:nth-last-of-type(2) .task2 li:not(.special) {
+    color: brown;
+}
+
+/* 4th element - italic */
+article:nth-last-of-type(2) .task2 li:nth-child(4) {
+    font-style: italic;
+}
+
+/* Odd elements - bold */
+article:nth-last-of-type(2) .task2 li:nth-child(odd) {
+    font-weight: bold;
+}
+
+
+/* PART 2*/
+/* Task 1*/
+article:nth-last-of-type(1) {
+    background-color: rgb(245, 201, 147);
+    color: rgb(66, 37, 2);
+}
+
+article:nth-last-of-type(1) .task1, 
+article:nth-last-of-type(1) .task2,
+article:nth-last-of-type(1) .task3 {
+    margin: 6px;
+    border: 3px solid transparent;
+    background-color: rgb(66, 37, 2);
+    color: rgb(245, 201, 147);
+}
+
+article:nth-last-of-type(1) h3 {
+    font-style: italic;
+}
+
+/* Task 2*/
+article:nth-last-of-type(1):hover .task1, 
+article:nth-last-of-type(1):hover .task2,
+article:nth-last-of-type(1):hover .task3 {
+    opacity: 0.5;
+}
+
+article:nth-last-of-type(1) .task1:hover, 
+article:nth-last-of-type(1) .task2:hover,
+article:nth-last-of-type(1) .task3:hover {
+    opacity: 1;
+    border:3px dotted pink;
+}
+
+/* Task 5 */
+article:nth-last-of-type(1) .task1 blockquote {
+    position: relative;
+    font-style: italic;
+    width: 500px;
+    margin-left: 60px;
+    margin-right: 60px;
+}
+
+article:nth-last-of-type(1) .task1 blockquote::before {
+    content: "\201C";
+    position: absolute;
+    top: -20px; 
+    left: -40px;
+    width: 40px;
+    height: 40px;
+    background-color: orange;
+    border-radius: 50%;
+    color: white;
+    font-size: 24px;
+    text-align: center;
+    line-height: 40px;
+}
+
+article:nth-last-of-type(1) .task1 blockquote::after {
+    content: "\201D";
+    position: absolute;
+    bottom: -20px;
+    right: -30px;
+    width: 40px;
+    height: 40px;
+    background-color: orange;
+    border-radius: 50%;
+    color: white;
+    font-size: 24px;
+    text-align: center;
+    line-height: 40px;
+}
+
+article:nth-last-of-type(1) .task1:has(blockquote:hover) h4 {
+    color: rgb(184, 59, 2);
+}
+
+article:nth-last-of-type(1) .task1 blockquote:hover::before,
+article:nth-last-of-type(1) .task1 blockquote:hover::after {
+    background-color: rgb(184, 59, 2);
+}
+
+/* Task 6 */
+article:last-of-type .task2 ul li:nth-child(even)::marker {
+    content: "\263A";
+    font-size: 1.2em;
+}
+
+/* Task 7 */
+article:nth-last-of-type(1) .task3 span:first-child::before {
+    content: ">> ";
+}
+
+article:nth-last-of-type(1) .task3 span:first-child::after {
+    content: " / ";
+}
+
+article:nth-last-of-type(1) .task3 .wrong,
+article:nth-last-of-type(1) .task3 .correct {
+    position: relative;
+    padding: 15px;
+    margin: 10px 0;
+    background-color: brown;
+    width: 900px;
+
+}
+
+article:nth-last-of-type(1) .task3 .wrong::after {
+    content: "\2716";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateY(-50%);
+    font-size: 80px;
+    color: red;
+}
+
+article:nth-last-of-type(1) .task3 .correct::after {
+    content: "\2714";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateY(-50%);
+    font-size: 80px;
+    color: green;
+}
+
+article:last-of-type .task3 span:first-child:hover {
+    background-color: rgb(184, 59, 2);
+}
+
+article:last-of-type .task3 span:first-child:hover ~ .correct {
+    background-color: rgb(184, 59, 2);
+}
+
+article:last-of-type .task3 span:last-of-type:hover {
+    background-color: rgb(184, 59, 2);
+}
+
+article:last-of-type .task3 span:last-of-type:hover ~ .wrong {
+    background-color: rgb(184, 59, 2);
+}

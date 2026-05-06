@@ -1,0 +1,141 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+header {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  background: url(Images/headerPic.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  padding: 40px;
+}
+
+header h1{
+  text-align: left;
+  margin-top: 20px;
+  color: purple;
+}
+
+header p {
+  text-align: left;
+  color: white;
+  font-size: 20px;
+}
+
+.button {
+  color: white;
+  text-decoration: none;
+  display: inline-block;
+  background-color: gold;
+  margin-top: 5px;
+  padding: 10px;
+  margin: 10px;
+}
+
+.button:hover {
+  color: black;
+  background-color: rgba(255, 215, 0, 0.5);
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 15px;
+  padding: 15px;
+}
+
+.card {
+  color: grey;
+  border: 3px solid rgb(197, 197, 197);
+  border-radius: 5px 5px 5px 5px;
+  overflow: hidden;
+}
+
+.image-wrapper {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+}
+
+.card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 9px 9px 0 0;
+}
+
+.card h2 {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  font-weight: bold;
+}
+
+.card p {
+  padding: 10px;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 20px;
+  padding: 30px;
+  margin-top: 20px;
+}
+
+.course-img-wrapper {
+  overflow: hidden;
+  border-radius: 9px 9px 0 0;
+}
+
+.course img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  border-radius: 9px 9px 0 0;
+  background-color: #f0f0f0;
+}
+
+.course-title {
+  font-weight: bold;
+  text-align: center;
+  padding: 10px;
+}
+
+.course-info {
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 0.85rem;
+  color: black;
+  margin-top: 4px;
+}
+
+.course img {
+  transition: transform 0.3s;
+}
+
+.course:hover img {
+  transform: scale(1.1);
+}
+
+.course:hover .course-info {
+  max-height: 50px;
+  opacity: 1;
+}
+
+footer {
+  background-color: #1a1a4e;
+  color: white;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+}
