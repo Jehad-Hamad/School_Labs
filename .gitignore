@@ -12,3 +12,4 @@ __pycache__/
 # C/C++ build artifacts
 *.o
 *.out
+a.out
