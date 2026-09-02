@@ -1,4 +1,4 @@
-from graphClass import Graph
+from src.graphClass import Graph
 
 class mazeGraph(Graph):
   def __init__(self, graph_dict=None,locations=None):

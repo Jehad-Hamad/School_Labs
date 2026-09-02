@@ -50,9 +50,13 @@ def BestFirstSearchAgentProgram(f=None):
 def IDSearchAgentProgram(f=None):
   def program(problem):
     #your code here
-    
- 
-      
+    # TODO: not implemented (Lab4 task). `pass` keeps this module importable;
+    # without a body the whole file is an IndentationError and every
+    # `from src.PS_agentPrograms import *` fails.
+    pass
+
+  return program
+
 
 
 
