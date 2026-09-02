@@ -1,8 +1,8 @@
-public class random {
+public class Foo {
 
     private String boom = "Wow";
 
-    public Foo() {return}
+    public Foo() { return; }
 
     public String bar(String bing) {
         String bang = bing;
