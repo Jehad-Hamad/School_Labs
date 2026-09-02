@@ -1,4 +1,3 @@
-import javafx.geometry.*;
 
 public class Point {
 //                              Jehad Hamad CS1150 #1 15/01/24

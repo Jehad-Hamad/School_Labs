@@ -1,4 +1,3 @@
-import java.*;
 
 public class Task2 {
     // JehadMHamad LAB 11 02/04/23

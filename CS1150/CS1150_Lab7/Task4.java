@@ -17,8 +17,8 @@ public class Task4 {
                 int score = inputFile.nextInt();
                 total += score;
                 count++;
-                inputFile.close();
             }
+            inputFile.close();
             double average = (double) total / count;
             System.out.println("Total: " + total);
             System.out.println("Average: " + average);
