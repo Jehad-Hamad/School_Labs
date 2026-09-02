@@ -6,9 +6,9 @@ public class main {
     @SuppressWarnings({ "resource", "unchecked", "unlikely-arg-type" })
     public static void main(String[] args) throws Exception {
         Scanner input = new Scanner(System.in);
-        Scanner inputFStudent = new Scanner(new File("/home/jehad/Desktop/CS2910/Lab1/students.csv"));
-        Scanner inputFCourses = new Scanner(new File("/home/jehad/Desktop/CS2910/Lab1/courses.csv"));
-        Scanner inputFGrades = new Scanner(new File("/home/jehad/Desktop/CS2910/Lab1/grades.csv"));
+        Scanner inputFStudent = new Scanner(new File("students.csv"));
+        Scanner inputFCourses = new Scanner(new File("courses.csv"));
+        Scanner inputFGrades = new Scanner(new File("grades.csv"));
 
         // List to store student and course data
         ArrayList<Student> students = new ArrayList<>();
@@ -424,8 +424,8 @@ public class main {
                                 for (int i = 0; i < codeTracker; i++) {
                                     students.get(students.size() - 1).addGrade(-1);
                                 }
-                                saveStudentsToFile(students, "/home/jehad/Desktop/CS2910/Lab1/students.csv");
-                                saveGradesToFile(students, "/home/jehad/Desktop/CS2910/Lab1/grades.csv");
+                                saveStudentsToFile(students, "students.csv");
+                                saveGradesToFile(students, "grades.csv");
                                 System.out.println("New student added successfully!\n");
                                 correct = true;
                                 break;
@@ -477,9 +477,9 @@ public class main {
                                     }
                                     student.addGrade(-1);
                                 }
-                                saveCoursesToFile(courses, "/home/jehad/Desktop/CS2910/Lab1/courses.csv");
-                                saveStudentsToFile(students, "/home/jehad/Desktop/CS2910/Lab1/students.csv");
-                                saveGradesToFile(students, "/home/jehad/Desktop/CS2910/Lab1/grades.csv");
+                                saveCoursesToFile(courses, "courses.csv");
+                                saveStudentsToFile(students, "students.csv");
+                                saveGradesToFile(students, "grades.csv");
                                 System.out.println();
                                 correct = true;
                                 break;
@@ -542,7 +542,7 @@ public class main {
 
                                             }
                                             student.changeGrades(index - 1, newGrade);
-                                            saveGradesToFile(students, "/home/jehad/Desktop/CS2910/Lab1/grades.csv");
+                                            saveGradesToFile(students, "grades.csv");
                                             System.out.println();
                                             IdFound = true;
                                             break;
@@ -627,8 +627,8 @@ public class main {
                                         System.out.println();
                                     }
                                 }
-                                saveStudentsToFile(students, "/home/jehad/Desktop/CS2910/Lab1/students.csv");
-                                saveGradesToFile(students, "/home/jehad/Desktop/CS2910/Lab1/grades.csv");
+                                saveStudentsToFile(students, "students.csv");
+                                saveGradesToFile(students, "grades.csv");
                                 System.out.println();
                                 idState = true;
                                 break;
