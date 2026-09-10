@@ -59,6 +59,10 @@ var FSHADER_SOURCE = `
     void main() {
         if (u_UseTexture) {
             vec4 texColor = texture2D(u_Sampler, v_TexCoord);
+            // Cut-out textures (the park signs) are mostly transparent.
+            // Throw those pixels away so the sign shows its shape instead of
+            // a solid rectangle.
+            if (texColor.a < 0.5) discard;
             gl_FragColor = texColor * v_Color;
         } else {
             gl_FragColor = v_Color;
